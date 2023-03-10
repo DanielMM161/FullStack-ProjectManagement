@@ -31,5 +31,5 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
         modelBuilder.AddIdentityConfig();
     }
 
-    public DbSet<Project> Projects { get; set; }
+    public DbSet<Project> Projects { get; set; } = null!;
 }
