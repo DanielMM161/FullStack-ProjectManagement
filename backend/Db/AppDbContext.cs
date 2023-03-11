@@ -28,8 +28,14 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Project>()
+            .Navigation(p => p.Lists)
+            .AutoInclude();
+            
         modelBuilder.AddIdentityConfig();
     }
 
     public DbSet<Project> Projects { get; set; } = null!;
+    public DbSet<List> Lists { get; set; } = null!;
 }

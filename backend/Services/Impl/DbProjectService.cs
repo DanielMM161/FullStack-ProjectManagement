@@ -14,7 +14,7 @@ public class DbProjectService : DbCrudService<Project, ProjectRequest>, IProject
     public DbProjectService(AppDbContext context) : base(context)
     {}
 
-    public override async Task<Project> CreateAsync(ProjectRequest request)
+    public override async Task<Project?> CreateAsync(ProjectRequest request)
     {
         var users = _dbContext.Users
             .Where(u => request.UsersId.Contains(u.Id))
@@ -45,8 +45,6 @@ public class DbProjectService : DbCrudService<Project, ProjectRequest>, IProject
             .Where(u => usersId.Contains(u.Id))
             .ToListAsync();
 
-         Console.WriteLine($"1 -- depues where {projectId} {users == null} {users.Count}");
-
         foreach (var user in users)
         {
             if(!project.Users.Contains(user)) 
@@ -56,7 +54,6 @@ public class DbProjectService : DbCrudService<Project, ProjectRequest>, IProject
         }
         await _dbContext.SaveChangesAsync();
 
-        Console.WriteLine($"2 -- antes de return {usersId.Count}");
         return true;
     }
 
@@ -84,7 +81,7 @@ public class DbProjectService : DbCrudService<Project, ProjectRequest>, IProject
         return true;
     }
 
-    public async Task<ICollection<Project>?> GetProjectsByUserAsync(int userId)
+    public async Task<ICollection<Project>> GetProjectsByUserAsync(int userId)
     {
         var projects = await _dbContext.Projects
             .AsNoTracking()

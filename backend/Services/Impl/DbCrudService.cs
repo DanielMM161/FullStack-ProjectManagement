@@ -16,7 +16,7 @@ public class DbCrudService<TModel, TDto> : ICrudService<TModel, TDto>
 
     public DbCrudService(AppDbContext dbContext) => _dbContext = dbContext;
 
-    public async virtual Task<ICollection<TModel>?> GetAllAsync()
+    public async virtual Task<ICollection<TModel>> GetAllAsync()
     {
         return await _dbContext.Set<TModel>().AsNoTracking().ToListAsync();
     }
@@ -55,6 +55,7 @@ public class DbCrudService<TModel, TDto> : ICrudService<TModel, TDto>
         {
             return false;
         }
+        _dbContext.Remove(item);
         await _dbContext.SaveChangesAsync();
         return true;
     }

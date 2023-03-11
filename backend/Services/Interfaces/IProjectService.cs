@@ -8,5 +8,5 @@ public interface IProjectService : ICrudService<Project, ProjectRequest>
 {
     Task<bool> AddUserAsync(int projectId, ICollection<int> usersId);
     Task<bool> RemoveUserAsync(int projectId, ICollection<int> usersId);
-    Task<ICollection<Project>?> GetProjectsByUserAsync(int userId);
+    Task<ICollection<Project>> GetProjectsByUserAsync(int userId);
 }

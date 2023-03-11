@@ -51,6 +51,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProjectService, DbProjectService>();
+builder.Services.AddScoped<IListService, DbListService>();
 
 var app = builder.Build();
 
@@ -63,7 +64,9 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
-        if (dbContext is not null)
+        var config = scope.ServiceProvider.GetService<IConfiguration>();
+        
+        if (dbContext is not null && config.GetValue<bool>("CreateDbAtStart", true))
         {
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();

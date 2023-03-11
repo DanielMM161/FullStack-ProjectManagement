@@ -20,12 +20,19 @@ public class ProjectController : CrudController<Project, ProjectRequest>
     }
 
     [HttpGet("user/{userId:int}")]
-    public async Task<ICollection<ProjectResponse>?> GetProjectsByUser(int userId)
+    public async Task<ActionResult<ICollection<ProjectResponse>?>> GetProjectsByUser(int userId)
     {
         var items = await _service.GetProjectsByUserAsync(userId);
-        return items
+        if (items is null)
+        {
+            return NotFound("Item is not found");
+        }
+
+        var projects = items
             .Select(p => ProjectResponse.FromProject(p))
             .ToList();
+        
+        return Ok(projects);
     }
 
     [HttpPost("add-user")]
