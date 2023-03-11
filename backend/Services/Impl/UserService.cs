@@ -32,7 +32,7 @@ public class UserService : IUserService
         return await _tokenService.GenerateTokenAsync(user);
     }
 
-    public async Task<User> SignUpAsync(SignUpRequest request)
+    public async Task<User?> SignUpAsync(SignUpRequest request)
     {
         var user = new User
         {

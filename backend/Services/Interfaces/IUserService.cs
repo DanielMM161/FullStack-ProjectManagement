@@ -7,5 +7,5 @@ using backend.Models;
 public interface IUserService
 {
     Task<SignInResponse?> SignInAsync(SignInRequest request);
-    Task<User> SignUpAsync(SignUpRequest request);
+    Task<User?> SignUpAsync(SignUpRequest request);
 }

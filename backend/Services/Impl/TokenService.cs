@@ -44,7 +44,7 @@ public class TokenService : ITokenService
         // Token description
         var token = new JwtSecurityToken(
             _config["Jwt:Issuer"],
-            _config["Jwt:Audience"],
+            audience: null,
             claims,
             expires: expiration,
             signingCredentials: signingKey
@@ -53,6 +53,9 @@ public class TokenService : ITokenService
 
         return new SignInResponse
         {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Email = user.Email,
             Token = tokenWriter.WriteToken(token),
             Expiration = expiration
         };

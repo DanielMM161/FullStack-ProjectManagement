@@ -16,34 +16,23 @@ public class DbCrudService<TModel, TDto> : ICrudService<TModel, TDto>
 
     public DbCrudService(AppDbContext dbContext) => _dbContext = dbContext;
 
-    public async Task<TModel?> CreateAysnc(TDto request)
+    public async virtual Task<ICollection<TModel>?> GetAllAsync()
+    {
+        return await _dbContext.Set<TModel>().AsNoTracking().ToListAsync();
+    }
+
+    public async virtual Task<TModel?> GetAsync(int id)
+    {
+        return await _dbContext.Set<TModel>().FindAsync(id);
+    }
+
+    public async virtual Task<TModel?> CreateAsync(TDto request)
     {
         var item = new TModel();
         request.UpdateModel(item);
         _dbContext.Add(item);
         await _dbContext.SaveChangesAsync();
         return item;
-    }
-
-    public async Task<bool> DeleteAsync(int id)
-    {
-        var item = await GetAsync(id);
-        if (item is null) 
-        {
-            return false;
-        }
-        await _dbContext.SaveChangesAsync();
-        return true;
-    }
-
-    public async virtual Task<ICollection<TModel>?> GetAllAsync()
-    {
-        return await _dbContext.Set<TModel>().AsNoTracking().ToListAsync();
-    }
-
-    public async Task<TModel?> GetAsync(int id)
-    {
-        return await _dbContext.Set<TModel>().FindAsync(id);
     }
 
     public async Task<TModel?> UpdateAsync(int id, TDto request)
@@ -57,5 +46,16 @@ public class DbCrudService<TModel, TDto> : ICrudService<TModel, TDto>
         _dbContext.Update(item);
         await _dbContext.SaveChangesAsync();
         return item;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var item = await GetAsync(id);
+        if (item is null) 
+        {
+            return false;
+        }
+        await _dbContext.SaveChangesAsync();
+        return true;
     }
 }
