@@ -53,7 +53,4 @@ public class ListController : ApiControllerBase
         }
         return list;
     }
-
-
-
 }
