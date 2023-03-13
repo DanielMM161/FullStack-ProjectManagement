@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using backend.Db;
+using backend.Models;
 
 #nullable disable
 
@@ -20,6 +21,7 @@ namespace backend.Migrations
                 .HasAnnotation("ProductVersion", "6.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "priority_task", new[] { "low", "medium", "high" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("backend.Models.List", b =>
@@ -90,6 +92,69 @@ namespace backend.Migrations
                         .HasName("pk_projects");
 
                     b.ToTable("projects", (string)null);
+                });
+
+            modelBuilder.Entity("backend.Models.TaskList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int>("CreatedById")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by_id");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<DateTime?>("DueDate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("due_date");
+
+                    b.Property<int>("ListId")
+                        .HasColumnType("integer")
+                        .HasColumnName("list_id");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_id");
+
+                    b.Property<TaskList.PriorityTask>("Priority")
+                        .HasColumnType("priority_task")
+                        .HasColumnName("priority");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("title");
+
+                    b.Property<DateTime>("UpdateAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("update_at");
+
+                    b.HasKey("Id")
+                        .HasName("pk_tasks");
+
+                    b.HasIndex("CreatedById")
+                        .HasDatabaseName("ix_tasks_created_by_id");
+
+                    b.HasIndex("ListId")
+                        .HasDatabaseName("ix_tasks_list_id");
+
+                    b.HasIndex("ParentId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_tasks_parent_id");
+
+                    b.ToTable("tasks", (string)null);
                 });
 
             modelBuilder.Entity("backend.Models.User", b =>
@@ -370,6 +435,25 @@ namespace backend.Migrations
                     b.ToTable("project_user", (string)null);
                 });
 
+            modelBuilder.Entity("TaskListUser", b =>
+                {
+                    b.Property<int>("TasksId")
+                        .HasColumnType("integer")
+                        .HasColumnName("tasks_id");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("integer")
+                        .HasColumnName("users_id");
+
+                    b.HasKey("TasksId", "UsersId")
+                        .HasName("pk_task_list_user");
+
+                    b.HasIndex("UsersId")
+                        .HasDatabaseName("ix_task_list_user_users_id");
+
+                    b.ToTable("task_list_user", (string)null);
+                });
+
             modelBuilder.Entity("backend.Models.List", b =>
                 {
                     b.HasOne("backend.Models.Project", "Project")
@@ -380,6 +464,35 @@ namespace backend.Migrations
                         .HasConstraintName("fk_lists_projects_project_id");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("backend.Models.TaskList", b =>
+                {
+                    b.HasOne("backend.Models.User", "CreatedBy")
+                        .WithMany("Creator")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired()
+                        .HasConstraintName("fk_tasks_asp_net_users_user_id");
+
+                    b.HasOne("backend.Models.List", "List")
+                        .WithMany("Tasks")
+                        .HasForeignKey("ListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_tasks_lists_list_id");
+
+                    b.HasOne("backend.Models.TaskList", "Parent")
+                        .WithOne()
+                        .HasForeignKey("backend.Models.TaskList", "ParentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasConstraintName("fk_tasks_tasks_parent_id");
+
+                    b.Navigation("CreatedBy");
+
+                    b.Navigation("List");
+
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -456,9 +569,36 @@ namespace backend.Migrations
                         .HasConstraintName("fk_project_user_users_users_id");
                 });
 
+            modelBuilder.Entity("TaskListUser", b =>
+                {
+                    b.HasOne("backend.Models.TaskList", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_task_list_user_tasks_tasks_id");
+
+                    b.HasOne("backend.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_task_list_user_asp_net_users_users_id");
+                });
+
+            modelBuilder.Entity("backend.Models.List", b =>
+                {
+                    b.Navigation("Tasks");
+                });
+
             modelBuilder.Entity("backend.Models.Project", b =>
                 {
                     b.Navigation("Lists");
+                });
+
+            modelBuilder.Entity("backend.Models.User", b =>
+                {
+                    b.Navigation("Creator");
                 });
 #pragma warning restore 612, 618
         }

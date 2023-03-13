@@ -42,7 +42,6 @@ public class ListController : ApiControllerBase
         return Ok(list);
     }
 
-    
     [HttpDelete("{listId:int}")]
     public async Task<bool> DeleteList(int listId)
     {

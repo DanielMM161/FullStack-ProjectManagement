@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using backend.Models;
 
 #nullable disable
 
@@ -10,6 +11,9 @@ namespace backend.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:priority_task", "low,medium,high");
+
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -221,6 +225,69 @@ namespace backend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "tasks",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    title = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    parent_id = table.Column<int>(type: "integer", nullable: true),
+                    description = table.Column<string>(type: "text", nullable: true),
+                    due_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    list_id = table.Column<int>(type: "integer", nullable: false),
+                    priority = table.Column<TaskList.PriorityTask>(type: "priority_task", nullable: false),
+                    created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    update_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_tasks", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_tasks_asp_net_users_user_id",
+                        column: x => x.created_by_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "fk_tasks_lists_list_id",
+                        column: x => x.list_id,
+                        principalTable: "lists",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_tasks_tasks_parent_id",
+                        column: x => x.parent_id,
+                        principalTable: "tasks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "task_list_user",
+                columns: table => new
+                {
+                    tasks_id = table.Column<int>(type: "integer", nullable: false),
+                    users_id = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_task_list_user", x => new { x.tasks_id, x.users_id });
+                    table.ForeignKey(
+                        name: "fk_task_list_user_asp_net_users_users_id",
+                        column: x => x.users_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_task_list_user_tasks_tasks_id",
+                        column: x => x.tasks_id,
+                        principalTable: "tasks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "ix_asp_net_role_claims_role_id",
                 table: "AspNetRoleClaims",
@@ -246,6 +313,27 @@ namespace backend.Migrations
                 name: "ix_project_user_users_id",
                 table: "project_user",
                 column: "users_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_task_list_user_users_id",
+                table: "task_list_user",
+                column: "users_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tasks_created_by_id",
+                table: "tasks",
+                column: "created_by_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tasks_list_id",
+                table: "tasks",
+                column: "list_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_tasks_parent_id",
+                table: "tasks",
+                column: "parent_id",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_user_claims_user_id",
@@ -278,10 +366,10 @@ namespace backend.Migrations
                 name: "AspNetUserRoles");
 
             migrationBuilder.DropTable(
-                name: "lists");
+                name: "project_user");
 
             migrationBuilder.DropTable(
-                name: "project_user");
+                name: "task_list_user");
 
             migrationBuilder.DropTable(
                 name: "user_claims");
@@ -296,10 +384,16 @@ namespace backend.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "projects");
+                name: "tasks");
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "lists");
+
+            migrationBuilder.DropTable(
+                name: "projects");
         }
     }
 }

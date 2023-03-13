@@ -12,7 +12,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     static AppDbContext()
     {   
-        NpgsqlConnection.GlobalTypeMapper.MapEnum<Task.PriorityTask>();
+        NpgsqlConnection.GlobalTypeMapper.MapEnum<TaskList.PriorityTask>();
 
         // Not use time zone in EF.
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
@@ -32,7 +32,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.HasPostgresEnum<Task.PriorityTask>();
+        modelBuilder.HasPostgresEnum<TaskList.PriorityTask>();
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Creator)
@@ -43,8 +43,12 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
         modelBuilder.Entity<Project>()
             .Navigation(p => p.Lists)
             .AutoInclude();
-        
-        modelBuilder.Entity<Task>()
+
+        modelBuilder.Entity<List>()
+            .HasIndex(l => l.Title)
+            .IsUnique();
+
+        modelBuilder.Entity<TaskList>()
             .HasOne(t => t.Parent)
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
@@ -54,5 +58,5 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     public DbSet<Project> Projects { get; set; } = null!;
     public DbSet<List> Lists { get; set; } = null!;
-    public DbSet<Task> Tasks { get; set; } = null!;
+    public DbSet<TaskList> Tasks { get; set; } = null!;
 }
