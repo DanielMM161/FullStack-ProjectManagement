@@ -310,6 +310,12 @@ namespace backend.Migrations
                 column: "project_id");
 
             migrationBuilder.CreateIndex(
+                name: "ix_lists_title",
+                table: "lists",
+                column: "title",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "ix_project_user_users_id",
                 table: "project_user",
                 column: "users_id");

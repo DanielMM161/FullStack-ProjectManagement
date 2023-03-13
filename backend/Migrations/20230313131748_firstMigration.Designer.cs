@@ -13,7 +13,7 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230312160538_firstMigration")]
+    [Migration("20230313131748_firstMigration")]
     partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,10 @@ namespace backend.Migrations
 
                     b.HasIndex("ProjectId")
                         .HasDatabaseName("ix_lists_project_id");
+
+                    b.HasIndex("Title")
+                        .IsUnique()
+                        .HasDatabaseName("ix_lists_title");
 
                     b.ToTable("lists", (string)null);
                 });

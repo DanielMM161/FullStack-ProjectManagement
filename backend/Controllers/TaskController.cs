@@ -46,4 +46,38 @@ public class TaskController : ApiControllerBase
         }
         return Ok(item);
     }
+
+    [HttpPost("{taskId:int}/assign-user")]
+    public async Task<IActionResult> AssignUser(int taskId, AssignTaskRequest request)
+    {
+        var user = await _service.CheckUserBelongProject(request.UserId, request.ProjectId);
+        if (user is null)
+        {
+            return BadRequest("The User must belong to the Project");
+        }
+
+        var isAssigned = await _service.AssignUserTaskAsync(taskId, user);
+        if (!isAssigned)
+        {
+            return NotFound("Item not found");
+        }
+        return Ok(true);
+    }
+
+    [HttpDelete("{taskId:int}/remove-user")]
+    public async Task<IActionResult> RemoveUser(int taskId, AssignTaskRequest request)
+    {
+        var user = await _service.CheckUserBelongProject(request.UserId, request.ProjectId);
+        if (user is null)
+        {
+            return BadRequest("The User must belong to the Project");
+        }
+
+        var isRemoved = await _service.RemoveUserTaskAsync(taskId, user);
+        if (!isRemoved)
+        {
+            return NotFound("Item not found");
+        }
+        return Ok(true);
+    }
 }

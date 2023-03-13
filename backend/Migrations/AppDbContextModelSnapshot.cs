@@ -57,6 +57,10 @@ namespace backend.Migrations
                     b.HasIndex("ProjectId")
                         .HasDatabaseName("ix_lists_project_id");
 
+                    b.HasIndex("Title")
+                        .IsUnique()
+                        .HasDatabaseName("ix_lists_title");
+
                     b.ToTable("lists", (string)null);
                 });
 
