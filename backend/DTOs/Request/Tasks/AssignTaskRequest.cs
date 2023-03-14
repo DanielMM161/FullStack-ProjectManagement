@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+namespace backend.DTOs.Request.Tasks;
 
-namespace backend.DTOs.Request;
+using System.ComponentModel.DataAnnotations;
 
 public class AssignTaskRequest
 {

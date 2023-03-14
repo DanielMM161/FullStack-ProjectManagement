@@ -34,6 +34,14 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
         modelBuilder.HasPostgresEnum<TaskList.PriorityTask>();
 
+        modelBuilder.Entity<TaskList>()
+            .Property(s => s.CreatedAt)            
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        modelBuilder.Entity<TaskList>()
+            .Property(s => s.DueDate)            
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
         modelBuilder.Entity<User>()
             .HasMany(u => u.Creator)
             .WithOne(t => t.CreatedBy)
@@ -43,10 +51,6 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
         modelBuilder.Entity<Project>()
             .Navigation(p => p.Lists)
             .AutoInclude();
-
-        modelBuilder.Entity<List>()
-            .HasIndex(l => l.Title)
-            .IsUnique();
 
         modelBuilder.Entity<TaskList>()
             .HasOne(t => t.Parent)

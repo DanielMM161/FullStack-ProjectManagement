@@ -7,8 +7,10 @@ public class TaskList : BaseModel
     [MaxLength(60)]
     public string Title { get; set; } = null!;
     [MaxLength(200)]
-    public TaskList? Parent { get; set; }
     public string? Description { get; set; } = null!;
+    public TaskList? Parent { get; set; }
+    public int? ParentId { get; set; }
+    public bool? Done { get; set; }
     public DateTime? DueDate { get; set; }
     public List List { get; set; } = null!;
     public int ListId { get; set; }

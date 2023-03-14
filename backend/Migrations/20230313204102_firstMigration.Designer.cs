@@ -13,7 +13,7 @@ using backend.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230313131748_firstMigration")]
+    [Migration("20230313204102_firstMigration")]
     partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,10 +58,6 @@ namespace backend.Migrations
 
                     b.HasIndex("ProjectId")
                         .HasDatabaseName("ix_lists_project_id");
-
-                    b.HasIndex("Title")
-                        .IsUnique()
-                        .HasDatabaseName("ix_lists_title");
 
                     b.ToTable("lists", (string)null);
                 });
@@ -110,20 +106,29 @@ namespace backend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("created_at");
+                        .HasColumnName("created_at")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("CreatedById")
                         .HasColumnType("integer")
                         .HasColumnName("created_by_id");
 
                     b.Property<string>("Description")
-                        .HasColumnType("text")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("description");
 
+                    b.Property<bool?>("Done")
+                        .HasColumnType("boolean")
+                        .HasColumnName("done");
+
                     b.Property<DateTime?>("DueDate")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("due_date");
+                        .HasColumnName("due_date")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                     b.Property<int>("ListId")
                         .HasColumnType("integer")

@@ -81,12 +81,14 @@ public class DbProjectService : DbCrudService<Project, ProjectRequest>, IProject
         return true;
     }
 
-    public async Task<ICollection<Project>> GetProjectsByUserAsync(int userId)
+    public async Task<ICollection<Project>> GetProjectsByUserAsync(int userId, int page = 1, int pageSize = 20)
     {
         var projects = await _dbContext.Projects
             .AsNoTracking()
             .Include(p => p.Users)
             .Where(p => p.Users.Select(u => u.Id).Contains(userId))
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
 
         return projects;

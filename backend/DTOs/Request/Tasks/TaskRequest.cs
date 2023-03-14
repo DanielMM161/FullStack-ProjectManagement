@@ -1,4 +1,4 @@
-namespace backend.DTOs.Request;
+namespace backend.DTOs.Request.Tasks;
 
 using System.ComponentModel.DataAnnotations;
 using backend.Models;

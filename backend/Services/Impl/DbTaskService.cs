@@ -1,7 +1,7 @@
 namespace backend.Services.Impl;
 
 using backend.Db;
-using backend.DTOs.Request;
+using backend.DTOs.Request.Tasks;
 using backend.Models;
 using backend.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -92,6 +92,68 @@ public class DbTaskService : ITaskService
         }
         
         return project.Users.ToArray()[index];
+    }
+
+    public async Task<TaskList?> CreateSubTask(int taskParentId, SubTaskRequest request)
+    {
+        var parentTask = await _dbContext.Tasks
+            .SingleOrDefaultAsync(t => t.Id == taskParentId);
+        if (parentTask is null || parentTask.ParentId is not null)
+        {
+            return null;
+        }
+
+        var subTask = new TaskList()
+        {
+            Title = request.Title,
+            Parent = parentTask,
+            ListId = parentTask.ListId,       
+            Done = false,
+            DueDate = parentTask.DueDate,
+            CreatedBy = parentTask.CreatedBy,
+            CreatedById = parentTask.CreatedById,
+            Users = parentTask.Users            
+        };
+
+        _dbContext.Add(subTask);
+        await _dbContext.SaveChangesAsync();
+        return subTask;
+    }
+
+    public async Task<bool> RemoveSubTask(int taskParentId, int subtaskId)
+    {
+        var subTask = await GetAsync(subtaskId);
+        if (subTask is null || subTask.ParentId != taskParentId)
+        {
+            return false;
+        }
+
+        _dbContext.Remove(subTask);
+        await _dbContext.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<TaskList?> PatchSubTask(int taskParentId, int subtaskId, PatchSubTaskRequest request)
+    {
+        var subTask = await GetAsync(subtaskId);
+        if (subTask is null || subTask.ParentId != taskParentId)
+        {
+            return null;
+        }
+
+        if (request.Title is not null && request.Title.Trim() != "")
+        {
+            subTask.Title = request.Title;
+        }
+
+        if (request.Done is not null)
+        {
+            subTask.Done = request.Done;
+        }
+
+        _dbContext.Update(subTask);
+        await _dbContext.SaveChangesAsync();
+        return subTask;
     }
 
     private async Task<TaskList?> GetAsync(int id)

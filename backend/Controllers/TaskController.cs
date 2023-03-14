@@ -1,16 +1,18 @@
 namespace backend.Controllers;
 
-using backend.DTOs.Request;
+using backend.DTOs.Request.Tasks;
 using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 public class TaskController : ApiControllerBase
 {
     private readonly ITaskService _service;
+    private readonly ILogger<TaskController> _logger;
 
-    public TaskController(ITaskService service)
+    public TaskController(ITaskService service, ILogger<TaskController> logger)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
+        _logger = logger;
     }
 
     [HttpPost]
@@ -79,5 +81,38 @@ public class TaskController : ApiControllerBase
             return NotFound("Item not found");
         }
         return Ok(true);
+    }
+
+    [HttpPost("{taskParentId:int}/subtask")]
+    public async Task<IActionResult> AddSubTask(int taskParentId, SubTaskRequest request)
+    {
+        var subTask = await _service.CreateSubTask(taskParentId, request);
+        if (subTask is null)
+        {
+            return BadRequest("Not Possible to create a subtask of a subtask");
+        }
+        return Ok(subTask);
+    }
+
+    [HttpDelete("{taskParentId:int}/subtask/{subtaskId:int}")]
+    public async Task<IActionResult> RemoveSubTask(int taskParentId, int subtaskId)
+    {
+        var isRemoved = await _service.RemoveSubTask(taskParentId, subtaskId);
+        if (!isRemoved)
+        {
+            return BadRequest("SubTask not found or parent Id is not the paren of subtask");
+        }
+        return Ok(true);
+    }
+
+    [HttpPatch("{taskParentId:int}/subtask/{subtaskId:int}")]
+    public async Task<IActionResult> PatchSubTask(int taskParentId, int subtaskId, PatchSubTaskRequest request )
+    {
+        var subTask = await _service.PatchSubTask(taskParentId, subtaskId, request);
+        if (subTask is null)
+        {
+            return BadRequest("SubTask not found or parent Id is not the paren of subtask");
+        }
+        return Ok(subTask);
     }
 }

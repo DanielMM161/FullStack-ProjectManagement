@@ -232,13 +232,14 @@ namespace backend.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     parent_id = table.Column<int>(type: "integer", nullable: true),
-                    description = table.Column<string>(type: "text", nullable: true),
-                    due_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    done = table.Column<bool>(type: "boolean", nullable: true),
+                    due_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
                     list_id = table.Column<int>(type: "integer", nullable: false),
                     priority = table.Column<TaskList.PriorityTask>(type: "priority_task", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
-                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     update_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
@@ -308,12 +309,6 @@ namespace backend.Migrations
                 name: "ix_lists_project_id",
                 table: "lists",
                 column: "project_id");
-
-            migrationBuilder.CreateIndex(
-                name: "ix_lists_title",
-                table: "lists",
-                column: "title",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "ix_project_user_users_id",
