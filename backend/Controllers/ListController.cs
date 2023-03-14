@@ -1,6 +1,7 @@
 namespace backend.Controllers;
 
 using backend.DTOs.Request;
+using backend.DTOs.Response.List;
 using backend.Models;
 using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -8,10 +9,12 @@ using Microsoft.AspNetCore.Mvc;
 public class ListController : ApiControllerBase
 {
     private readonly IListService _service;
+    private readonly IHelpserService _helperService;
 
-    public ListController(IListService service)
+    public ListController(IListService service, IHelpserService helperService)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));
+        _helperService = helperService;
     }
 
     [HttpPost]
@@ -25,31 +28,35 @@ public class ListController : ApiControllerBase
         return Ok(list);
     }
 
-    [HttpGet("projects/{projectId:int}")]
-    public async Task<ActionResult<ICollection<List>>> GetListByProject(int projectId)
+    [HttpGet("project/{projectId:int}")]
+    public async Task<ICollection<ListByProjectResponse>> GetListByProject(int projectId)
     {
-        return Ok(await _service.GetListByProjectAsync(projectId));
+        var lists = await _service.GetListByProjectAsync(projectId);
+        return lists.Select(l => ListByProjectResponse.FromList(l)).ToList();
     }
 
-    [HttpPut("{listId:int}")]
-    public async Task<ActionResult<List>> UpdateList(int listId, UpdateListRequest request)
+    [HttpPut("{listId:int}/project/{projectId:int}")]
+    public async Task<ActionResult<List>> UpdateList(int listId, int projectId, UpdateListRequest request)
     {
-        var list = await _service.Update(listId, request.Title);
+        var list = await _helperService.CheckListBelongProject(listId, projectId);
         if (list is null)
         {
-            return NotFound("List not found");
+            return BadRequest("List must belong to the project or List not found");
         }
+        list = await _service.Update(list, request.Title);
         return Ok(list);
     }
 
-    [HttpDelete("{listId:int}")]
-    public async Task<bool> DeleteList(int listId)
+    [HttpDelete("{listId:int}/project/{projectId:int}")]
+    public async Task<ActionResult> DeleteList(int listId, int projectId)
     {
-        var list = await _service.Delete(listId);
-        if (!list)
+        var list = await _helperService.CheckListBelongProject(listId, projectId);
+        if (list is null)
         {
-            return false;
+            return BadRequest("List must belong to the project or List not found");
         }
-        return list;
+        
+        await _service.Delete(list);
+        return Ok(true);
     }
 }

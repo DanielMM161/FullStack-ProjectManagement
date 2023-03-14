@@ -28,4 +28,15 @@ public class DbHelperService : IHelpserService
         }
         return project;
     }
+
+    public async Task<List?> CheckListBelongProject(int listId, int projectId)
+    {
+        var list = await _dbContext.Lists
+            .SingleOrDefaultAsync(l => l.Id == listId);
+        if (list is null || list.ProjectId != projectId)
+        {
+            return null;    
+        }
+        return list;
+    }
 }

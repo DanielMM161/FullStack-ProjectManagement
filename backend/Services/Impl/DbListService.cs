@@ -34,30 +34,21 @@ public class DbListService : IListService
     {
         return await _dbContext.Lists
             .AsNoTracking()
+            .Include(l => l.Tasks)
             .Where(list => list.ProjectId == projectId)
             .ToListAsync();        
     }
 
-    public async Task<List?> Update(int listId, string title)
+    public async Task<List> Update(List list, string title)
     {
-        var list = await GetList(listId);
-        if (list is null)
-        {
-            return null;
-        }
         list.Title = title;
         //TODO TEST WITHOUT _DB.Update();
         await _dbContext.SaveChangesAsync();
         return list;
     }
 
-        public async Task<bool> Delete(int listId)
+        public async Task<bool> Delete(List list)
     {
-        var list = await GetList(listId);
-        if (list is null)
-        {
-            return false;
-        }
         _dbContext.Lists.Remove(list);
         await _dbContext.SaveChangesAsync();
         return true;

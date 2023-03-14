@@ -10,6 +10,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
