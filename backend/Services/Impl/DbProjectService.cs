@@ -1,6 +1,6 @@
 namespace backend.Services.Impl;
 
-using backend.DTOs.Request;
+using backend.DTOs.Request.Project;
 using backend.Models;
 using backend.Services.Interfaces;
 using backend.Db;
@@ -13,6 +13,30 @@ public class DbProjectService : DbCrudService<Project, ProjectRequest>, IProject
 {
     public DbProjectService(AppDbContext context) : base(context)
     {}
+
+    public async Task<ICollection<Project>> GetProjectsByUserAsync(int userId, int page = 1, int pageSize = 20)
+    {
+        var projects = await _dbContext.Projects
+            .AsNoTracking()
+            .Include(p => p.Users)
+            .Where(p => p.Users.Select(u => u.Id).Contains(userId))
+            .Include(p => p.Lists)
+                .ThenInclude(l => l.Tasks)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();        
+
+        return projects;
+    }
+
+    public override async Task<Project?> GetAsync(int id)
+    {
+        var project = await _dbContext.Projects
+            .Include(p => p.Users)
+            .SingleOrDefaultAsync(p => p.Id == id);
+
+        return project;
+    }
 
     public override async Task<Project?> CreateAsync(ProjectRequest request)
     {
@@ -79,27 +103,5 @@ public class DbProjectService : DbCrudService<Project, ProjectRequest>, IProject
         await _dbContext.SaveChangesAsync();
 
         return true;
-    }
-
-    public async Task<ICollection<Project>> GetProjectsByUserAsync(int userId, int page = 1, int pageSize = 20)
-    {
-        var projects = await _dbContext.Projects
-            .AsNoTracking()
-            .Include(p => p.Users)
-            .Where(p => p.Users.Select(u => u.Id).Contains(userId))
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
-
-        return projects;
-    }
-
-    public override async Task<Project?> GetAsync(int id)
-    {
-        var project = await _dbContext.Projects
-            .Include(p => p.Users)
-            .SingleOrDefaultAsync(p => p.Id == id);
-
-        return project;
     }
 }

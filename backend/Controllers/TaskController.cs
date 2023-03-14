@@ -100,7 +100,7 @@ public class TaskController : ApiControllerBase
         var isRemoved = await _service.RemoveSubTask(taskParentId, subtaskId);
         if (!isRemoved)
         {
-            return BadRequest("SubTask not found or parent Id is not the paren of subtask");
+            return BadRequest("SubTask not found or parent Id is not the parent of subtask");
         }
         return Ok(true);
     }
@@ -111,7 +111,7 @@ public class TaskController : ApiControllerBase
         var subTask = await _service.PatchSubTask(taskParentId, subtaskId, request);
         if (subTask is null)
         {
-            return BadRequest("SubTask not found or parent Id is not the paren of subtask");
+            return BadRequest("SubTask not found or parent Id is not the parent of subtask");
         }
         return Ok(subTask);
     }

@@ -1,7 +1,7 @@
 namespace backend.Services.Interfaces;
 
 using backend.Models;
-using backend.DTOs.Request;
+using backend.DTOs.Request.Project;
 using backend.DTOs.Response;
 
 public interface IProjectService : ICrudService<Project, ProjectRequest>

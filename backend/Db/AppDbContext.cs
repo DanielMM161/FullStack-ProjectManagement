@@ -32,31 +32,10 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.HasPostgresEnum<TaskList.PriorityTask>();
+        ModelBuilderConfig.TaskListConfig(modelBuilder);
+        ModelBuilderConfig.UserConfig(modelBuilder);
+        ModelBuilderConfig.ProjectConfig(modelBuilder);
 
-        modelBuilder.Entity<TaskList>()
-            .Property(s => s.CreatedAt)            
-            .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-        modelBuilder.Entity<TaskList>()
-            .Property(s => s.DueDate)            
-            .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-        modelBuilder.Entity<User>()
-            .HasMany(u => u.Creator)
-            .WithOne(t => t.CreatedBy)
-            .HasForeignKey(a => a.CreatedById)
-            .OnDelete(DeleteBehavior.SetNull);
-
-        modelBuilder.Entity<Project>()
-            .Navigation(p => p.Lists)
-            .AutoInclude();
-
-        modelBuilder.Entity<TaskList>()
-            .HasOne(t => t.Parent)
-            .WithOne()
-            .OnDelete(DeleteBehavior.Cascade);
-            
         modelBuilder.AddIdentityConfig();
     }
 

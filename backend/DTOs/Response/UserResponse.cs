@@ -9,8 +9,7 @@ public class UserResponse : BaseModel
     public string Email { get; set; } = null!;
 
     public static UserResponse FromUser(User user)
-    {
-         Console.WriteLine("FromUser");
+    {         
         return new UserResponse
         {
             Id = user.Id,

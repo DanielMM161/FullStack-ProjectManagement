@@ -1,22 +1,24 @@
 namespace backend.Controllers;
 
-using backend.DTOs.Request;
-using backend.Models;
-using backend.DTOs.Response;
+using System.Security.Claims;
+using backend.DTOs.Request.Project;
+using backend.DTOs.Response.Project;
 using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-// [Authorize]
+[Authorize]
 public class ProjectController : ApiControllerBase
 {
     private readonly IProjectService _service;
+    private readonly IHelpserService _helperService;
     private readonly ILogger<ProjectController> _logger;
 
-    public ProjectController(ILogger<ProjectController> logger, IProjectService service)
+    public ProjectController(ILogger<ProjectController> logger, IProjectService service, IHelpserService helperService)
     {
         _logger = logger;
         _service = service;
+        _helperService = helperService;
     }
 
     [HttpGet("user/{userId:int}")]
@@ -35,6 +37,35 @@ public class ProjectController : ApiControllerBase
         return Ok(projects);
     }
 
+    [HttpGet("{projectId:int}")]
+    public async Task<IActionResult> Get(int projectId)
+    {
+        var project = await _helperService.CheckProject(projectId);
+        if (project is null)
+        {
+            return BadRequest("The Project Don't Exist");
+        }
+        
+        var isBelongProject = await _helperService.CheckUserBelongProject(GetUserIdFromToken(), project);
+        if(isBelongProject == -1)
+        {
+            return BadRequest("The User Must Belong To The Project");
+        }        
+
+        return Ok(ProjectByIdResponse.FromProject(project));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(ProjectRequest request)
+    {
+        var project = await _service.CreateAsync(request);
+        if (project is null)
+        {
+            return BadRequest();
+        }
+        return Ok(ProjectResponse.FromProject(project));
+    }
+
     [HttpDelete("{projectId:int}")]
     public async Task<ActionResult> Delete(int projectId)
     {
@@ -42,18 +73,25 @@ public class ProjectController : ApiControllerBase
         {
             return Ok(true);
         }
-        return NotFound("Item is not found");
+        return NotFound("Item not found");
     }
 
-    [HttpPost("add-user")]
-    public async Task<bool> AddUser(ProjectUserRequest request)
+    [HttpPost("{projectId:int}/add-user")]
+    public async Task<bool> AddUser(int projectId, ProjectUserRequest request)
     {
-        return await _service.AddUserAsync(request.ProjectId, request.UsersId);
+        return await _service.AddUserAsync(projectId, request.UsersId);
     }
 
-    [HttpPost("remove-user")]
-    public async Task<bool> RemoveUser(ProjectUserRequest request)
+    [HttpPost("{projectId:int}/remove-user")]
+    public async Task<bool> RemoveUser(int projectId, ProjectUserRequest request)
     {
-        return await _service.RemoveUserAsync(request.ProjectId, request.UsersId);
+        return await _service.RemoveUserAsync(projectId, request.UsersId);
+    }
+
+    private int GetUserIdFromToken()
+    {
+        // Get User Id From JWT Token
+        var claim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+        return Convert.ToInt32(claim != null ? claim.Value : "-1");
     }
 }

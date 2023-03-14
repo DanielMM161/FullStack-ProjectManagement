@@ -53,6 +53,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProjectService, DbProjectService>();
 builder.Services.AddScoped<IListService, DbListService>();
 builder.Services.AddScoped<ITaskService, DbTaskService>();
+builder.Services.AddScoped<IHelpserService, DbHelperService>();
 
 var app = builder.Build();
 

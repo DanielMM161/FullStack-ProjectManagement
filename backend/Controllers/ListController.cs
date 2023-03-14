@@ -25,7 +25,7 @@ public class ListController : ApiControllerBase
         return Ok(list);
     }
 
-    [HttpGet("{projectId:int}")]
+    [HttpGet("projects/{projectId:int}")]
     public async Task<ActionResult<ICollection<List>>> GetListByProject(int projectId)
     {
         return Ok(await _service.GetListByProjectAsync(projectId));
