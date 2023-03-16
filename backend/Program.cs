@@ -1,12 +1,23 @@
 using System.Text.Json.Serialization;
-using backend.Db;
-using backend.Models;
-using backend.Services.Impl;
-using backend.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+
+using backend.src.Db;
+using backend.src.Models;
+using backend.src.Services.ProjectService;
+using backend.src.Services.UserService;
+using backend.src.Services.AuthService.cs;
+using backend.src.Services.ListService;
+using backend.src.Services.TokenService.cs;
+using backend.src.Repositories.ProjectRepo;
+using backend.src.Repositories.UserRepo;
+using backend.src.Repositories.ListRepo;
+using backend.src.Repositories.TaskRepo;
+using backend.src.Services.TaskService.cs;
+using backend.src.Services.SubTaskService;
+using backend.src.Repositories.SubTaskRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +33,7 @@ builder.Services
     });
 
 builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 builder.Services
     .AddIdentity<User, IdentityRole<int>>()
@@ -51,11 +63,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProjectService, DbProjectService>();
-builder.Services.AddScoped<IListService, DbListService>();
-builder.Services.AddScoped<ITaskService, DbTaskService>();
-builder.Services.AddScoped<IHelpserService, DbHelperService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepo, UserRepo>().AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProjectRepo, ProjectRepo>().AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IListRepo, ListRepo>().AddScoped<IListService, ListService>();
+builder.Services.AddScoped<ITaskRepo, TaskRepo>().AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ISubTaskRepo, SubTaskRepo>().AddScoped<ISubTaskService, SubTaskService>();
 
 var app = builder.Build();
 
