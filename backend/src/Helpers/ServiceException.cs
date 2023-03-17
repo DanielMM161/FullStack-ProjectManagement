@@ -1,6 +1,6 @@
-using System.Net;
-
 namespace backend.src.Helpers;
+
+using System.Net;
 
 public class ServiceException : Exception
 {

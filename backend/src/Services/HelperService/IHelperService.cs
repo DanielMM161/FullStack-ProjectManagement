@@ -1,6 +1,8 @@
 namespace backend.src.Services.HelperService;
 
+using backend.src.Models;
+
 public interface IHelperService
 {
-    Task<bool> CheckUserBelongProject(int userId, int projectId);
+    bool CheckUserBelongProject(int userId, Project project);
 }

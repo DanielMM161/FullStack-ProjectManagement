@@ -8,17 +8,23 @@ using backend.src.Models;
 using backend.src.Repositories.ProjectRepo;
 using backend.src.Repositories.UserRepo;
 using backend.src.Services.BaseService;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreateDTO, ProjectUpdateDTO>, IProjectService
 {
+    private readonly IAuthorizationService _authService;
+    private readonly ClaimsPrincipal _user;
     private readonly IProjectRepo _repo;
     private readonly IUserRepo _userRepo;
     //private readonly HttpContext _context;
 
-    public ProjectService(IMapper mapper, IProjectRepo repo, IUserRepo userRepo) : base(mapper, repo)
+    public ProjectService(IMapper mapper, IProjectRepo repo, IUserRepo userRepo, IAuthorizationService authService, ClaimsPrincipal user) : base(mapper, repo)
     {
         _repo = repo;
-        _userRepo = userRepo;        
+        _userRepo = userRepo;
+        _authService = authService;
+        _user = user;
     }
 
     public override async Task<ProjectReadDTO> CreateOneAsync(ProjectCreateDTO request)
@@ -60,6 +66,12 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
         {
             return false;
         }
+
+        var authorization = await _authService.AuthorizeAsync(_user, project, "Belong");
+        if (!authorization.Succeeded)
+        {
+            return false;
+        }
         
         foreach (var id in usersId)
         {
@@ -77,6 +89,12 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
     {
         var project = await _repo.GetByIdAsync(projectId);
         if (project is null)
+        {
+            return false;
+        }
+
+        var authorization = await _authService.AuthorizeAsync(_user, project, "Belong");
+        if (!authorization.Succeeded)
         {
             return false;
         }

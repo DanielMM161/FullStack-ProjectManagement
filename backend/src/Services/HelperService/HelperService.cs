@@ -1,7 +1,8 @@
+namespace backend.src.Services.HelperService;
+
+using backend.src.Models;
 using backend.src.Repositories.ProjectRepo;
 using backend.src.Repositories.UserRepo;
-
-namespace backend.src.Services.HelperService;
 
 public class HelperService : IHelperService
 {
@@ -14,19 +15,8 @@ public class HelperService : IHelperService
         _userRepo = userRepo;
     }
 
-    public async Task<bool> CheckUserBelongProject(int userId, int projectId)
+    public bool CheckUserBelongProject(int userId, Project project)
     {
-        var user = _userRepo.GetById(userId);
-        if (user is null)
-        {
-            return false;
-        }
-
-        var project = _projectRepo.GetByIdAsync(projectId);
-        if (project is null)
-        {
-            return false;
-        }
-        return true;
+        return project.Users.Select(u => u.Id).Contains(userId);
     }
 }

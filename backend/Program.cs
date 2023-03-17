@@ -18,6 +18,9 @@ using backend.src.Repositories.TaskRepo;
 using backend.src.Services.TaskService.cs;
 using backend.src.Services.SubTaskService;
 using backend.src.Repositories.SubTaskRepo;
+using backend.src.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,10 +61,23 @@ builder.Services
         };
     });
 
+builder.Services.AddAuthorization(option =>
+    {
+    option.AddPolicy(
+        "Belong",
+        policyBuuilder => policyBuuilder.AddRequirements(
+            new IsUserBelongProject())
+        );
+    });
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddTransient<ClaimsPrincipal>(s =>
+    s.GetService<IHttpContextAccessor>().HttpContext.User);
+builder.Services.AddSingleton<IAuthorizationHandler, IsUserBelongProjectHandler>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepo, UserRepo>().AddScoped<IUserService, UserService>();

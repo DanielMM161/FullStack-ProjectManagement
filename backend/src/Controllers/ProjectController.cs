@@ -10,13 +10,15 @@ using backend.src.Models;
 [Authorize]
 public class ProjectController : BaseController<Project, ProjectReadDTO, ProjectCreateDTO, ProjectUpdateDTO>
 {
+    private readonly IAuthorizationService _authService;
     private readonly IProjectService _service;    
     private readonly ILogger<ProjectController> _logger;
 
-    public ProjectController(ILogger<ProjectController> logger, IProjectService service) : base(service)
+    public ProjectController(ILogger<ProjectController> logger, IProjectService service, IAuthorizationService authService) : base(service)
     {
         _service = service ?? throw new ArgumentNullException(nameof(service));       
         _logger = logger;
+        _authService = authService;
     }
 
     [HttpGet("user")]

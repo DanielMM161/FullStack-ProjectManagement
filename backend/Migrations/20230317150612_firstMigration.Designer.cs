@@ -13,7 +13,7 @@ using backend.src.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230316163011_firstMigration")]
+    [Migration("20230317150612_firstMigration")]
     partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
