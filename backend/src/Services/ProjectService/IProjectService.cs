@@ -6,7 +6,7 @@ using backend.src.DTOs.Project;
 
 public interface IProjectService : IBaseService<Project, ProjectReadDTO, ProjectCreateDTO, ProjectUpdateDTO>
 {
-    Task<ICollection<ProjectReadDTO>> GetProjectsByUserAsync(int userId, int page, int pageSize);
+    Task<ICollection<ProjectReadDTO>> GetProjectsByUserAsync(int page, int pageSize);
     Task<bool> AddUserAsync(int projectId, ICollection<int> usersId);
     Task<bool> RemoveUserAsync(int projectId, ICollection<int> usersId);
 }

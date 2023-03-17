@@ -4,10 +4,10 @@ using System.Net;
 
 public class ServiceException : Exception
 {
-    public HttpStatusCode StatusCode { get; set; }
-    public string Message { get; set; }
+    public HttpStatusCode StatusCode { get; private set; }
+    public string Message { get; set; } = null!;
 
-    public ServiceException (HttpStatusCode statusCode, string message )
+    public ServiceException (HttpStatusCode statusCode, string message) : base(message)
     {
         StatusCode = statusCode;
         Message = message;
@@ -16,5 +16,10 @@ public class ServiceException : Exception
     public static ServiceException NotFound(string message = "Id is not found")
     {
         return new ServiceException(HttpStatusCode.NotFound, message);
+    }
+
+    public static ServiceException Unauthorized(string message = "Unauthorized")
+    {
+        return new ServiceException(HttpStatusCode.Unauthorized, message);
     }
 }

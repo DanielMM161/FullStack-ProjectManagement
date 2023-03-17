@@ -1,6 +1,5 @@
 namespace backend.src.Controllers;
 
-using System.Security.Claims;
 using backend.src.DTOs.Project;
 using backend.src.Services.ProjectService;
 using Microsoft.AspNetCore.Authorization;
@@ -24,7 +23,7 @@ public class ProjectController : BaseController<Project, ProjectReadDTO, Project
     [HttpGet("user")]
     public async Task<ActionResult<ICollection<ProjectReadDTO>?>> GetProjectsByUser([FromQuery] int page = 1, [FromQuery]  int pageSize = 20)
     {        
-        return Ok(await _service.GetProjectsByUserAsync(GetUserIdFromToken(), page, pageSize));
+        return Ok(await _service.GetProjectsByUserAsync(page, pageSize));
     }
 
     [HttpPatch("{projectId:int}/add-user")]
@@ -37,12 +36,5 @@ public class ProjectController : BaseController<Project, ProjectReadDTO, Project
     public async Task<bool> RemoveUser(int projectId, ProjectUserDTO request)
     {
         return await _service.RemoveUserAsync(projectId, request.UsersId);
-    }
-
-    private int GetUserIdFromToken()
-    {
-        // Get User Id From JWT Token
-        var claim = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
-        return Convert.ToInt32(claim != null ? claim.Value : "-1");
     }
 }

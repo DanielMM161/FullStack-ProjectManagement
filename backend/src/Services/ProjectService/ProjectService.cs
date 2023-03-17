@@ -10,21 +10,25 @@ using backend.src.Repositories.UserRepo;
 using backend.src.Services.BaseService;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using backend.src.Helpers;
 
 public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreateDTO, ProjectUpdateDTO>, IProjectService
 {
     private readonly IAuthorizationService _authService;
-    private readonly ClaimsPrincipal _user;
+    private readonly IServiceUserFromToken _userService;
     private readonly IProjectRepo _repo;
     private readonly IUserRepo _userRepo;
-    //private readonly HttpContext _context;
 
-    public ProjectService(IMapper mapper, IProjectRepo repo, IUserRepo userRepo, IAuthorizationService authService, ClaimsPrincipal user) : base(mapper, repo)
+    public ProjectService(IMapper mapper, 
+                            IProjectRepo repo,
+                            IUserRepo userRepo, 
+                            IAuthorizationService authService, 
+                            IServiceUserFromToken userService) : base(mapper, repo)
     {
         _repo = repo;
         _userRepo = userRepo;
         _authService = authService;
-        _user = user;
+        _userService = userService;
     }
 
     public override async Task<ProjectReadDTO> CreateOneAsync(ProjectCreateDTO request)
@@ -48,9 +52,9 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
         return item;
     }
 
-    public async Task<ICollection<ProjectReadDTO>> GetProjectsByUserAsync(int userId, int page, int pageSize)
+    public async Task<ICollection<ProjectReadDTO>> GetProjectsByUserAsync(int page, int pageSize)
     {
-        var projectResult = await _repo.GetProjectsByUserAsync(userId, page, pageSize);
+        var projectResult = await _repo.GetProjectsByUserAsync(_userService.GetUserId(), page, pageSize);
         return _mapper.Map<ICollection<Project>, ICollection<ProjectReadDTO>>(projectResult);        
     }
 
@@ -64,13 +68,14 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
         var project = await _repo.GetByIdAsync(projectId);
         if (project is null)
         {
-            return false;
+            throw ServiceException.NotFound();
         }
 
-        var authorization = await _authService.AuthorizeAsync(_user, project, "Belong");
+        
+        var authorization = await _authService.AuthorizeAsync(_userService.GetClaim(), project, "Belong");
         if (!authorization.Succeeded)
         {
-            return false;
+            throw ServiceException.Unauthorized("You must belong to the Project");
         }
         
         foreach (var id in usersId)
@@ -90,13 +95,13 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
         var project = await _repo.GetByIdAsync(projectId);
         if (project is null)
         {
-            return false;
+            throw ServiceException.NotFound();
         }
 
-        var authorization = await _authService.AuthorizeAsync(_user, project, "Belong");
+        var authorization = await _authService.AuthorizeAsync(_userService.GetClaim(), project, "Belong");
         if (!authorization.Succeeded)
         {
-            return false;
+            throw ServiceException.Unauthorized("You must belong to the Project");
         }
         
         foreach (var id in usersId)

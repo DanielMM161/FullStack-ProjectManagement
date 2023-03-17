@@ -21,6 +21,8 @@ using backend.src.Repositories.SubTaskRepo;
 using backend.src.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using backend.src.Middleware;
+using backend.src.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -75,9 +77,13 @@ builder.Services.AddAuthorization(option =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddTransient<ErrorHandleMiddleware>();
 builder.Services.AddTransient<ClaimsPrincipal>(s =>
     s.GetService<IHttpContextAccessor>().HttpContext.User);
+
 builder.Services.AddSingleton<IAuthorizationHandler, IsUserBelongProjectHandler>();
+
+builder.Services.AddScoped<IServiceUserFromToken, ServiceUserFromToken>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepo, UserRepo>().AddScoped<IUserService, UserService>();
@@ -113,6 +119,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ErrorHandleMiddleware>();
 
 app.MapControllers();
 
