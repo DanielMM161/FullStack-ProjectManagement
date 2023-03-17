@@ -1,6 +1,5 @@
 namespace backend.src.Services.TokenService.cs;
 
-using Microsoft.AspNetCore.Identity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using backend.src.Models;
@@ -10,13 +9,11 @@ using backend.src.DTOs.Auth;
 
 public class TokenService : ITokenService
 {
-    private readonly IConfiguration _config;
-    private readonly UserManager<User> _userManager;
+    private readonly IConfiguration _config;    
 
-    public TokenService(IConfiguration config, UserManager<User> userManager)
+    public TokenService(IConfiguration config)
     {
-        _config = config;
-        _userManager = userManager;
+        _config = config;        
     }
 
     public async Task<AuthReadDTO> GenerateTokenAsync(User user)

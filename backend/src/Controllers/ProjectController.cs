@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using backend.src.Models;
 
-//[Authorize]
+[Authorize]
 public class ProjectController : BaseController<Project, ProjectReadDTO, ProjectCreateDTO, ProjectUpdateDTO>
 {
     private readonly IProjectService _service;    
@@ -19,10 +19,10 @@ public class ProjectController : BaseController<Project, ProjectReadDTO, Project
         _logger = logger;
     }
 
-    [HttpGet("user/{userId:int}")]
-    public async Task<ActionResult<ICollection<ProjectReadDTO>?>> GetProjectsByUser(int userId, [FromQuery] int page = 1, [FromQuery]  int pageSize = 20)
+    [HttpGet("user")]
+    public async Task<ActionResult<ICollection<ProjectReadDTO>?>> GetProjectsByUser([FromQuery] int page = 1, [FromQuery]  int pageSize = 20)
     {        
-        return Ok(await _service.GetProjectsByUserAsync(userId, page, pageSize));
+        return Ok(await _service.GetProjectsByUserAsync(GetUserIdFromToken(), page, pageSize));
     }
 
     [HttpPatch("{projectId:int}/add-user")]

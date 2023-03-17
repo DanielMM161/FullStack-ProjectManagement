@@ -13,11 +13,12 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
 {
     private readonly IProjectRepo _repo;
     private readonly IUserRepo _userRepo;
+    //private readonly HttpContext _context;
 
     public ProjectService(IMapper mapper, IProjectRepo repo, IUserRepo userRepo) : base(mapper, repo)
     {
         _repo = repo;
-        _userRepo = userRepo;
+        _userRepo = userRepo;        
     }
 
     public override async Task<ProjectReadDTO> CreateOneAsync(ProjectCreateDTO request)
