@@ -42,7 +42,7 @@ public class BaseRepo<T> : IBaseRepo<T>
         return await query.ToArrayAsync();
     }
 
-    public async Task<T?> GetByIdAsync(int id)
+    public virtual async Task<T?> GetByIdAsync(int id)
     {        
         return await _context.Set<T>().FindAsync(id);
     }

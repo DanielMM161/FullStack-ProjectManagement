@@ -1,6 +1,5 @@
 namespace backend.src.Services.ListService;
 
-using System.Security.Claims;
 using AutoMapper;
 using backend.src.DTOs.List;
 using backend.src.Helpers;

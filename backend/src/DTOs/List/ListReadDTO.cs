@@ -7,7 +7,7 @@ public class ListReadDTO : BaseDTO<List>
 {
     public int Id { get; set; }
     public string Title { get; set; } = null!;
-    public ICollection<TaskReadDTO>? Tasks { get; set; }
+    public ICollection<ListTaskReadDTO>? Tasks { get; set; }
 
     public override void UpdateModel(List model)
     {

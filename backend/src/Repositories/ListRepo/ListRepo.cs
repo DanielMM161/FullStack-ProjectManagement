@@ -14,7 +14,8 @@ public class ListRepo : BaseRepo<List>, IListRepo
     {
         return await _context.Lists
             .AsNoTracking()
-            .Include(l => l.Tasks)
+            // No subtasks
+            .Include(l => l.Tasks.Where(t => t.ParentId == null))
             .Where(list => list.ProjectId == projectId)
             .ToListAsync();        
     }

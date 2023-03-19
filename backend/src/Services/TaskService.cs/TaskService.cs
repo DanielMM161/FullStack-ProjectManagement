@@ -6,13 +6,16 @@ using backend.src.Helpers;
 using backend.src.Models;
 using backend.src.Repositories.ProjectRepo;
 using backend.src.Repositories.TaskRepo;
+using backend.src.Repositories.SubTaskRepo;
 using backend.src.Repositories.UserRepo;
 using backend.src.Repositories.ListRepo;
 using backend.src.Services.BaseService;
+using backend.src.DTOs.SubTask;
 
 public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, TaskUpdateDTO>, ITaskService
 {
     private readonly ITaskRepo _repo;
+    private readonly ISubTaskRepo _subTaskRepo;
     private readonly IUserRepo _userRepo;
     private readonly IProjectRepo _projectRepo;
     private readonly IListRepo _listRepo;
@@ -22,14 +25,35 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
                         IUserRepo userRepo, 
                         IClaimsPrincipalService claimsService,
                         IProjectRepo projectRepo,
-                        IListRepo listRepo) : base(mapper, repo)
+                        IListRepo listRepo,
+                        ISubTaskRepo subTaskRepo) : base(mapper, repo)
     {
         _repo = repo;
         _userRepo = userRepo;
         _claimsService = claimsService;
         _projectRepo = projectRepo;
         _listRepo = listRepo;
+        _subTaskRepo = subTaskRepo;
         
+    }
+
+    public virtual async Task<TaskReadDTO?> GetByIdAsync(int id)
+    {
+        var task = await _repo.GetByIdAsync(id);
+        
+        if (task is null)
+        {
+            throw ServiceException.NotFound();
+        }
+
+        var project = await _claimsService.IsProjectExist(task.ProjectId, _projectRepo);
+        await _claimsService.CheckUserBelongProject(project);
+
+        var taskRead = _mapper.Map<TaskList, TaskReadDTO>(task);
+        var subTasks = await _subTaskRepo.GetSubTaskByParent(id);
+        taskRead.SubTasks = subTasks.Select(st => _mapper.Map<TaskList, SubTaskReadDTO>(st)).ToArray();
+
+        return taskRead;
     }
 
     public override async Task<TaskReadDTO> CreateOneAsync(TaskCreateDTO request)

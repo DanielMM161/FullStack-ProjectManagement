@@ -28,6 +28,7 @@ public class AutoMapperProfile : Profile
 
         // Task
         CreateMap<TaskList, TaskReadDTO>();
+        CreateMap<TaskList, ListTaskReadDTO>();
         CreateMap<TaskCreateDTO, TaskList>();
         CreateMap<TaskUpdateDTO, TaskList>();
 

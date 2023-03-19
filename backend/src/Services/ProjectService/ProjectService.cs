@@ -26,6 +26,17 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
         _claimsService = claimsService;
     }
 
+    public override async Task<ProjectReadDTO?> GetByIdAsync(int id)
+    {
+        var project = await _repo.GetByIdAsync(id);
+        if (project is null)
+        {
+            throw ServiceException.NotFound();
+        }        
+        await _claimsService.CheckUserBelongProject(project);
+        return _mapper.Map<Project, ProjectReadDTO>(project);
+    }
+
     public override async Task<ProjectReadDTO> CreateOneAsync(ProjectCreateDTO request)
     {
         List<User> users = new List<User>();
