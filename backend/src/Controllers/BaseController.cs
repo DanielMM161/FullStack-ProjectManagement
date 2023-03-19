@@ -16,8 +16,7 @@ public abstract class BaseController<T, TReadDto, TCreateDto, TUpdateDto> : ApiC
     [HttpPost]
     public async Task<ActionResult<TReadDto?>> CreateOne(TCreateDto create)
     {
-        return await _service.CreateOneAsync(create);
-        //return CreatedAtAction("Created",result);
+        return await _service.CreateOneAsync(create);        
     }
 
     [HttpGet("{id:int}")]

@@ -239,6 +239,7 @@ namespace backend.Migrations
                     list_id = table.Column<int>(type: "integer", nullable: false),
                     priority = table.Column<TaskList.PriorityTask>(type: "priority_task", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
+                    project_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
                     update_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },

@@ -21,13 +21,8 @@ public class BaseRepo<T> : IBaseRepo<T>
         return create;
     }
 
-    public async Task<bool> DeleteOneAsync(int id)
+    public async Task<bool> DeleteOneAsync(T entity)
     {
-        var entity = await GetByIdAsync(id);
-        if(entity is null)
-        {
-            return false;
-        }
         _context.Set<T>().Remove(entity);
         await _context.SaveChangesAsync();
         return true;
@@ -52,7 +47,7 @@ public class BaseRepo<T> : IBaseRepo<T>
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public async Task<T> UpdateOneAsync(int id, T update)
+    public async Task<T> UpdateOneAsync(T update)
     {        
         _context.Update<T>(update);
         await _context.SaveChangesAsync();

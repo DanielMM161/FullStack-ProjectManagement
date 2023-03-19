@@ -83,7 +83,7 @@ builder.Services.AddTransient<ClaimsPrincipal>(s =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, IsUserBelongProjectHandler>();
 
-builder.Services.AddScoped<IServiceUserFromToken, ServiceUserFromToken>();
+builder.Services.AddScoped<IClaimsPrincipalService, ClaimsPrincipalService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserRepo, UserRepo>().AddScoped<IUserService, UserService>();

@@ -4,8 +4,8 @@ public interface IBaseRepo<T>
 {
     Task<IEnumerable<T>> GetAllAsync(QueryOptions options);
     Task<T?> GetByIdAsync(int id);
-    Task<T> UpdateOneAsync(int id, T update);
-    Task<bool> DeleteOneAsync(int id);
+    Task<T> UpdateOneAsync(T update);
+    Task<bool> DeleteOneAsync(T entity);
     Task<T?> CreateOneAsync (T create);
 }
 

@@ -13,7 +13,7 @@ using backend.src.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230317150612_firstMigration")]
+    [Migration("20230318102930_firstMigration")]
     partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -141,6 +141,10 @@ namespace backend.Migrations
                     b.Property<TaskList.PriorityTask>("Priority")
                         .HasColumnType("priority_task")
                         .HasColumnName("priority");
+
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("project_id");
 
                     b.Property<string>("Title")
                         .IsRequired()

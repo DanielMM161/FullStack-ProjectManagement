@@ -140,6 +140,10 @@ namespace backend.Migrations
                         .HasColumnType("priority_task")
                         .HasColumnName("priority");
 
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer")
+                        .HasColumnName("project_id");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(60)

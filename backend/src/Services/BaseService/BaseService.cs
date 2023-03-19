@@ -23,7 +23,7 @@ public class BaseService<T, TReadDto, TCreateDto, TUpdateDto>
     }
 
     public virtual async Task<TReadDto> CreateOneAsync(TCreateDto create) 
-    {
+    {                
         var entity = _mapper.Map<TCreateDto, T>(create);
         var result =  await _repo.CreateOneAsync(entity);
         if(result is null)
@@ -33,9 +33,14 @@ public class BaseService<T, TReadDto, TCreateDto, TUpdateDto>
         return _mapper.Map<T, TReadDto>(result);
     }
 
-    public async Task<bool> DeleteOneAsync(int id)
+    public virtual async Task<bool> DeleteOneAsync(int id)
     {
-        return await _repo.DeleteOneAsync(id);
+        var entity = await _repo.GetByIdAsync(id);
+        if(entity is null)
+        {
+            throw ServiceException.NotFound();
+        }    
+        return await _repo.DeleteOneAsync(entity);
     }
 
     public async Task<IEnumerable<TReadDto>> GetAllAsync(QueryOptions options)
@@ -44,7 +49,7 @@ public class BaseService<T, TReadDto, TCreateDto, TUpdateDto>
         return _mapper.Map<IEnumerable<T>, IEnumerable<TReadDto>>(data);
     }
 
-    public async Task<TReadDto?> GetByIdAsync(int id)
+    public virtual async Task<TReadDto?> GetByIdAsync(int id)
     {
         var entity = await _repo.GetByIdAsync(id);
         if (entity is null)
@@ -61,7 +66,7 @@ public class BaseService<T, TReadDto, TCreateDto, TUpdateDto>
         {
             throw ServiceException.NotFound();
         }        
-        var result = await _repo.UpdateOneAsync(id, _mapper.Map<TUpdateDto, T>(update, entity));
+        var result = await _repo.UpdateOneAsync(_mapper.Map<TUpdateDto, T>(update, entity));
         return _mapper.Map<T, TReadDto>(result);
     }
 }

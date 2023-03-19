@@ -22,4 +22,9 @@ public class ServiceException : Exception
     {
         return new ServiceException(HttpStatusCode.Unauthorized, message);
     }
+
+    public static ServiceException Forbidden(string message = "That action is Forbidden")
+    {
+        return new ServiceException(HttpStatusCode.Forbidden, message);
+    }
 }

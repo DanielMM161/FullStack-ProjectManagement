@@ -3,9 +3,10 @@ namespace backend.src.Controllers;
 using backend.src.DTOs.List;
 using backend.src.Models;
 using backend.src.Services.ListService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-//[Authorize]
+[Authorize]
 public class ListController : BaseController<List, ListReadDTO, ListCreateDTO, ListUpdateDTO>
 {
 
