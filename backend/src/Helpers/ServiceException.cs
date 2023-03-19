@@ -27,4 +27,9 @@ public class ServiceException : Exception
     {
         return new ServiceException(HttpStatusCode.Forbidden, message);
     }
+
+    public static ServiceException BadRequest(string message = "Bad Request")
+    {
+        return new ServiceException(HttpStatusCode.BadRequest, message);
+    }
 }

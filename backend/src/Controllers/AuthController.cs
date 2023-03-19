@@ -16,11 +16,12 @@ public class AuthController : ApiControllerBase
     [HttpPost("login")]
     public async Task<IActionResult> Login(AuthLoginDTO request)
     {
-        var response = await _service.Login(request);
-        if (response is null)
-        {
-            return Unauthorized();
-        }
-        return Ok(response);
+        return Ok(await _service.Login(request));
+    }
+        
+    [HttpGet("profile")]
+    public async Task<IActionResult> Profile()
+    {
+        return Ok(await _service.Profile());
     }
 }

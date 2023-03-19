@@ -31,8 +31,7 @@ public class ClaimsPrincipalService : IClaimsPrincipalService
     {
         var project = await projectRepo.GetByIdAsync(projectId);
         if (project is null)
-        {
-            Console.WriteLine("project not succeded");
+        {            
             throw ServiceException.NotFound();
         }
 
@@ -43,8 +42,7 @@ public class ClaimsPrincipalService : IClaimsPrincipalService
     {
         var authorization = await _authService.AuthorizeAsync(User, project, "Belong");
         if (!authorization.Succeeded)
-        {
-            Console.WriteLine("CheckUserBelongProject not succeded");
+        {            
             throw ServiceException.Unauthorized("You must belong to the Project");
         }
     }
