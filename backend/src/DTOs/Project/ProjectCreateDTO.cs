@@ -12,12 +12,4 @@ public class ProjectCreateDTO : BaseDTO<Project>
     public string? Description { get; set; }
     [Required]
     public ICollection<int> UsersId { get; set; } = null!;
-    
-    public override void UpdateModel(Project model)
-    {
-        Console.WriteLine($"UpdateModel --- {Name}");
-        model.Name = Name;
-        model.Description = Description;
-        Console.WriteLine($"UpdateModel --- {model.Name}");
-    }
 }

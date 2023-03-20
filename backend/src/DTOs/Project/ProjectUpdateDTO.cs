@@ -5,8 +5,7 @@ using backend.src.Models;
 
 public class ProjectUpdateDTO : BaseDTO<Project>
 {
-    public override void UpdateModel(Project model)
-    {
-        throw new NotImplementedException();
-    }
+    public string? Name { get; set; } = null!;
+    public string? Description { get; set; }    
+    public ICollection<int>? UsersId { get; set; } = null!;
 }

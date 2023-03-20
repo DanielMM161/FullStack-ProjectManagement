@@ -8,9 +8,4 @@ public class ListUpdateDTO : BaseDTO<List>
 {
     [Required]
     public string Title { get; set; } = null!;
-
-    public override void UpdateModel(List model)
-    {
-        throw new NotImplementedException();
-    }
 }

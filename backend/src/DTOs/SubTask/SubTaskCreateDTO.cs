@@ -9,9 +9,4 @@ public class SubTaskCreateDTO : BaseDTO<TaskList>
     public string Title { get; set; } = null!;
     [Required]
     public int CreatedById { get; set; }
-
-    public override void UpdateModel(TaskList model)
-    {
-        throw new NotImplementedException();
-    }
 }

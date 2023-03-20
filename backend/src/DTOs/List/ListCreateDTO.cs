@@ -9,9 +9,4 @@ public class ListCreateDTO : BaseDTO<List>
     public string Title { get; set; } = null!;
     [Required]
     public int ProjectId { get; set; }
-
-    public override void UpdateModel(List model)
-    {
-        throw new NotImplementedException();
-    }
 }

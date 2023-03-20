@@ -66,8 +66,17 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
 
     public override async Task<ProjectReadDTO> UpdateOneAsync(int id, ProjectUpdateDTO update)
     {
+        Console.WriteLine($"{update.UsersId == null}");
         var project = await _claimsService.IsProjectExist(id, _repo);
         await _claimsService.CheckUserBelongProject(project);
+        if (update.UsersId is not null && update.UsersId.Count() > 0) {
+            project.Users = new List<User>();            
+            foreach(var userId in update.UsersId)
+            {
+                var user = await _userRepo.GetById(userId);
+                if(user is not null) project.Users.Add(user);
+            }
+        }
         
         return await base.UpdateOneAsync(id, update);
     }
@@ -75,8 +84,7 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
     public async Task<bool> AddUserAsync(int projectId, ICollection<int> usersId)
     {
         var project = await _claimsService.IsProjectExist(projectId, _repo);
-        await _claimsService.CheckUserBelongProject(project);
-        
+        await _claimsService.CheckUserBelongProject(project);        
         foreach (var id in usersId)
         {
             var user = await _userRepo.GetById(id);

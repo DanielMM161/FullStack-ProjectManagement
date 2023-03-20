@@ -14,9 +14,4 @@ public class TaskCreateDTO : BaseDTO<TaskList>
     public int CreatedById { get; set; }
     [JsonIgnore]
     public int ProjectId { get; set; }
-
-    public override void UpdateModel(TaskList model)
-    {
-        throw new NotImplementedException();
-    }
 }

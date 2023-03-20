@@ -8,9 +8,4 @@ public class TaskUpdateDTO : BaseDTO<TaskList>
     public string? Description { get; set; }
     public TaskList.PriorityTask? Priority { get; set; }
     public DateTime? DueDate { get; set; }
-
-    public override void UpdateModel(TaskList model)
-    {
-        throw new NotImplementedException();
-    }
 }
