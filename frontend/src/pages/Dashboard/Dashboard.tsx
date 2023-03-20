@@ -5,15 +5,15 @@ import { Button, Dialog } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import CardProject from '../../components/CardProject/CardProject';
 import CreateProject from '../../components/Forms/CreateProject';
-import { IProjectRequest } from '../../services/request/project.request';
+import { CreateProjectRequest } from '../../services/request/project.request';
 import Transition from '../../transitions/transition';
-import { createProject, deleteProject, getProjectsByUser, updateProject } from '../../services/project.service';
+import { createProject, deleteProject, getProjects, updateProject } from '../../services/project.service';
 import { removeProject } from '../../redux/slice/project.slice';
 
 import UpdateProject from '../../components/Forms/UpdateProject';
 import { Project } from '../../models/project.model';
-import './style.css';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
+import './style.css';
 
 enum FORMS {
   none,
@@ -29,10 +29,10 @@ interface IStateForms {
 
 function Dashboard() {
   const dispatch = useAppDispatch();
-  const userState = useAppSelector((state) => state.user);
-  const { user } = userState;
-  const projectsState = useAppSelector((state) => state.projcts);
-  const { projects } = projectsState;
+  const profileState = useAppSelector((state) => state.profile);
+  const { profile } = profileState;
+  const projectState = useAppSelector((state) => state.projects);
+  const { projects } = projectState;
   const [showDialog, setShowDialog] = useState(false);
   const [typeForm, setAllTypeForm] = useState<IStateForms>({
     title: '',
@@ -40,14 +40,15 @@ function Dashboard() {
   });
   const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
 
-  const fetchUserProjects = useCallback(() => {
-    dispatch(getProjectsByUser(user.id));
-  }, [dispatch, user.id]);
+  const getUserProjects = useCallback(() => {
+    dispatch(getProjects());
+  }, [dispatch]);
 
   // TODO: Delete this part
   useEffect(() => {
-    fetchUserProjects();
-  }, [fetchUserProjects]);
+    getUserProjects();
+    console.log("project state", projects)
+  }, [getUserProjects]);
 
   function showCreateProject() {
     setAllTypeForm({
@@ -75,9 +76,9 @@ function Dashboard() {
     setShowDialog(!showDialog);
   }
 
-  function handleCreateProject(request: IProjectRequest) {
+  function handleCreateProject(request: CreateProjectRequest) {
     setShowDialog(!showDialog);
-    const newProject: IProjectRequest = request;
+    const newProject: CreateProjectRequest = request;
     dispatch(createProject(newProject));
   }
 
@@ -91,11 +92,11 @@ function Dashboard() {
   }
 
   function handleUpdateProject(project: Project) {
-    dispatch(updateProject(project));
+    //dispatch(updateProject(project));
     setShowDialog(!showDialog);
   }
 
-  return (
+  return (    
     <div className="dashboard">
       <Button
         variant="outlined"
@@ -105,9 +106,9 @@ function Dashboard() {
       >
         Create Project
       </Button>
-
+      
       {projects.length > 0 &&
-        projects.map((project) => (
+        projects.map((project) => (          
           <CardProject
             key={project.name}
             project={project}
@@ -129,7 +130,7 @@ function Dashboard() {
       >
         {showDialog && typeForm.form === FORMS.create ? (
           <CreateProject
-            dialogTitle={typeForm.title}
+            dialogTitle={typeForm.title}            
             acceptOnClick={(value) => handleCreateProject(value)}
             cancelClick={() => setShowDialog(!showDialog)}
           />

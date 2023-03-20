@@ -1,25 +1,23 @@
 import { useEffect, useState } from 'react';
 
 import { User } from '../models/user.model';
-import { fetchAllUsers } from '../services/user.service';
+import { getAllUsers } from '../services/user.service';
 
-import { useAppDispatch, useAppSelector } from './redux.hook';
+import { useAppDispatch } from './redux.hook';
 
 function useUsers() {
   const dispatch = useAppDispatch();
-  const userState = useAppSelector((state) => state.user);
-  const { user } = userState;
   const [allUsers, setAllUsers] = useState<User[]>([]);
 
   useEffect(() => {
     const fetchUsers = () => {
-      dispatch(fetchAllUsers()).then((response) => {
+      dispatch(getAllUsers()).then((response) => {
         const result = response.payload as User[];
-        setAllUsers(result.filter((item) => item.id !== user.id));
+        setAllUsers(result);
       });
     };
     fetchUsers();
-  }, [dispatch, user.id]);
+  }, [dispatch]);
 
   return { allUsers };
 }

@@ -17,14 +17,14 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import TransferList from '../TransferList/TransferList';
 import { User } from '../../models/user.model';
-import { IProjectRequest } from '../../services/request/project.request';
+import { CreateProjectRequest } from '../../services/request/project.request';
 import useUsers from '../../hooks/useUsers.hook';
 import { useAppSelector } from '../../hooks/redux.hook';
 import './style.css';
 
-interface ICreateProjectProps {
+interface CreateProjectProps {
   dialogTitle: string;
-  acceptOnClick: (values: IProjectRequest) => void;
+  acceptOnClick: (values: CreateProjectRequest) => void;
   cancelClick: () => void;
 }
 
@@ -33,19 +33,23 @@ interface FormValues {
   description: string;
 }
 
-function CreateProject({ dialogTitle, acceptOnClick, cancelClick }: ICreateProjectProps) {
-  const userState = useAppSelector((state) => state.user);
+function CreateProject({ dialogTitle, acceptOnClick, cancelClick }: CreateProjectProps) {
+  const profileState = useAppSelector((state) => state.profile);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-  const [usersIn, setUsersIn] = useState<User[]>([userState.user]);
+  const [usersIn, setUsersIn] = useState<User[]>([profileState.profile]);
   const { allUsers } = useUsers();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     if (usersIn.length > 0) {
-      acceptOnClick({ name: data.title, description: data.description, users: usersIn });
+      acceptOnClick({ 
+        name: data.title, 
+        description: data.description, 
+        usersId: usersIn.map(u => u.id) 
+      });
     }
   };
 

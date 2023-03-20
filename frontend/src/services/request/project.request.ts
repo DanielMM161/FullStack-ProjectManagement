@@ -1,8 +1,10 @@
-import { User } from '../../models/user.model';
 
-export interface IProjectRequest {
-  id?: number;
+export interface CreateProjectRequest {  
   name: string;
   description: string;
-  users: User[];
+  usersId: number[];
+}
+
+export interface UpdateProjectRequest extends CreateProjectRequest {
+  id: number;
 }

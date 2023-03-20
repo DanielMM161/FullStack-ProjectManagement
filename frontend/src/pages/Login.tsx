@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../hooks/redux.hook';
-import { getProfile, login } from '../services/user.service';
+import { getProfile, login } from '../services/auth.service';
 
 function Login() {
   const dispatch = useAppDispatch();

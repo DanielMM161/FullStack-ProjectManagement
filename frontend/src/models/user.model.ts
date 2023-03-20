@@ -1,5 +1,5 @@
 export interface SliceStateUser {
-  user: User;
+  users: User[];
 }
 
 export interface User {
@@ -20,11 +20,5 @@ export const emptyUser: User = {
 };
 
 export const initialUserState: SliceStateUser = {
-  user: {
-    id: -1,
-    firstName: '',
-    lastName: '',
-    avatar: '',
-    email: '',
-  },
+  users: [],
 };

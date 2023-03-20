@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
 
 import { useAppDispatch } from '../../hooks/redux.hook';
-import { login, register } from '../../services/user.service';
+import { login, register } from '../../services/auth.service';
 
 function Register() {
   const dispatch = useAppDispatch();

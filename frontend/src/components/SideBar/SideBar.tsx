@@ -4,8 +4,11 @@ import SettingsIcon from '@mui/icons-material/Settings';
 
 import ListButtonItem from '../ListButtonItem/ListButtonItem';
 import './style.css';
+import { useAppSelector } from '../../hooks/redux.hook';
 
 function SideBar() {
+  const profileState = useAppSelector((state) => state.profile);
+  const { profile } = profileState;
   const list = () => (
     <div className="list-container" role="presentation" onClick={() => {}}>
       <List>
@@ -27,7 +30,8 @@ function SideBar() {
         <div className="avatar-info">
           <div className="info-name">
             <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" sx={{ width: 36, height: 36 }} />
-            <h3>Avatar Name</h3>
+            <h3>{profile.firstName} {profile.lastName}</h3>
+            <h3>{profile.id}</h3>
           </div>
         </div>
       </div>

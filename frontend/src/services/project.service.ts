@@ -1,46 +1,59 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import BASE_URL from '../utils/constants';
-import { IProjectRequest } from './request/project.request';
+import { CreateProjectRequest, UpdateProjectRequest } from './request/project.request';
 
-const getProjectsByUser = createAsyncThunk('fetchProjectsByUser', async (userId: number) => {
-  const response = await axios.get(`/projects/${userId}`);
-
-  if (response.status === 200) {
-    return response.data;
-  }
-
-  return [];
-});
-
-const fetchProjects = createAsyncThunk('fetchAllProjects', async () => {
-  const response = await axios.get(`${BASE_URL}/projects`);
-
-  if (response.status === 200) {
-    return response.data;
-  }
-
-  return [];
-});
-
-const createProject = createAsyncThunk('createProject', async (request: IProjectRequest) => {
-  const response = await axios.post(`${BASE_URL}/createProject`, {
-    name: request.name,
-    description: request.description,
-    users: request.users,
+const getProjectId = createAsyncThunk('getProjectId', async (userId: number) => {
+  const token = JSON.parse(localStorage.getItem('token') ?? '');
+  const response = await axios.get(`${BASE_URL}/projects/${userId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
+  if (response.status === 200) {
+    return response.data;
+  }
+
+  return null;
+});
+
+const getProjects = createAsyncThunk('getUserProjects', async () => {
+  const token = JSON.parse(localStorage.getItem('token') ?? '');
+  const response = await axios.get(`${BASE_URL}/projects/user?page=1&pageSize=20`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 200) {    
+    return response.data;
+  }
+
+  return [];
+});
+
+const createProject = createAsyncThunk('createProject', async (request: CreateProjectRequest) => {
+  const token = JSON.parse(localStorage.getItem('token') ?? '');
+  const response = await axios.post(`${BASE_URL}/projects`, request, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
+
+  console.log("create project response", response)
   if (response.status === 200) {
     return response.data;
   }
   return null;
 });
 
-const updateProject = createAsyncThunk('updateProject', async (request: IProjectRequest) => {
-  const response = await axios.put(`/updateProject/${request.id}`, {
-    name: request.name,
-    description: request.description,
-    users: request.users,
+const updateProject = createAsyncThunk('updateProject', async (request: UpdateProjectRequest) => {
+  const token = JSON.parse(localStorage.getItem('token') ?? '');
+  const response = await axios.put(`${BASE_URL}/projects/${request.id}`, request, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
   });
 
   if (response.status === 200) {
@@ -50,7 +63,12 @@ const updateProject = createAsyncThunk('updateProject', async (request: IProject
 });
 
 const deleteProject = createAsyncThunk('deleteProject', async (id: number) => {
-  const response = await axios.delete(`/deleteProject/${id}`);
+  const token = JSON.parse(localStorage.getItem('token') ?? '');
+  const response = await axios.delete(`${BASE_URL}/projects/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    }
+  });
 
   if (response.status === 200) {
     return response.data;
@@ -59,4 +77,4 @@ const deleteProject = createAsyncThunk('deleteProject', async (id: number) => {
   return null;
 });
 
-export { createProject, updateProject, deleteProject, getProjectsByUser, fetchProjects };
+export { createProject, updateProject, deleteProject, getProjectId, getProjects };
