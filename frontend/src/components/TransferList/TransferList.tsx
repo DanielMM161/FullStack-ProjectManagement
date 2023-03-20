@@ -84,7 +84,7 @@ function TransferList({ allUsers, usersIn, onUsersIn }: ITransferListProp) {
     if (value !== '') {
       const lefResult = copyUserLeft.filter(
         (user) =>
-          user.name.toLowerCase().startsWith(value.toLowerCase()) &&
+          user.firstName.toLowerCase().startsWith(value.toLowerCase()) &&
           usersRight.findIndex((item) => item.id === user.id) === -1,
       );
 
@@ -142,7 +142,7 @@ function TransferList({ allUsers, usersIn, onUsersIn }: ITransferListProp) {
                 }}
               />
               <Avatar alt="Remy Sharp" src={value.avatar} sx={{ width: 24, height: 24, marginRight: 1 }} />
-              <ListItemText id={labelId} primary={`${value.name}`} />
+              <ListItemText id={labelId} primary={`${value.firstName}`} />
             </ListItem>
           );
         })}

@@ -49,7 +49,9 @@ function CardProject({ project, editProject, deleteProject, onClick }: ICardProj
 
         <div className="users-container">
           {users
-            .map((item) => <Avatar alt={item.name} src={item.avatar} sx={{ width: 24, height: 24 }} key={item.name} />)
+            .map((item) => (
+              <Avatar alt={item.firstName} src={item.avatar} sx={{ width: 24, height: 24 }} key={item.firstName} />
+            ))
             .slice(0, 4)}
         </div>
 
