@@ -9,8 +9,7 @@ export const profileSlice = createSlice({
   reducers: {},
   extraReducers: (build) => {
     /** fulfilled */
-    build.addCase(getProfile.fulfilled, (state, action) => {
-      console.log(action.payload);
+    build.addCase(getProfile.fulfilled, (state, action) => {      
       state.profile = action.payload;
     });
     build.addCase(register.fulfilled, (state, action) => {

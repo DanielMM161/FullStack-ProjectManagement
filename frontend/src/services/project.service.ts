@@ -39,8 +39,7 @@ const createProject = createAsyncThunk('createProject', async (request: CreatePr
       Authorization: `Bearer ${token}`,
     }
   });
-
-  console.log("create project response", response)
+  
   if (response.status === 200) {
     return response.data;
   }
@@ -54,6 +53,8 @@ const updateProject = createAsyncThunk('updateProject', async (request: UpdatePr
       Authorization: `Bearer ${token}`,
     }
   });
+
+  console.log("updateProject --> ", response)
 
   if (response.status === 200) {
     return response.data;

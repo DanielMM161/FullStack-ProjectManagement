@@ -43,11 +43,9 @@ function Dashboard() {
   const getUserProjects = useCallback(() => {
     dispatch(getProjects());
   }, [dispatch]);
-
-  // TODO: Delete this part
+  
   useEffect(() => {
-    getUserProjects();
-    console.log("project state", projects)
+    getUserProjects();    
   }, [getUserProjects]);
 
   function showCreateProject() {
@@ -92,7 +90,12 @@ function Dashboard() {
   }
 
   function handleUpdateProject(project: Project) {
-    //dispatch(updateProject(project));
+    dispatch(updateProject({
+      id: project.id,
+      name: project.name,
+      description: project.description,
+      usersId: project.users.map(u => u.id)
+    }));
     setShowDialog(!showDialog);
   }
 
