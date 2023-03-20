@@ -63,6 +63,21 @@ builder.Services
         };
     });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("react-policy", 
+        builder =>
+    {
+        builder.WithOrigins("http://localhost",
+            "http://localhost:5173",
+            "https://localhost:7230",
+            "http://localhost:90")
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .SetIsOriginAllowedToAllowWildcardSubdomains();
+    });
+});
+
 builder.Services.AddAuthorization(option =>
     {
     option.AddPolicy(
@@ -113,7 +128,10 @@ if (app.Environment.IsDevelopment())
     }
 }
 
+
 app.UseHttpsRedirection();
+
+app.UseCors("react-policy");
 
 // This has to be before app.UseAuthorization()
 app.UseAuthentication();
