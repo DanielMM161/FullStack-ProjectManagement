@@ -1,3 +1,7 @@
-const BASE_URL = 'https://localhost:7255/api/v1';
+import axios from "axios";
 
-export default BASE_URL;
+const instance = axios.create({
+    baseURL : 'https://localhost:7255/api/v1/',
+});
+
+export default instance;

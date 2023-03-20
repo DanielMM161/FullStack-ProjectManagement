@@ -1,11 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import BASE_URL from '../utils/constants';
+import instance from '../utils/constants';
 import { CreateProjectRequest, UpdateProjectRequest } from './request/project.request';
 
 const getProjectId = createAsyncThunk('getProjectId', async (userId: number) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await axios.get(`${BASE_URL}/projects/${userId}`, {
+  const response = await instance.get(`projects/${userId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -20,7 +19,7 @@ const getProjectId = createAsyncThunk('getProjectId', async (userId: number) => 
 
 const getProjects = createAsyncThunk('getUserProjects', async () => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await axios.get(`${BASE_URL}/projects/user?page=1&pageSize=20`, {
+  const response = await instance.get(`projects/user?page=1&pageSize=20`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -35,7 +34,7 @@ const getProjects = createAsyncThunk('getUserProjects', async () => {
 
 const createProject = createAsyncThunk('createProject', async (request: CreateProjectRequest) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await axios.post(`${BASE_URL}/projects`, request, {
+  const response = await instance.post('projects', request, {
     headers: {
       Authorization: `Bearer ${token}`,
     }
@@ -50,7 +49,7 @@ const createProject = createAsyncThunk('createProject', async (request: CreatePr
 
 const updateProject = createAsyncThunk('updateProject', async (request: UpdateProjectRequest) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await axios.put(`${BASE_URL}/projects/${request.id}`, request, {
+  const response = await instance.put(`projects/${request.id}`, request, {
     headers: {
       Authorization: `Bearer ${token}`,
     }
@@ -64,7 +63,7 @@ const updateProject = createAsyncThunk('updateProject', async (request: UpdatePr
 
 const deleteProject = createAsyncThunk('deleteProject', async (id: number) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await axios.delete(`${BASE_URL}/projects/${id}`, {
+  const response = await instance.delete(`projects/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     }

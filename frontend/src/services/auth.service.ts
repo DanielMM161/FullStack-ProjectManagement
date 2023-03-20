@@ -1,14 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-
-import axios from 'axios';
-
 import { emptyUser } from '../models/user.model';
+import instance from '../utils/constants';
 import { LoginRequest, RegisterRequest } from './request/user.request';
-import BASE_URL from '../utils/constants';
 
 const getProfile = createAsyncThunk('profile', async () => {
-    const token = JSON.parse(localStorage.getItem('token') ?? '');
-    const response = await axios.get(`${BASE_URL}/auths/profile`, {
+    const token = JSON.parse(localStorage.getItem('token') ?? '');    
+    const response = await instance.post('auths/profile',  {
         headers: {
         Authorization: `Bearer ${token}`,
         },
@@ -22,10 +19,7 @@ const getProfile = createAsyncThunk('profile', async () => {
 });
   
 const login = createAsyncThunk('login', async (payload: LoginRequest) => {
-    const response = await axios.post(`${BASE_URL}/auths/login`, {
-        email: payload.email,
-        password: payload.password,
-    });
+    const response = await instance.post('auths/login', payload)    
 
     if (response.status === 200) {
         localStorage.setItem('token', JSON.stringify(response.data.token));
@@ -36,7 +30,7 @@ const login = createAsyncThunk('login', async (payload: LoginRequest) => {
 });
   
 const register = createAsyncThunk('register', async (payload: RegisterRequest) => {
-    const response = await axios.post(`${BASE_URL}/users`, {
+    const response = await instance.post('users', {
       firstName: payload.firstName,
       lastName: payload.lastName,
       email: payload.email,
