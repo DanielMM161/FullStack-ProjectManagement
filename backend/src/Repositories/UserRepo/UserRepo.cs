@@ -6,6 +6,7 @@ using backend.src.Models;
 using Microsoft.AspNetCore.Identity;
 using backend.src.Db;
 using backend.src.Services.TokenService.cs;
+using Microsoft.EntityFrameworkCore;
 
 public class UserRepo : IUserRepo
 {
@@ -22,10 +23,10 @@ public class UserRepo : IUserRepo
 
     public async Task<User?> GetById(int id)
     {
-        return await _context.Set<User>().FindAsync(id);
+        return await _userManager.FindByIdAsync(id.ToString());
     }
 
-    public async Task<UserReadDTO?> Create(UserCreateDTO request)
+    public async Task<User?> Create(UserCreateDTO request)
     {
         var user = new User
         {
@@ -33,18 +34,17 @@ public class UserRepo : IUserRepo
             LastName = request.LastName,
             UserName = request.Email,
             Email = request.Email,
-        };
+        };        
         var result = await _userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded)
         {
             return null;
         }
-        return new UserReadDTO
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-        };
+        return user;
+    }
+
+    public async Task<ICollection<User>> GetAll()
+    {
+        return await _context.Set<User>().AsNoTracking().ToListAsync();
     }
 }

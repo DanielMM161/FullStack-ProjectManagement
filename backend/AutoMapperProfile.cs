@@ -19,6 +19,7 @@ public class AutoMapperProfile : Profile
 
         // Users
         CreateMap<User, UserReadDTO>();
+        CreateMap<UserCreateDTO, User>();
         CreateMap<UserReadDTO, User>();
 
         // List
