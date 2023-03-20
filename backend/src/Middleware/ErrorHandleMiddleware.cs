@@ -1,6 +1,7 @@
 namespace backend.src.Middleware;
 
 using backend.src.Helpers;
+using System.Data.Common;
 using System.Net;
 
 public class ErrorHandleMiddleware : IMiddleware
@@ -20,6 +21,12 @@ public class ErrorHandleMiddleware : IMiddleware
             var errorResponse = new ErrorResponse(e.StatusCode, e.Message);
             await context.Response.WriteAsJsonAsync(errorResponse);
         }
+        catch(DbException e)
+        {               
+            context.Response.StatusCode = e.ErrorCode;
+            var errorResponse = new ErrorResponse(HttpStatusCode.InternalServerError, e.Message);
+            await context.Response.WriteAsJsonAsync(errorResponse);
+        }
         catch(Exception e)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
@@ -27,6 +34,4 @@ public class ErrorHandleMiddleware : IMiddleware
             await context.Response.WriteAsJsonAsync(errorResponse);
         }
     }
-
-  
 }

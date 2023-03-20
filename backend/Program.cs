@@ -68,10 +68,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("react-policy", 
         builder =>
     {
-        builder.WithOrigins("http://localhost",
-            "http://localhost:5173",
-            "https://localhost:7230",
-            "http://localhost:90")
+        builder.WithOrigins("http://localhost:5173")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .SetIsOriginAllowedToAllowWildcardSubdomains();
@@ -114,6 +111,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("react-policy");
 
     using (var scope = app.Services.CreateScope())
     {
@@ -130,8 +128,6 @@ if (app.Environment.IsDevelopment())
 
 
 app.UseHttpsRedirection();
-
-app.UseCors("react-policy");
 
 // This has to be before app.UseAuthorization()
 app.UseAuthentication();

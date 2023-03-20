@@ -105,4 +105,15 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
         
         return await _repo.UpdateOneAsync(project) is not null ? true : false;
     }
+
+    public override async Task<bool> DeleteOneAsync(int id)
+    {
+        var project = await _repo.GetByIdAsync(id);
+        if(project is null)
+        {
+            throw ServiceException.NotFound();
+        }        
+        await _claimsService.CheckUserBelongProject(project); 
+        return await _repo.DeleteOneAsync(project);
+    }
 }

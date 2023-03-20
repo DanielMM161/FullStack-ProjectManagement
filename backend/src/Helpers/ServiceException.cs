@@ -4,13 +4,11 @@ using System.Net;
 
 public class ServiceException : Exception
 {
-    public HttpStatusCode StatusCode { get; private set; }
-    public string Message { get; set; } = null!;
-
+    public HttpStatusCode StatusCode { get; set; }
+    
     public ServiceException (HttpStatusCode statusCode, string message) : base(message)
     {
-        StatusCode = statusCode;
-        Message = message;
+        StatusCode = statusCode;        
     }
 
     public static ServiceException NotFound(string message = "Id is not found")
