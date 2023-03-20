@@ -126,7 +126,6 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-
 app.UseHttpsRedirection();
 
 // This has to be before app.UseAuthorization()

@@ -15,7 +15,7 @@ public class ProjectController : BaseController<Project, ProjectReadDTO, Project
 
     public ProjectController(ILogger<ProjectController> logger, IProjectService service, IAuthorizationService authService) : base(service)
     {
-        _service = service ?? throw new ArgumentNullException(nameof(service));       
+        _service = service;
         _logger = logger;
         _authService = authService;
     }

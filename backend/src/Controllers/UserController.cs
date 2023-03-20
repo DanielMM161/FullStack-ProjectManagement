@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 [Authorize]
 public class UserController : ApiControllerBase
 {
-     private readonly IUserService _service;
+    private readonly IUserService _service;
 
     public UserController(IUserService service) => _service = service;
 

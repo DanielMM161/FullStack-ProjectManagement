@@ -18,8 +18,8 @@ public class TaskController : BaseController<TaskList, TaskReadDTO, TaskCreateDT
 
     public TaskController(ILogger<TaskController> logger, ITaskService service, ISubTaskService subTaskService) : base(service)
     {
-        _service = service ?? throw new ArgumentNullException(nameof(service));
-        _subTaskService = subTaskService ?? throw new ArgumentNullException(nameof(service));
+        _service = service;
+        _subTaskService = subTaskService;
         _logger = logger;
     }
 

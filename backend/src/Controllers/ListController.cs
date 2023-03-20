@@ -15,7 +15,7 @@ public class ListController : BaseController<List, ListReadDTO, ListCreateDTO, L
 
     public ListController(ILogger<ProjectController> logger, IListService service) : base(service)
     {
-        _service = service ?? throw new ArgumentNullException(nameof(service));
+        _service = service;
         _logger = logger;
     }
 
