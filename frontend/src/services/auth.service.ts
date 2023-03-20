@@ -5,13 +5,14 @@ import { LoginRequest, RegisterRequest } from './request/user.request';
 
 const getProfile = createAsyncThunk('profile', async () => {
     const token = JSON.parse(localStorage.getItem('token') ?? '');    
-    const response = await instance.post('auths/profile',  {
+    const response = await instance.get('auths/profile',  {
         headers: {
         Authorization: `Bearer ${token}`,
         },
     });
 
     if (response.status === 200) {
+        localStorage.setItem('profile', JSON.stringify(response.data));
         return response.data;
     }
 
@@ -22,7 +23,7 @@ const login = createAsyncThunk('login', async (payload: LoginRequest) => {
     const response = await instance.post('auths/login', payload)    
 
     if (response.status === 200) {
-        localStorage.setItem('token', JSON.stringify(response.data.token));
+        localStorage.setItem('token', JSON.stringify(response.data['token']));
         return response.data;
     }
 
