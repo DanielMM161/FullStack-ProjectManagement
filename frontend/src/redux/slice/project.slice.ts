@@ -13,10 +13,10 @@ export const projectSlice = createSlice({
   },
   extraReducers: (build) => {
     /** fulfilled */
-    build.addCase(getProjects.fulfilled, (state, action) => {      
-      state.projects = action.payload;      
+    build.addCase(getProjects.fulfilled, (state, action) => {
+      state.projects = action.payload;
     });
-    build.addCase(createProject.fulfilled, (state, action) => {      
+    build.addCase(createProject.fulfilled, (state, action) => {
       const { payload } = action;
       if (payload !== null) {
         state.projects.push(payload);

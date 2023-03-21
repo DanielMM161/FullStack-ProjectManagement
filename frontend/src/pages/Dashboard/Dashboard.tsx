@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { Button, Dialog } from '@mui/material';
 
+import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import CardProject from '../../components/CardProject/CardProject';
 import CreateProject from '../../components/Forms/CreateProject';
@@ -14,7 +15,6 @@ import UpdateProject from '../../components/Forms/UpdateProject';
 import { Project } from '../../models/project.model';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import './style.css';
-import { useNavigate } from 'react-router';
 import Layout from '../../components/Layout';
 
 enum FORMS {
@@ -46,9 +46,9 @@ function Dashboard() {
   const getUserProjects = useCallback(() => {
     dispatch(getProjects());
   }, [dispatch]);
-  
+
   useEffect(() => {
-    getUserProjects();    
+    getUserProjects();
   }, [getUserProjects]);
 
   function showCreateProject() {
@@ -93,42 +93,41 @@ function Dashboard() {
   }
 
   function handleUpdateProject(project: Project) {
-    dispatch(updateProject({
-      id: project.id,
-      name: project.name,
-      description: project.description,
-      usersId: project.users.map(u => u.id)
-    }));
+    dispatch(
+      updateProject({
+        id: project.id,
+        name: project.name,
+        description: project.description,
+        usersId: project.users.map((u) => u.id),
+      }),
+    );
     setShowDialog(!showDialog);
   }
 
-  function navigateProject(projectId: number) {
-    navigate(`project/${projectId}`);
-  }
-
-  return (    
+  return (
     <Layout>
       <Button
-      variant="outlined"
-      onClick={() => {
-        showCreateProject();
-      }}
+        variant="outlined"
+        onClick={() => {
+          showCreateProject();
+        }}
       >
         Create Project
       </Button>
-      
+
       {projects.length > 0 &&
-        projects.map((project) => (          
+        projects.map((project) => (
           <CardProject
             key={project.name}
             project={project}
-            onClick={(projectId) => {navigate(`project/${projectId}`)}}
+            onClick={(projectId) => {
+              navigate(`project/${projectId}`);
+            }}
             editProject={() => showEditProject(project)}
             deleteProject={() => showDeleteProject(project)}
           />
         ))}
 
-      {/* DIALOG CREATE */}
       <Dialog
         open={showDialog}
         TransitionComponent={Transition}
@@ -140,7 +139,7 @@ function Dashboard() {
       >
         {showDialog && typeForm.form === FORMS.create ? (
           <CreateProject
-            dialogTitle={typeForm.title}            
+            dialogTitle={typeForm.title}
             acceptOnClick={(value) => handleCreateProject(value)}
             cancelClick={() => setShowDialog(!showDialog)}
           />

@@ -1,11 +1,9 @@
-import { Avatar, Card, Typography, CardContent, Menu, MenuItem, IconButton } from '@mui/material';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
-
+import { Avatar, Card, Typography, CardContent, MenuItem } from '@mui/material';
+import CardActions from '@mui/material/CardActions';
 import { useState } from 'react';
 import { Project } from '../../models/project.model';
-
+import MenuOptions from '../MenuOptions';
 import './style.css';
-import CardActions from '@mui/material/CardActions';
 
 interface ICardProjectProps {
   project: Project;
@@ -19,7 +17,7 @@ function CardProject({ project, editProject, deleteProject, onClick }: ICardProj
   const { id, name, description, users } = project;
 
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {    
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -56,32 +54,15 @@ function CardProject({ project, editProject, deleteProject, onClick }: ICardProj
             .slice(0, 4)}
         </div>
       </CardContent>
-      <CardActions sx={{ justifyContent: 'end'}}>
-          <Typography variant="overline" display="block" gutterBottom>
-            {/* {`${todoTasks?.length ?? 0} Total Tasks`} */}
-          </Typography>
+      <CardActions sx={{ justifyContent: 'end' }}>
+        <Typography variant="overline" display="block" gutterBottom>
+          {/* {`${todoTasks?.length ?? 0} Total Tasks`} */}
+        </Typography>
 
-          <IconButton
-            aria-label="options"
-            aria-controls={open ? 'basic-menu' : undefined}
-            aria-haspopup="true"
-            aria-expanded={open ? 'true' : undefined}
-            onClick={handleClick}
-          >
-            <MoreHorizIcon />
-          </IconButton>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button',
-            }}
-          >
-            <MenuItem onClick={handleEdit}>Edit</MenuItem>
-            <MenuItem onClick={handleDelete}>Delete</MenuItem>
-          </Menu>        
+        <MenuOptions>
+          <MenuItem onClick={handleEdit}>Edit</MenuItem>
+          <MenuItem onClick={handleDelete}>Delete</MenuItem>
+        </MenuOptions>
       </CardActions>
     </Card>
   );

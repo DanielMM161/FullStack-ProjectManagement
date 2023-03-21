@@ -1,5 +1,4 @@
 /* eslint-disable import/no-cycle */
-import { User } from './user.model';
 
 interface TaskInitialState {
   tasks: Task[];

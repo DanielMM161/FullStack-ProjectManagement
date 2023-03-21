@@ -1,54 +1,71 @@
-import React, { useState } from 'react';
-import { Button, TextField, FormControl, InputLabel, Input, FormHelperText, styled } from '@mui/material';
+import { useState } from 'react';
+import { Button, TextField, FormControl, styled, IconButton } from '@mui/material';
 import { Add } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 
-const Container = styled('form')({
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',    
+const Container = styled('div')({
+  display: 'flex',
+  flexDirection: 'column',
 });
 
+const ButtonsContainer = styled('div')({
+  marginTop: 5,
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: 5,
+});
 
-function ButtonInput() {
-    const [showForm, setShowForm] = useState(false);
-    const [inputValue, setInputValue] = useState('');
-  
-    const handleButtonClick = () => {
-      setShowForm(true);
-    };
-  
-    const handleFormSubmit = () => {
-      //event.preventDefault();
-      console.log(inputValue);
-      setInputValue('');
-      setShowForm(false);
-    };
-  
-    const handleFormInputChange = () => {
-     // setInputValue(event.target.value);
-    };
-
-    return (
-        <>
-            {showForm ? null : (
-                <Button variant="contained" onClick={handleButtonClick}>
-                    <Add />
-                    Add another list
-                </Button>
-            )}
-            {showForm && (
-                <form onSubmit={handleFormSubmit} >
-                    <FormControl>
-                        <TextField id="outlined-basic" label="List Name" variant="outlined" />                                            
-                    </FormControl>
-                    <Button type="submit" variant="contained">
-                        Add
-                    </Button>
-                </form>
-            )}
-        </>
-      );
+interface ButtonInputProps {
+  buttonText: string;
+  addClick: (inputValue: string) => void;
 }
 
-export default ButtonInput
+function ButtonInput({ buttonText, addClick }: ButtonInputProps) {
+  const [showForm, setShowForm] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+
+  const handleButtonClick = () => {
+    setShowForm(true);
+  };
+
+  const handleAddClick = () => {
+    if (inputValue !== '') {
+      setShowForm(false);
+      addClick(inputValue);
+    }
+  };
+
+  return (
+    <>
+      {showForm ? (
+        <Container>
+          <FormControl>
+            <TextField
+              id="outlined-basic"
+              size="small"
+              label={buttonText}
+              variant="outlined"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+          </FormControl>
+          <ButtonsContainer>
+            <Button onClick={() => handleAddClick()} variant="contained" size="small">
+              Add
+            </Button>
+            <IconButton size="small" onClick={() => setShowForm(false)}>
+              <CloseIcon />
+            </IconButton>
+          </ButtonsContainer>
+        </Container>
+      ) : (
+        <Button variant="contained" onClick={handleButtonClick}>
+          <Add />
+          {buttonText}
+        </Button>
+      )}
+    </>
+  );
+}
+
+export default ButtonInput;

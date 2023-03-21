@@ -25,7 +25,7 @@ const getProjects = createAsyncThunk('getUserProjects', async () => {
     },
   });
 
-  if (response.status === 200) {    
+  if (response.status === 200) {
     return response.data;
   }
 
@@ -37,9 +37,9 @@ const createProject = createAsyncThunk('createProject', async (request: CreatePr
   const response = await instance.post('projects', request, {
     headers: {
       Authorization: `Bearer ${token}`,
-    }
+    },
   });
-  
+
   if (response.status === 200) {
     return response.data;
   }
@@ -51,10 +51,8 @@ const updateProject = createAsyncThunk('updateProject', async (request: UpdatePr
   const response = await instance.put(`projects/${request.id}`, request, {
     headers: {
       Authorization: `Bearer ${token}`,
-    }
+    },
   });
-
-  console.log("updateProject --> ", response)
 
   if (response.status === 200) {
     return response.data;
@@ -67,7 +65,7 @@ const deleteProject = createAsyncThunk('deleteProject', async (id: number) => {
   const response = await instance.delete(`projects/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
-    }
+    },
   });
 
   if (response.status === 200) {

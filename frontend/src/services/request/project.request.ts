@@ -1,5 +1,4 @@
-
-export interface CreateProjectRequest {  
+export interface CreateProjectRequest {
   name: string;
   description: string;
   usersId: number[];

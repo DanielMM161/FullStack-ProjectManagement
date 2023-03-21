@@ -1,14 +1,16 @@
-import { useAppDispatch, useAppSelector } from "./redux.hook"
 import { useEffect } from 'react';
-import { getProfile } from "../services/auth.service";
+import { useAppDispatch, useAppSelector } from './redux.hook';
+import { getProfile } from '../services/auth.service';
 
-export const useAuth = () => {
-    const dispatch = useAppDispatch();
-    
-    useEffect(() => {
-        dispatch(getProfile())
-    }, [dispatch])
+const useAuth = () => {
+  const dispatch = useAppDispatch();
 
-    const profileState = useAppSelector(store => store.profile)
-    return profileState.profile.firstName != ''
-  }
+  useEffect(() => {
+    dispatch(getProfile());
+  }, [dispatch]);
+
+  const profileState = useAppSelector((store) => store.profile);
+  return profileState.profile.firstName !== '';
+};
+
+export default useAuth;

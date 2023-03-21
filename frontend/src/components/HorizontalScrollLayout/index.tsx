@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import { Grid, Typography, Button, TextField } from "@mui/material";
+import React, { useState } from 'react';
+import { Grid, Typography, Button, TextField } from '@mui/material';
 
 function HorizontalScrollLayout() {
   const [showInput, setShowInput] = useState(false);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [content, setContent] = useState([
-    { id: 1, name: "Item 1" },
-    { id: 2, name: "Item 2" },
-    { id: 3, name: "Item 3" },
-    { id: 4, name: "Item 4" },
-    { id: 5, name: "Item 5" },
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+    { id: 3, name: 'Item 3' },
+    { id: 4, name: 'Item 4' },
+    { id: 5, name: 'Item 5' },
   ]);
 
   const handleAddListClick = () => {
@@ -23,13 +23,13 @@ function HorizontalScrollLayout() {
   const handleAddClick = () => {
     const newContent = [...content, { id: content.length + 1, name: inputValue }];
     setContent(newContent);
-    setInputValue("");
+    setInputValue('');
     setShowInput(false);
   };
 
   return (
     <Grid container>
-      <Grid container item sx={{ overflowX: "scroll" }}>
+      <Grid container item sx={{ overflowX: 'scroll' }}>
         {/* {content.map((item) => (
           <Grid key={item.id} item sx={{ width: 200, height: 200 }}>
             <Typography>{item.name}</Typography>

@@ -45,10 +45,10 @@ function CreateProject({ dialogTitle, acceptOnClick, cancelClick }: CreateProjec
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
     if (usersIn.length > 0) {
-      acceptOnClick({ 
-        name: data.title, 
-        description: data.description, 
-        usersId: usersIn.map(u => u.id) 
+      acceptOnClick({
+        name: data.title,
+        description: data.description,
+        usersId: usersIn.map((u) => u.id),
       });
     }
   };

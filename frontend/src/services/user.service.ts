@@ -5,7 +5,7 @@ const getAllUsers = createAsyncThunk('fetchAllUsers', async () => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');
   const response = await instance.get('users', {
     headers: {
-    Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -16,4 +16,4 @@ const getAllUsers = createAsyncThunk('fetchAllUsers', async () => {
   return [];
 });
 
-export { getAllUsers };
+export default getAllUsers;

@@ -8,19 +8,19 @@ import Login from './pages/Login';
 import AppContent from './AppContent';
 import Register from './pages/Register/Register';
 import './App.css';
-import Project from './pages/Project/Project';
+import ProjectDetail from './pages/Project/ProjectDetail';
 
-function App() {  
+function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<AppContent />}>
-          <Route element={<UserValidation />}>                
-            <Route path="/dashboard" element={<Dashboard />} />     
-            <Route path="/dashboard/project/:id" element={<Project />} />
-          </Route>  
+          <Route element={<UserValidation />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/project/:projectId" element={<ProjectDetail />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>
