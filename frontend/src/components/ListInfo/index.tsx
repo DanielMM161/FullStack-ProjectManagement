@@ -3,6 +3,7 @@ import { MenuItem } from '@mui/material';
 import TaskList from '../TaskList';
 import ButtonInput from '../ButtonInput';
 import MenuOptions from '../MenuOptions';
+import { Task } from '../../models/task.model';
 
 const Container = styled('div')({
   display: 'flex',
@@ -36,7 +37,7 @@ const Header = styled('div')({
 
 interface ListInfoProps {
   title: string;
-  tasks: [];
+  tasks: Task[];
   taskClick: (id: number) => void;
   addTaskClick: (taskName: string) => void;
   deleteListClick: () => void;
@@ -56,7 +57,7 @@ function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick }: Li
         {tasks && tasks.length > 0 && (
           <TaskContent>
             {tasks.map((t) => (
-              <TaskList onClick={() => taskClick(1)} title="" />
+              <TaskList key={t.id} onClick={() => taskClick(1)} title={t.title} />
             ))}
           </TaskContent>
         )}

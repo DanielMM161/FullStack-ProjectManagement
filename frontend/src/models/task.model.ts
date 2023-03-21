@@ -1,14 +1,5 @@
-/* eslint-disable import/no-cycle */
-
 interface TaskInitialState {
   tasks: Task[];
-}
-
-export enum Status {
-  open,
-  inProgress,
-  resolved,
-  closed,
 }
 
 export enum Priority {
@@ -17,14 +8,19 @@ export enum Priority {
   high,
 }
 
+interface SubTask {
+  id: number;
+  title: string;
+  done: boolean;
+}
+
 export interface Task {
   id: number;
-  name: string;
+  title: string;
   description: string;
-  dueDate?: Date;
-  status: Status;
   priority: Priority;
-  created: Date;
+  subTasks?: SubTask[];
+  dueDate: Date;  
 }
 
 export const initialTaskState: TaskInitialState = {

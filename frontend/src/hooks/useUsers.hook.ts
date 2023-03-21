@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { User } from '../models/user.model';
-import { getAllUsers } from '../services/user.service';
+import getAllUsers from '../services/user.service';
 
 import { useAppDispatch } from './redux.hook';
 

@@ -13,6 +13,7 @@ import { getProjectId } from '../../services/project.service';
 import { Project } from '../../models/project.model';
 import Transition from '../../transitions/transition';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
+import { createTask } from '../../services/task.service';
 
 const ProjectInfo = styled('div')({
   display: 'flex',
@@ -98,6 +99,25 @@ function ProjectDetail() {
     });
   }
 
+  function handleCreateTask(taskTitle: string, listId: number) {
+    dispatch(createTask({
+      title: taskTitle,
+      listId: listId
+    }))
+    .then(result => {
+      if (result) {
+        const index = listProject.findIndex(l => l.id == listId)
+        const list = [...listProject]
+        const item = {
+          ...list[index],
+          tasks: [...list[index].tasks, result.payload]
+        }
+        list[index] = item;        
+        setListProject(list)
+      }
+    })
+  }
+
   return (
     <Layout>
       <ProjectInfo>
@@ -132,7 +152,7 @@ function ProjectDetail() {
                 title={l.title}
                 tasks={l.tasks}
                 taskClick={() => {}}
-                addTaskClick={() => {}}
+                addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
                 deleteListClick={() => handleDeleteListClick(l.id)}
               />
             ))}
