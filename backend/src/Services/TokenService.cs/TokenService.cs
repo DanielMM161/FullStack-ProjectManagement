@@ -35,7 +35,7 @@ public class TokenService : ITokenService
         );
 
         // Expriation
-        var expiration = DateTime.Now.AddHours(1);
+        var expiration = DateTime.Now.AddDays(7);
 
         // Token description
         var token = new JwtSecurityToken(
