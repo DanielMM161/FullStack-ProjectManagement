@@ -14,6 +14,8 @@ import UpdateProject from '../../components/Forms/UpdateProject';
 import { Project } from '../../models/project.model';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import './style.css';
+import { useNavigate } from 'react-router';
+import Layout from '../../components/Layout';
 
 enum FORMS {
   none,
@@ -29,6 +31,7 @@ interface IStateForms {
 
 function Dashboard() {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const profileState = useAppSelector((state) => state.profile);
   const { profile } = profileState;
   const projectState = useAppSelector((state) => state.projects);
@@ -99,13 +102,17 @@ function Dashboard() {
     setShowDialog(!showDialog);
   }
 
+  function navigateProject(projectId: number) {
+    navigate(`project/${projectId}`);
+  }
+
   return (    
-    <div className="dashboard">
+    <Layout>
       <Button
-        variant="outlined"
-        onClick={() => {
-          showCreateProject();
-        }}
+      variant="outlined"
+      onClick={() => {
+        showCreateProject();
+      }}
       >
         Create Project
       </Button>
@@ -115,7 +122,7 @@ function Dashboard() {
           <CardProject
             key={project.name}
             project={project}
-            onClick={() => {}}
+            onClick={(projectId) => {navigate(`project/${projectId}`)}}
             editProject={() => showEditProject(project)}
             deleteProject={() => showDeleteProject(project)}
           />
@@ -157,7 +164,7 @@ function Dashboard() {
           />
         ) : null}
       </Dialog>
-    </div>
+    </Layout>
   );
 }
 

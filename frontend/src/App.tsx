@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import AppContent from './AppContent';
 import Register from './pages/Register/Register';
 import './App.css';
+import Project from './pages/Project/Project';
 
 function App() {  
   return (
@@ -17,7 +18,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<AppContent />}>
           <Route element={<UserValidation />}>                
-            <Route path="/dashboard" element={<Dashboard />} />        
+            <Route path="/dashboard" element={<Dashboard />} />     
+            <Route path="/dashboard/project/:id" element={<Project />} />
           </Route>  
         </Route>
       </Routes>

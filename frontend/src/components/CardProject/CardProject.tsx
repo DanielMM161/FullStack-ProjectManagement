@@ -5,20 +5,21 @@ import { useState } from 'react';
 import { Project } from '../../models/project.model';
 
 import './style.css';
+import CardActions from '@mui/material/CardActions';
 
 interface ICardProjectProps {
   project: Project;
   editProject: () => void;
   deleteProject: () => void;
-  onClick: () => void;
+  onClick: (projectId: number) => void;
 }
 
 function CardProject({ project, editProject, deleteProject, onClick }: ICardProjectProps) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const { name, description, users } = project;
+  const { id, name, description, users } = project;
 
   const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {    
     setAnchorEl(event.currentTarget);
   };
 
@@ -37,8 +38,8 @@ function CardProject({ project, editProject, deleteProject, onClick }: ICardProj
   }
 
   return (
-    <Card onClick={() => {}} sx={{ maxWidth: 345, cursor: 'pointer' }}>
-      <CardContent>
+    <Card sx={{ maxWidth: 345, cursor: 'pointer' }}>
+      <CardContent onClick={() => onClick(id)}>
         <Typography variant="h3" gutterBottom>
           {name}
         </Typography>
@@ -54,8 +55,8 @@ function CardProject({ project, editProject, deleteProject, onClick }: ICardProj
             ))
             .slice(0, 4)}
         </div>
-
-        <footer className="footer-card">
+      </CardContent>
+      <CardActions sx={{ justifyContent: 'end'}}>
           <Typography variant="overline" display="block" gutterBottom>
             {/* {`${todoTasks?.length ?? 0} Total Tasks`} */}
           </Typography>
@@ -80,9 +81,8 @@ function CardProject({ project, editProject, deleteProject, onClick }: ICardProj
           >
             <MenuItem onClick={handleEdit}>Edit</MenuItem>
             <MenuItem onClick={handleDelete}>Delete</MenuItem>
-          </Menu>
-        </footer>
-      </CardContent>
+          </Menu>        
+      </CardActions>
     </Card>
   );
 }
