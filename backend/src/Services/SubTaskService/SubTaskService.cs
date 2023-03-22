@@ -72,6 +72,7 @@ public class SubTaskService : BaseService<TaskList, SubTaskReadDTO, SubTaskCreat
         var project = await _claimsService.IsProjectExist(subTask.ProjectId, _projectRepo);
         await _claimsService.CheckUserBelongProject(project);
 
+        var subTaskUpdate = subTask;
         if (request.Title is not null && request.Title.Trim() != "")
         {
             subTask.Title = request.Title;
@@ -81,7 +82,7 @@ public class SubTaskService : BaseService<TaskList, SubTaskReadDTO, SubTaskCreat
         {
             subTask.Done = request.Done;
         }
-        
-        return _mapper.Map<TaskList, SubTaskReadDTO>(subTask);
+                
+        return _mapper.Map<TaskList, SubTaskReadDTO>(await _repo.UpdateOneAsync(subTask));
     }
 }

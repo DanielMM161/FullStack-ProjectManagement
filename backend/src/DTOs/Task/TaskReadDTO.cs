@@ -13,5 +13,5 @@ public class TaskReadDTO : BaseDTO<TaskList>
     public ICollection<SubTaskReadDTO> SubTasks { get; set; } = null!;
     public DateTime? DueDate { get; set; }
     public ICollection<UserReadDTO>? Users { get; set; } = null!;
-    public UserReadDTO CreatedBy { get; set; } = null!;
+    public UserReadDTO CreatedBy { get; set; } = null!;    
 }
