@@ -16,18 +16,7 @@ import { Project } from '../../models/project.model';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import './style.css';
 import Layout from '../../components/Layout';
-
-enum FORMS {
-  none,
-  create,
-  update,
-  delete,
-}
-
-interface IStateForms {
-  title: string;
-  form: FORMS;
-}
+import useDialog, { FORMS } from '../../hooks/useModal.hook';
 
 function Dashboard() {
   const dispatch = useAppDispatch();
@@ -36,11 +25,7 @@ function Dashboard() {
   const { profile } = profileState;
   const projectState = useAppSelector((state) => state.projects);
   const { projects } = projectState;
-  const [showDialog, setShowDialog] = useState(false);
-  const [typeForm, setAllTypeForm] = useState<IStateForms>({
-    title: '',
-    form: FORMS.none,
-  });
+  const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
   const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
 
   const getUserProjects = useCallback(() => {
@@ -52,39 +37,39 @@ function Dashboard() {
   }, [getUserProjects]);
 
   function showCreateProject() {
-    setAllTypeForm({
+    setTypeForm({
       title: 'New Project',
       form: FORMS.create,
     });
-    setShowDialog(!showDialog);
+    toggleDialog();
   }
 
   function showEditProject(project: Project) {
-    setAllTypeForm({
+    setTypeForm({
       title: 'Update Project',
       form: FORMS.update,
     });
     setProjectSelected(project);
-    setShowDialog(!showDialog);
+    toggleDialog();
   }
 
   function showDeleteProject(project: Project) {
-    setAllTypeForm({
+    setTypeForm({
       title: 'Delete Project',
       form: FORMS.delete,
     });
     setProjectSelected(project);
-    setShowDialog(!showDialog);
+    toggleDialog();
   }
 
   function handleCreateProject(request: CreateProjectRequest) {
-    setShowDialog(!showDialog);
+    toggleDialog();
     const newProject: CreateProjectRequest = request;
     dispatch(createProject(newProject));
   }
 
   function handleDeleteProject() {
-    setShowDialog(!showDialog);
+    toggleDialog();
     dispatch(deleteProject(projectSelected.id)).then((result) => {
       if (result) {
         dispatch(removeProject(projectSelected.id));
@@ -101,7 +86,7 @@ function Dashboard() {
         usersId: project.users.map((u) => u.id),
       }),
     );
-    setShowDialog(!showDialog);
+    toggleDialog();
   }
 
   return (
@@ -133,7 +118,7 @@ function Dashboard() {
         TransitionComponent={Transition}
         keepMounted
         onClose={() => {
-          setShowDialog(!showDialog);
+          toggleDialog();
         }}
         aria-describedby="alert-dialog-slide-description"
       >
@@ -141,7 +126,7 @@ function Dashboard() {
           <CreateProject
             dialogTitle={typeForm.title}
             acceptOnClick={(value) => handleCreateProject(value)}
-            cancelClick={() => setShowDialog(!showDialog)}
+            cancelClick={() => toggleDialog()}
           />
         ) : null}
 
@@ -150,7 +135,7 @@ function Dashboard() {
             dialogTitle={typeForm.title}
             project={projectSelected}
             acceptOnClick={(project) => handleUpdateProject(project)}
-            cancelClick={() => setShowDialog(!showDialog)}
+            cancelClick={() => toggleDialog()}
           />
         ) : null}
 
@@ -159,7 +144,7 @@ function Dashboard() {
             dialogTitle={typeForm.title}
             contentText="Are you sure that you want to delete this project ?"
             onClickAccept={() => handleDeleteProject()}
-            onClickCancel={() => setShowDialog(!showDialog)}
+            onClickCancel={() => toggleDialog()}
           />
         ) : null}
       </Dialog>

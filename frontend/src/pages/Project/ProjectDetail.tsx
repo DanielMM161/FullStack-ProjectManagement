@@ -14,6 +14,8 @@ import { Project } from '../../models/project.model';
 import Transition from '../../transitions/transition';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import { createTask } from '../../services/task.service';
+import TaskDetail from '../../components/TaskDetail';
+import useDialog, { FORMS } from '../../hooks/useModal.hook';
 
 const ProjectInfo = styled('div')({
   display: 'flex',
@@ -59,7 +61,8 @@ function ProjectDetail() {
   const [listProject, setListProject] = useState<ListProject[]>([]);
   const [actualProject, setActualProject] = useState<Project>();
   const [listSelectedId, setListSelectedId] = useState(0);
-  const [showDialog, setShowDialog] = useState(false);
+  const [taskSelectedId, setTaskSelectedId] = useState(0);
+  const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
 
   useEffect(() => {
     const id = Number.parseInt(projectId ?? '0', 10);
@@ -85,12 +88,16 @@ function ProjectDetail() {
   }
 
   function handleDeleteListClick(listId: number) {
-    setShowDialog(true);
+    setTypeForm({
+      title: 'Delete List',
+      form: FORMS.delete,
+    });
+    toggleDialog();
     setListSelectedId(listId);
   }
 
   function handleDeleteList() {
-    setShowDialog(!showDialog);
+    toggleDialog();
     dispatch(deleteList(listSelectedId)).then((result) => {
       if (result && result.payload) {
         const newList = listProject.filter((l) => l.id !== listSelectedId);
@@ -100,22 +107,32 @@ function ProjectDetail() {
   }
 
   function handleCreateTask(taskTitle: string, listId: number) {
-    dispatch(createTask({
-      title: taskTitle,
-      listId: listId
-    }))
-    .then(result => {
+    dispatch(
+      createTask({
+        title: taskTitle,
+        listId,
+      }),
+    ).then((result) => {
       if (result) {
-        const index = listProject.findIndex(l => l.id == listId)
-        const list = [...listProject]
+        const index = listProject.findIndex((l) => l.id === listId);
+        const list = [...listProject];
         const item = {
           ...list[index],
-          tasks: [...list[index].tasks, result.payload]
-        }
-        list[index] = item;        
-        setListProject(list)
+          tasks: [...list[index].tasks, result.payload],
+        };
+        list[index] = item;
+        setListProject(list);
       }
-    })
+    });
+  }
+
+  function handleTaskClick(taskId: number) {
+    setTaskSelectedId(taskId);
+    toggleDialog();
+    setTypeForm({
+      title: '',
+      form: FORMS.detail,
+    });
   }
 
   return (
@@ -151,7 +168,7 @@ function ProjectDetail() {
                 key={l.id}
                 title={l.title}
                 tasks={l.tasks}
-                taskClick={() => {}}
+                taskClick={(id) => handleTaskClick(id)}
                 addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
                 deleteListClick={() => handleDeleteListClick(l.id)}
               />
@@ -164,17 +181,21 @@ function ProjectDetail() {
         open={showDialog}
         TransitionComponent={Transition}
         keepMounted
-        onClose={() => {
-          setShowDialog(!showDialog);
-        }}
+        onClose={() => toggleDialog()}
         aria-describedby="alert-dialog-slide-description"
       >
-        <DialogInfoAction
-          dialogTitle="Delete List"
-          contentText="Are you sure that you want to delete this List ? all the tasks will be delete"
-          onClickAccept={() => handleDeleteList()}
-          onClickCancel={() => setShowDialog(!showDialog)}
-        />
+        {showDialog && typeForm.form === FORMS.detail ? (
+          <TaskDetail members={actualProject?.users ?? []} taskId={taskSelectedId} />
+        ) : null}
+
+        {showDialog && typeForm.form === FORMS.delete ? (
+          <DialogInfoAction
+            dialogTitle={typeForm.title}
+            contentText="Are you sure that you want to delete this List ? all the tasks will be delete"
+            onClickAccept={() => handleDeleteList()}
+            onClickCancel={() => toggleDialog()}
+          />
+        ) : null}
       </Dialog>
     </Layout>
   );

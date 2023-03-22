@@ -1,3 +1,5 @@
+import { emptyUser, User } from './user.model';
+
 interface TaskInitialState {
   tasks: Task[];
 }
@@ -20,8 +22,21 @@ export interface Task {
   description: string;
   priority: Priority;
   subTasks?: SubTask[];
-  dueDate: Date;  
+  users: User[];
+  createdBy: User;
+  dueDate: Date;
 }
+
+export const initialTaskValue: Task = {
+  id: 0,
+  title: '',
+  description: '',
+  priority: Priority.low,
+  subTasks: [],
+  users: [],
+  createdBy: emptyUser,
+  dueDate: new Date(),
+};
 
 export const initialTaskState: TaskInitialState = {
   tasks: [],

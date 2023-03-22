@@ -57,7 +57,7 @@ function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick }: Li
         {tasks && tasks.length > 0 && (
           <TaskContent>
             {tasks.map((t) => (
-              <TaskList key={t.id} onClick={() => taskClick(1)} title={t.title} />
+              <TaskList key={t.id} onClick={() => taskClick(t.id)} title={t.title} />
             ))}
           </TaskContent>
         )}
