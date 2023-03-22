@@ -62,7 +62,7 @@ const assignUser = createAsyncThunk('assignUser', async (request: TaskUserReques
   return false;
 });
 
-const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequest) => {
+const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequest) => {    
   const token = JSON.parse(localStorage.getItem('token') ?? '');
   const response = await instance.put(
     `tasks/${request.id}`,
@@ -84,4 +84,17 @@ const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequ
   return false;
 });
 
-export { createTask, getTaskById, removeUser, assignUser, updateTask };
+const deleteTask = createAsyncThunk('createTask', async (id: number) => {
+  const token = JSON.parse(localStorage.getItem('token') ?? '');
+  const response = await instance.delete(`tasks/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.status === 200) return response.data;
+
+  return null;
+});
+
+export { createTask, getTaskById, removeUser, assignUser, updateTask, deleteTask };
