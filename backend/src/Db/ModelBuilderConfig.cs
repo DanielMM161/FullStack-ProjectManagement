@@ -46,6 +46,21 @@ public static class ModelBuilderConfig
     public static void TaskConfig(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TaskList>()
+            .Property(s => s.CreatedAt)            
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        modelBuilder.Entity<TaskList>()
+            .Property(s => s.DueDate)            
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        modelBuilder.Entity<TaskList>()
+            .HasOne(t => t.Parent)
+            .WithOne()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.HasPostgresEnum<TaskList.PriorityTask>();
+        
+        modelBuilder.Entity<TaskList>()
             .Navigation(p => p.Users)
             .AutoInclude();
 

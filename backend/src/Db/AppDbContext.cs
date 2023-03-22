@@ -31,12 +31,9 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
-        ModelBuilderConfig.TaskListConfig(modelBuilder);
         ModelBuilderConfig.UserConfig(modelBuilder);
         ModelBuilderConfig.ProjectConfig(modelBuilder);
         ModelBuilderConfig.TaskConfig(modelBuilder);
-
         modelBuilder.AddIdentityConfig();
     }
 
