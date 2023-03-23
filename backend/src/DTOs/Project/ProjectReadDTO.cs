@@ -10,4 +10,5 @@ public class ProjectReadDTO : BaseDTO<Project>
     public string Name { get; set; } = null!;
     public string? Description { get; set; }
     public ICollection<UserReadDTO> Users { get; set; } = null!;
+    public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }

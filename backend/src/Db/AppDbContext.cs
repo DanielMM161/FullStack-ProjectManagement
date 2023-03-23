@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Npgsql;
+using NETCoreDemo.Db;
 
 public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
@@ -25,6 +26,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
         var configString = _config.GetConnectionString("DefaultConnection");
         optionsBuilder
             .UseNpgsql(configString)
+            .AddInterceptors(new AppDbContextSaveChangesInterceptor())
             .UseSnakeCaseNamingConvention();
     }
 

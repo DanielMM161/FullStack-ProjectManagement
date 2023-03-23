@@ -38,7 +38,7 @@ namespace backend.Migrations
                     name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    update_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,7 +103,7 @@ namespace backend.Migrations
                     title = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     project_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    update_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -241,7 +241,7 @@ namespace backend.Migrations
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     project_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
-                    update_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -47,9 +47,9 @@ namespace backend.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("title");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("update_at");
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_lists");
@@ -84,9 +84,9 @@ namespace backend.Migrations
                         .HasColumnType("character varying(60)")
                         .HasColumnName("name");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("update_at");
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_projects");
@@ -150,9 +150,9 @@ namespace backend.Migrations
                         .HasColumnType("character varying(60)")
                         .HasColumnName("title");
 
-                    b.Property<DateTime>("UpdateAt")
+                    b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp without time zone")
-                        .HasColumnName("update_at");
+                        .HasColumnName("updated_at");
 
                     b.HasKey("Id")
                         .HasName("pk_tasks");
