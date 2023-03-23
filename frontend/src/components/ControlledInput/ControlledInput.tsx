@@ -18,10 +18,16 @@ function ControlledInput({ onUpdate }: ControlledInputProps) {
 
   return (
     <TextField
+      autoFocus={true}       
       id="standard-basic"
       label="Search User"
-      variant="standard"
+      variant="outlined"
       value={value}
+      sx={{
+        marginBottom: '1rem',
+        marginTop: '1rem',
+        width: '100%'
+      }}
       onChange={(e) => setValue(e.target.value)}
     />
   );

@@ -60,6 +60,7 @@ function Login() {
           </Typography>
           <form style={{ width: '100%' }}>
             <TextField
+              autoFocus={true}       
               id="email"
               label="Email"
               variant="outlined"

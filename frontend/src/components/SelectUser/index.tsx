@@ -61,8 +61,8 @@ function SelectUser({ users, selectUserClick }: SelectUserProps) {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={() => handleClose}
-        onBlur={() => handleClose}
+        onClose={() => handleClose()}
+        onBlur={() => handleClose()}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
@@ -80,7 +80,7 @@ function SelectUser({ users, selectUserClick }: SelectUserProps) {
             {members.map((u) => (
               <Chip
                 key={u.email}
-                avatar={<Avatar key={u.email} alt="Natacha" src={u.avatar} />}
+                avatar={<Avatar key={u.email} alt={u.firstName} src={u.avatar} />}
                 label={`${u.firstName} ${u.lastName}`}
                 size="small"
                 sx={{ cursor: 'pointer' }}

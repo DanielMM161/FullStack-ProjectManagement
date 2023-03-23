@@ -36,20 +36,21 @@ function InputControlButton({
     return (
         <Container>          
             <TextField
+                autoFocus={true}       
                 id="outlined-basic"
                 size="small"
                 label={label}
-                variant="outlined"
+                variant="filled"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
             />          
             <ButtonsContainer>
-            <Button onClick={() => handleAddClick()} variant="contained" size="small">
-                Add
-            </Button>
-            <IconButton size="small" onClick={closeClick}>
-                <CloseIcon />
-            </IconButton>
+                <Button onClick={() => handleAddClick()} variant="contained" size="small">
+                    Add
+                </Button>
+                <IconButton size="small" onClick={closeClick}>
+                    <CloseIcon />
+                </IconButton>
             </ButtonsContainer>
         </Container>
     )

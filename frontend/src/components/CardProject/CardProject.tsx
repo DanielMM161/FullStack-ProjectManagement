@@ -1,70 +1,84 @@
-import { Avatar, Card, Typography, CardContent, MenuItem } from '@mui/material';
-import CardActions from '@mui/material/CardActions';
-import { useState } from 'react';
+import { Avatar, Typography, MenuItem, Paper, styled, AvatarGroup, Chip } from '@mui/material';
 import { Project } from '../../models/project.model';
 import MenuOptions from '../MenuOptions';
-import './style.css';
+import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
 
-interface ICardProjectProps {
+const CardLayout = styled(Paper)({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  maxWidth: 345,  
+  padding: '1rem',
+  borderRadius: 8,
+  minHeight: 240,
+  maxHeight: 280,
+  '& .title-info': {
+    display: 'flex',
+    'justify-content': 'space-between'
+  },
+  '& .users-container': {
+    'margin-bottom': '1rem',
+    display: 'flex',
+    'justify-content': 'space-between',
+    '& .icons-content': {
+      display: 'flex'
+    }
+  }
+
+});
+
+interface CardProjectProps {
   project: Project;
   editProject: () => void;
   deleteProject: () => void;
   onClick: (projectId: number) => void;
 }
 
-function CardProject({ project, editProject, deleteProject, onClick }: ICardProjectProps) {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+function CardProject({ project, editProject, deleteProject, onClick }: CardProjectProps) {
+
   const { id, name, description, users } = project;
 
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  function handleClose() {
-    setAnchorEl(null);
-  }
-
   function handleEdit() {
-    handleClose();
     editProject();
   }
 
-  function handleDelete() {
-    handleClose();
+  function handleDelete() {    
     deleteProject();
   }
 
   return (
-    <Card sx={{ maxWidth: 345, cursor: 'pointer' }}>
-      <CardContent onClick={() => onClick(id)}>
-        <Typography variant="h3" gutterBottom>
-          {name}
+    <CardLayout elevation={6} >
+      <div className='info-container'>
+        <div className='title-info'>
+          <Typography variant="h5" gutterBottom>
+            {name}
+          </Typography>
+          <MenuOptions>
+            <MenuItem onClick={() => onClick(id)}>View</MenuItem>
+            <MenuItem onClick={handleEdit}>Edit</MenuItem>
+            <MenuItem onClick={handleDelete}>Delete</MenuItem>
+          </MenuOptions>
+        </div>
+        <Typography variant="body1" gutterBottom sx={{ marginTop: 3, color: 'GrayText', maxHeight: '150', marginBottom: 2 }}>
+            {description}
         </Typography>
+      </div>
 
-        <Typography variant="body1" gutterBottom sx={{ marginBottom: 15 }}>
-          {description}
-        </Typography>
-
-        <div className="users-container">
+      <div className="users-container">
+        <AvatarGroup max={4} sx={{ alignItems: 'center'}}>
           {users
             .map((item) => (
               <Avatar alt={item.firstName} src={item.avatar} sx={{ width: 24, height: 24 }} key={item.firstName} />
-            ))
-            .slice(0, 4)}
+            ))}
+        </AvatarGroup>
+        <div className='icons-content'>
+          <Chip            
+            icon={<AssignmentOutlinedIcon />}
+            label='0 Tasks'
+          />          
         </div>
-      </CardContent>
-      <CardActions sx={{ justifyContent: 'end' }}>
-        <Typography variant="overline" display="block" gutterBottom>
-          {/* {`${todoTasks?.length ?? 0} Total Tasks`} */}
-        </Typography>
-
-        <MenuOptions>
-          <MenuItem onClick={handleEdit}>Edit</MenuItem>
-          <MenuItem onClick={handleDelete}>Delete</MenuItem>
-        </MenuOptions>
-      </CardActions>
-    </Card>
+      </div>
+    </CardLayout>
   );
 }
 

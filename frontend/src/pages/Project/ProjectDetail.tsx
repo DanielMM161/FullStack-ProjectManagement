@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import styled from '@emotion/styled';
-import { Typography, IconButton, AvatarGroup, Avatar, Dialog } from '@mui/material';
-import { Add, Edit } from '@mui/icons-material';
+import { Typography, IconButton, AvatarGroup, Avatar, Dialog, Button, Paper } from '@mui/material';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
@@ -13,46 +12,43 @@ import { getProjectId } from '../../services/project.service';
 import { Project } from '../../models/project.model';
 import Transition from '../../transitions/transition';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
-import { createTask } from '../../services/task.service';
+import { createTask, deleteTask } from '../../services/task.service';
 import TaskDetail from '../../components/TaskDetail';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
+import { formatDate } from '../../utils/common';
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import AssignUser from '../../components/AssignUser';
 
 const ProjectInfo = styled('div')({
   display: 'flex',
-  justifyContent: 'space-between',
+  flexDirection: 'column',  
   alignItems: 'flex-start',
-  padding: '15px',
-  backgroundColor: '#f3f3f3',
+  padding: '1.5rem',
+//  backgroundColor: '#ffffff',
+  gap: 20,
+  borderRadius: 18
 });
 
-const ListContainer = styled('div')({
+const ListContainer = styled(Paper)({
   marginTop: '1rem',
   display: 'grid',
   height: '100%',
-  width: '100%',
+  width: '100%',  
   overflowX: 'scroll',
   alignItems: 'flex-start',
-  padding: '15px',
-  backgroundColor: '#f3f3f3',
+  padding: '1.5rem',
+  backgroundColor: '#ffffff',
   gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
   gap: '25px',
-});
-
-const ProjectName = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  marginBottom: '10px',
-});
-
-const AddUserButton = styled(IconButton)({
-  marginLeft: '10px',
+  borderRadius: 18,
+  overflow: 'hidden'
 });
 
 const Container = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
+  display: 'flex',  
+  gap: 10,
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'center'
 });
 
 function ProjectDetail() {
@@ -63,6 +59,7 @@ function ProjectDetail() {
   const [listSelectedId, setListSelectedId] = useState(0);
   const [taskSelectedId, setTaskSelectedId] = useState(0);
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
+  const [showDeleteTask, setShowDeleteTask] = useState(false);  
 
   useEffect(() => {
     const id = Number.parseInt(projectId ?? '0', 10);
@@ -135,32 +132,62 @@ function ProjectDetail() {
     });
   }
 
+  function handleShowDeleteTask(taskId: number, listId: number) {
+    setListSelectedId(listId)
+    setTaskSelectedId(taskId)
+    setTypeForm({
+      title: 'Delete Task',
+      form: FORMS.delete,
+    });
+    setShowDeleteTask(!showDeleteTask)
+    toggleDialog();
+  }
+
+  function handleDeleteTask() {
+    dispatch(deleteTask(taskSelectedId))
+    .then(result => {      
+      if (result && result.payload) {
+        let items = [...listProject]
+        const item = items.filter(i => i.id === listSelectedId)
+        const index = items.indexOf(item[0])
+        items[index].tasks = item[0].tasks.filter(t => t.id !== taskSelectedId)        
+        setListProject(items)        
+      }
+    })
+    toggleDialog();
+  }
+
+  function handleAssignUser() {
+    setTypeForm({
+      title: 'Assign Users',
+      form: FORMS.assign,
+    });
+    toggleDialog();
+  }
+
   return (
     <Layout>
-      <ProjectInfo>
+      <ProjectInfo >
         <Container>
-          <Typography variant="h5">Boards</Typography>
-          <ProjectName>
-            <p>Nombre del proyecto</p>
-            <IconButton>
-              <Edit />
-            </IconButton>
-          </ProjectName>
+          <Typography sx={{textTransform: 'capitalize'}} variant="h2">{actualProject?.name}</Typography>
+          <Typography variant="subtitle1">Last Updated on: {formatDate(actualProject?.updatedAt ?? '')}</Typography>
         </Container>
         <Container>
-          <Typography variant="h5">Team</Typography>
-          <AvatarGroup max={4}>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-            <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
-            <Avatar alt="Cindy Baker" src="/static/images/avatar/3.jpg" />
-            <AddUserButton>
-              <Add />
-            </AddUserButton>
+          <AvatarGroup max={4} sx={{ alignItems: 'center'}}>
+            {actualProject?.users.map(u => <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 24, height: 24 }} />)}
+          <Button
+            onClick={() => handleAssignUser()}
+            variant='outlined' 
+            sx={{ border: 'none', color: 'black', gap: 1, fontWeight: 'bold', textTransform: 'none'}}
+          >
+            <Person2OutlinedIcon />
+            Assigned to Project
+          </Button>         
           </AvatarGroup>
         </Container>
       </ProjectInfo>
 
-      <ListContainer>
+      <ListContainer elevation={4}>
         <>
           {listProject &&
             listProject.map((l) => (
@@ -171,9 +198,10 @@ function ProjectDetail() {
                 taskClick={(id) => handleTaskClick(id)}
                 addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
                 deleteListClick={() => handleDeleteListClick(l.id)}
+                deleteTaskClick={(id) => handleShowDeleteTask(id, l.id)}
               />
             ))}
-          <ButtonInput buttonText="Add another List" addClick={(nameList) => handleAddList(nameList)} />
+          <ButtonInput labelText="List Name" buttonText="Add another List" addClick={(nameList) => handleAddList(nameList)} />
         </>
       </ListContainer>
 
@@ -188,13 +216,26 @@ function ProjectDetail() {
           <TaskDetail members={actualProject?.users ?? []} taskId={taskSelectedId} />
         ) : null}
 
-        {showDialog && typeForm.form === FORMS.delete ? (
+        {!showDeleteTask && showDialog && typeForm.form === FORMS.delete ? (
           <DialogInfoAction
             dialogTitle={typeForm.title}
             contentText="Are you sure that you want to delete this List ? all the tasks will be delete"
             onClickAccept={() => handleDeleteList()}
             onClickCancel={() => toggleDialog()}
           />
+        ) : null}
+
+        {showDeleteTask && showDialog && typeForm.form === FORMS.delete ? (
+          <DialogInfoAction
+            dialogTitle={typeForm.title}
+            contentText="Are you sure that you want to delete this Task ?"
+            onClickAccept={() => handleDeleteTask()}
+            onClickCancel={() => toggleDialog()}
+          />
+        ) : null}
+
+        {showDialog && typeForm.form === FORMS.assign ? (
+          <AssignUser users={actualProject?.users ?? []}/>
         ) : null}
       </Dialog>
     </Layout>

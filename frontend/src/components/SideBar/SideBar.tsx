@@ -5,14 +5,16 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ListButtonItem from '../ListButtonItem/ListButtonItem';
 import './style.css';
 import { useAppSelector } from '../../hooks/redux.hook';
+import { useNavigate } from 'react-router';
 
 function SideBar() {
+  const navigate = useNavigate();
   const profileState = useAppSelector((state) => state.profile);
   const { profile } = profileState;
   const list = () => (
     <div className="list-container" role="presentation" onClick={() => {}}>
       <List>
-        <ListButtonItem title="Dashboard" onClick={() => {}}>
+        <ListButtonItem title="Dashboard" onClick={() => navigate('/dashboard')}>
           <DashboardIcon />
         </ListButtonItem>
 
@@ -29,7 +31,7 @@ function SideBar() {
         <hr className="divider" />
         <div className="avatar-info">
           <div className="info-name">
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" sx={{ width: 36, height: 36 }} />
+            <Avatar alt={profile.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 36, height: 36 }} />
             <h3>
               {profile.firstName} {profile.lastName}
             </h3>

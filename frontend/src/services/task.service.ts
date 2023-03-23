@@ -78,7 +78,7 @@ const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequ
       },
     },
   );
-
+  
   if (response.status === 200) return response.data;
 
   return false;

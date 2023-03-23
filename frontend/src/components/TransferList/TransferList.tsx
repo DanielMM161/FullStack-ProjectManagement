@@ -141,7 +141,7 @@ function TransferList({ allUsers, usersIn, onUsersIn }: ITransferListProp) {
                   'aria-labelledby': labelId,
                 }}
               />
-              <Avatar alt="Remy Sharp" src={value.avatar} sx={{ width: 24, height: 24, marginRight: 1 }} />
+              <Avatar alt={value.firstName} src={value.avatar} sx={{ width: 24, height: 24, marginRight: 1 }} />
               <ListItemText id={labelId} primary={`${value.firstName}`} />
             </ListItem>
           );

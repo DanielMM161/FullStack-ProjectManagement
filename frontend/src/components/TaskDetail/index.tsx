@@ -9,6 +9,8 @@ import SelectUser from '../SelectUser';
 import InputControlButton from '../InputControlButton';
 import { createSubTask, updateDoneSubTask } from '../../services/subTask.service';
 import SubTaskItem from '../SubTaskItem';
+import { formatDate } from '../../utils/common';
+import MenuPriorityTask from '../MenuPriorityTask';
 
 interface TabPanelProps {
   children: React.ReactNode;
@@ -44,6 +46,7 @@ const InfoContainer = styled(Box)({
   display: 'flex',
   gap: 30,
   width: '100%',
+  alignItems: 'center', 
   marginBottom: '1rem',
 });
 
@@ -165,6 +168,24 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     }
   }
 
+  function handleUpdatePriority(priority: string) {
+    if (priority !== task.priority.toString()) {
+      dispatch(
+        updateTask({
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          priority: priority,
+          dueDate: task.dueDate.toString(),
+        }),
+      ).then((result) => {
+        if (result && result.payload) {
+          setTask(result.payload);
+        }
+      });      
+    }
+  }
+
   function handleAddSubTask(subTaskName: string) {
     dispatch(createSubTask({
         taskParentId: task.id,
@@ -174,7 +195,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     .then(result => {
         if (result && result.payload) {
             const item = {...task}
-            item.subTasks.push(result.payload)
+            item.subTasks?.push(result.payload)
             setTask(item)
         }
     })
@@ -186,7 +207,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     .then(result => {
         if (result && result.payload) {
             const item = {...task}
-            item.subTasks = item.subTasks.filter(i => i.id !== subTaskId)
+            item.subTasks = item.subTasks?.filter(i => i.id !== subTaskId)
             setTask(item)
         }
     })
@@ -199,13 +220,13 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         done:done
     }))
     .then(result => {
-        if (result && result.payload) {
-            const item = {...task}
-            const subTask = item.subTasks.filter(st => st.id !== subTaskId)
-            subTask.push(result.payload);
-            item.subTasks = subTask;
-            setTask(item)
-        }
+      if (result && result.payload) {
+        const item = {...task}
+        const subTask = item.subTasks?.filter(st => st.id !== subTaskId)
+        subTask?.push(result.payload);
+        item.subTasks = subTask;
+        setTask(item)
+      }
     })
   }
 
@@ -220,9 +241,13 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     >
       {editing ? (
         <TextField
+          autoFocus={true}       
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
-          onBlur={() => setEditing(!editing)}
+          onBlur={() => {
+            handleUpdateTitle()
+            setEditing(!editing)
+          }}
           size="small"
           onKeyDown={(e) => {
             if (e.key === 'Enter') handleUpdateTitle();
@@ -235,7 +260,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
       )}
 
       <Typography variant="caption" marginTop="4px" marginBottom="4px">
-        Prioridad: {task?.priority}
+        Priority: 
+        <MenuPriorityTask actualPriority={task?.priority} selectPriorityClick={(priority) => handleUpdatePriority(priority)} />
       </Typography>
       <Divider />
 
@@ -243,25 +269,25 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         <Typography variant="subtitle2" display="block" gutterBottom>
           Assigness
         </Typography>
+        <SelectUser users={members} selectUserClick={(user) => handleAssignUser(user)} />
         <ChipContainer>
           {task?.users.map((user) => (
             <Chip
-                key={user.email}
-              avatar={<Avatar key={user.email} alt="Natacha" src={user.avatar} />}
+            key={user.email}
+              avatar={<Avatar key={user.email} alt={user.firstName} src={user.avatar} />}
               label={user.firstName}
               onDelete={() => handleRemoveUser(user.id)}
               size="small"
             />
           ))}
         </ChipContainer>
-        <SelectUser users={members} selectUserClick={(user) => handleAssignUser(user)} />
       </InfoContainer>
 
       <InfoContainer>
         <Typography variant="subtitle2" display="block" gutterBottom>
           Due Date
         </Typography>
-        {task?.dueDate.toString()}
+        {formatDate(task?.dueDate.toString())}        
       </InfoContainer>
 
       <InfoContainer>
@@ -269,7 +295,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           Created By
         </Typography>
         <Chip
-          avatar={<Avatar key={task?.createdBy.email} alt="Natacha" src={task?.createdBy.avatar} />}
+          avatar={<Avatar key={task?.createdBy.email} alt={task?.createdBy.firstName} src={task?.createdBy.avatar} />}
           label={task?.createdBy.firstName}
           size="small"
         />
@@ -300,7 +326,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Item Two
+          
         </TabPanel>
       </Box>
 
@@ -323,7 +349,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         )}
       </InfoContainer>
         <SubTaskContainer>
-            {task.subTasks.map(st => 
+            {task.subTasks && task.subTasks.map(st => 
                 <SubTaskItem 
                     key={st.id} 
                     title={st.title} 

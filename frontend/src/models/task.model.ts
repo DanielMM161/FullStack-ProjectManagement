@@ -21,7 +21,7 @@ export interface Task {
   title: string;
   description: string;
   priority: Priority;
-  subTasks: SubTask[];
+  subTasks?: SubTask[];
   users: User[];
   createdBy: User;
   dueDate: Date;

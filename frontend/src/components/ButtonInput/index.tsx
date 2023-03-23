@@ -1,48 +1,38 @@
 import { useState } from 'react';
-import { Button, TextField, FormControl, styled, IconButton } from '@mui/material';
+import { Button, styled } from '@mui/material';
 import { Add } from '@mui/icons-material';
-import CloseIcon from '@mui/icons-material/Close';
 import InputControlButton from '../InputControlButton';
-
-const Container = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-});
-
-const ButtonsContainer = styled('div')({
-  marginTop: 5,
-  display: 'flex',
-  alignItems: 'flex-start',
-  gap: 5,
-});
 
 interface ButtonInputProps {
   buttonText: string;
+  labelText: string;
   addClick: (inputValue: string) => void;
   children?: React.ReactNode
 }
 
 function ButtonInput({ 
   buttonText, 
-  addClick, 
+  addClick,
+  labelText,
   children = <Add />
 }: ButtonInputProps) {
   const [showForm, setShowForm] = useState(false);
   
-  const handleButtonClick = () => {
-    setShowForm(true);
-  };
+  function handleAddTaskClick(taskName: string) {
+    setShowForm(!showForm)
+    addClick(taskName)
+  }
 
   return (
     <>
       {showForm ? (
           <InputControlButton 
-            label={buttonText}
-            addClick={(value) => addClick(value)}
-            closeClick={() => setShowForm(false)}
+            label={labelText}
+            addClick={(value) => handleAddTaskClick(value)}
+            closeClick={() => setShowForm(!showForm)}
           />
       ) : (
-        <Button variant="contained" onClick={handleButtonClick}>
+        <Button variant="contained" onClick={() => setShowForm(!showForm)}>
           {children}
           {buttonText}
         </Button>

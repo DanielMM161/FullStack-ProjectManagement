@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { MenuItem } from '@mui/material';
+import { MenuItem, Paper } from '@mui/material';
 import TaskList from '../TaskList';
 import ButtonInput from '../ButtonInput';
 import MenuOptions from '../MenuOptions';
@@ -9,15 +9,16 @@ const Container = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
-  height: '100%',
+  height: '100%',  
 });
 
-const Content = styled('div')({
+const Content = styled(Paper)({
   padding: '1rem',
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
   backgroundColor: '#e1e1e1',
+  borderRadius: 3
 });
 
 const TaskContent = styled('div')({
@@ -25,7 +26,7 @@ const TaskContent = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
-  gap: 10,
+  gap: 10,  
 });
 
 const Header = styled('div')({
@@ -40,13 +41,14 @@ interface ListInfoProps {
   tasks: Task[];
   taskClick: (id: number) => void;
   addTaskClick: (taskName: string) => void;
-  deleteListClick: () => void;
+  deleteListClick: () => void;  
+  deleteTaskClick: (taskId: number) => void;  
 }
 
-function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick }: ListInfoProps) {
+function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, deleteTaskClick }: ListInfoProps) {  
   return (
     <Container>
-      <Content>
+      <Content elevation={2}>
         <Header>
           {title}
           <MenuOptions>
@@ -57,12 +59,12 @@ function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick }: Li
         {tasks && tasks.length > 0 && (
           <TaskContent>
             {tasks.map((t) => (
-              <TaskList key={t.id} onClick={() => taskClick(t.id)} title={t.title} />
+              <TaskList key={t.id} onClick={() => taskClick(t.id)} title={t.title} onDeleteClick={() => deleteTaskClick(t.id)} />
             ))}
           </TaskContent>
         )}
 
-        <ButtonInput buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
+        <ButtonInput labelText='Task Name' buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
       </Content>
     </Container>
   );

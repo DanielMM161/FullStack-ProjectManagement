@@ -4,7 +4,7 @@ const Layout = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   marginLeft: '300px',
-  padding: '1rem',
+  padding: '1.5rem 2rem 1.5rem;',
   height: '100%',
   '@media (max-width: 960px)': {
     marginLeft: 0,

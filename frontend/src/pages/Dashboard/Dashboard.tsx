@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-
-import { Button, Dialog } from '@mui/material';
-
+import { Button, Dialog, styled, Typography, Paper } from '@mui/material';
 import { useNavigate } from 'react-router';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import CardProject from '../../components/CardProject/CardProject';
@@ -10,19 +8,44 @@ import { CreateProjectRequest } from '../../services/request/project.request';
 import Transition from '../../transitions/transition';
 import { createProject, deleteProject, getProjects, updateProject } from '../../services/project.service';
 import { removeProject } from '../../redux/slice/project.slice';
-
 import UpdateProject from '../../components/Forms/UpdateProject';
 import { Project } from '../../models/project.model';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
-import './style.css';
 import Layout from '../../components/Layout';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
+import './style.css';
+
+const ProjectSummaryContainer = styled('div')({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  '& .textContainer': {
+    display: 'flex',
+   'flex-direction': 'column'
+  }
+});
+
+const ProjectsContainer = styled(Paper)({
+  marginTop: '1rem',
+  height: '100%',
+  display: 'grid',
+  overflow: 'scroll',  
+  //gridAutoFlow: 'column',
+  //gridTemplateRows: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
+  padding: '1.5rem',
+  backgroundColor: '#ffffff',  
+  gap: '18px',
+  borderRadius: 18,
+  '&::-webkit-scrollbar': {
+    display: 'none'
+  }
+});
+
 
 function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const profileState = useAppSelector((state) => state.profile);
-  const { profile } = profileState;
   const projectState = useAppSelector((state) => state.projects);
   const { projects } = projectState;
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
@@ -91,27 +114,36 @@ function Dashboard() {
 
   return (
     <Layout>
-      <Button
-        variant="outlined"
-        onClick={() => {
-          showCreateProject();
-        }}
-      >
-        Create Project
-      </Button>
+      <ProjectSummaryContainer>
+        <div className='textContainer'>
+          <Typography variant='h4'>Project Summary</Typography>
+          <Typography variant='subtitle2' sx={{ color: 'gray' }}>You can edit all the stufs as you wish</Typography>
+        </div>
+        <Button
+          sx={{heigh: '70%'}}
+          variant="outlined"
+          onClick={() => {
+            showCreateProject();
+          }}
+        >
+          Create Project
+        </Button>
+      </ProjectSummaryContainer>
 
-      {projects.length > 0 &&
-        projects.map((project) => (
-          <CardProject
-            key={project.name}
-            project={project}
-            onClick={(projectId) => {
-              navigate(`project/${projectId}`);
-            }}
-            editProject={() => showEditProject(project)}
-            deleteProject={() => showDeleteProject(project)}
-          />
+      <ProjectsContainer elevation={4}>
+        {projects.length > 0 &&
+          projects.map((project) => (
+            <CardProject
+              key={project.name}
+              project={project}
+              onClick={(projectId) => {
+                navigate(`project/${projectId}`);
+              }}
+              editProject={() => showEditProject(project)}
+              deleteProject={() => showDeleteProject(project)}
+            />
         ))}
+      </ProjectsContainer>
 
       <Dialog
         open={showDialog}
