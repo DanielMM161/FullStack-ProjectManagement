@@ -11,6 +11,8 @@ const getProfile = createAsyncThunk('profile', async () => {
     },
   });
 
+  console.log("get profile", response)
+
   if (response.status === 200) {
     localStorage.setItem('profile', JSON.stringify(response.data));
     return response.data;
@@ -20,14 +22,23 @@ const getProfile = createAsyncThunk('profile', async () => {
 });
 
 const login = createAsyncThunk('login', async (payload: LoginRequest) => {
-  const response = await instance.post('auths/login', payload);
-
-  if (response.status === 200) {
-    localStorage.setItem('token', JSON.stringify(response.data.token));
-    return response.data;
+  try {
+    
+    console.log("login")
+    const response = await instance.post('auths/login', payload);
+    console.log("login", response)
+  
+    if (response.status === 200) {
+      localStorage.setItem('token', JSON.stringify(response.data.token));
+      return response.data;
+    }
+    return emptyUser;
+  } catch (error) {
+    console.log("error -> ", error)
+    return emptyUser;
   }
 
-  return emptyUser;
+
 });
 
 const register = createAsyncThunk('register', async (payload: RegisterRequest) => {
