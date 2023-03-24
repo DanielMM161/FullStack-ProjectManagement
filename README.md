@@ -18,6 +18,12 @@ Hi, Welcome to my Fullstack Project Management Systme, I made this project using
 ## Front End Project
 A modern minimal Vite + React + TypeScript template with pre-configured ESLint (with Airbnb JS/React rules), Prettier
 
+## 📷 Previews
+
+<p align="center">
+ <img src="images/projectManagement.gif" alt="drawing" width="270" />
+</p>
+
 ### Run Locally
 
 Clone the project
