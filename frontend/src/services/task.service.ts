@@ -100,12 +100,6 @@ const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequ
 });
 
 const deleteTask = createAsyncThunk('createTask', async (id: number, thunkApi) => {
-  thunkApi.dispatch(
-    showLoading({
-      title: 'Deleting Task',
-      show: true,
-    } as Loading),
-  );
   const token = JSON.parse(localStorage.getItem('token') ?? '');
   const response = await instance.delete(`tasks/${id}`, {
     headers: {

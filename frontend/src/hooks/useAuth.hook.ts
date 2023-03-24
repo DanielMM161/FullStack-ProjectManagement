@@ -6,8 +6,7 @@ const useAuth = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getProfile());
-    console.log(' profileState.profile.firstName', profileState.profile.firstName);
+    dispatch(getProfile());    
   }, [dispatch]);
 
   const profileState = useAppSelector((store) => store.profile);

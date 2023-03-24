@@ -36,8 +36,7 @@ function SelectUser({ users, selectUserClick }: SelectUserProps) {
     setAnchorEl(null);
   }
 
-  function handleOnUpdateInput(text: string) {
-    console.log('');
+  function handleOnUpdateInput(text: string) {    
     if (text.trim() === '') {
       setMembers(users);
     } else {

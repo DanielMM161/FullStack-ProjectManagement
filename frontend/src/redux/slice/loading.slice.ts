@@ -8,8 +8,7 @@ export const loadingSlice = createSlice({
     showLoading: (state, action) => {
       state.loading = action.payload;
     },
-    closeLoading: (state) => {
-      console.log('close loading');
+    closeLoading: (state) => {      
       state.loading = initialLoadingState.loading;
     },
   },

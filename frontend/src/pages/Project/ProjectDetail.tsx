@@ -106,6 +106,7 @@ function ProjectDetail() {
     dispatch(deleteList(listSelectedId)).then((result) => {
       if (result && result.payload) {
         const newList = listProject.filter((l) => l.id !== listSelectedId);
+        console.log("new list --< ", newList)
         setListProject(newList);
       }
     });

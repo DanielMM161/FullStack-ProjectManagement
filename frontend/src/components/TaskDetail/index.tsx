@@ -193,7 +193,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         createdById: profile.id,
       }),
     ).then((result) => {
-      if (result && result.payload) {
+      if (result && result.payload) {        
         const item = { ...task };
         item.subTasks?.push(result.payload);
         setTask(item);
