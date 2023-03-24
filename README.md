@@ -53,41 +53,42 @@ Start the server
 <details>
 <summary>Open Project Structure</summary>
 ``` bash
-├───components
-│   ├───AssignUser
-│   ├───ButtonInput
-│   ├───CardProject
-│   ├───ControlledInput
-│   ├───DialogContent
-│   ├───EmptyContent
-│   ├───Forms
-│   ├───HorizontalScrollLayout
-│   ├───InputControlButton
-│   ├───Layout
-│   ├───ListButtonItem
-│   ├───ListInfo
-│   ├───LoadingPulsating
-│   ├───MenuOptions
-│   ├───MenuPriorityTask
-│   ├───SelectUser
-│   ├───SideBar
-│   │   └───styled
-│   ├───SubTaskItem
-│   ├───TaskDetail
-│   ├───TaskList
-│   ├───TransferList
-│   └───UserValidation
-├───hooks
-├───models
-├───pages
-│   ├───Dashboard
-│   ├───Project
-│   └───Register
-├───redux
-│   └───slice
-├───services
-│   └───request
-├───transitions
-└───utils
+└───src
+   ├───components
+   │   ├───AssignUser
+   │   ├───ButtonInput
+   │   ├───CardProject
+   │   ├───ControlledInput
+   │   ├───DialogContent
+   │   ├───EmptyContent
+   │   ├───Forms
+   │   ├───HorizontalScrollLayout
+   │   ├───InputControlButton
+   │   ├───Layout
+   │   ├───ListButtonItem
+   │   ├───ListInfo
+   │   ├───LoadingPulsating
+   │   ├───MenuOptions
+   │   ├───MenuPriorityTask
+   │   ├───SelectUser
+   │   ├───SideBar
+   │   │   └───styled
+   │   ├───SubTaskItem
+   │   ├───TaskDetail
+   │   ├───TaskList
+   │   ├───TransferList
+   │   └───UserValidation
+   ├───hooks
+   ├───models
+   ├───pages
+   │   ├───Dashboard
+   │   ├───Project
+   │   └───Register
+   ├───redux
+   │   └───slice
+   ├───services
+   │   └───request
+   ├───transitions
+   └───utils
 ```
 </details>
