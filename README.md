@@ -21,7 +21,7 @@ A modern minimal Vite + React + TypeScript template with pre-configured ESLint (
 ## 📷 Previews
 
 <p align="center">
- <img src="images/projectManagement.gif" alt="drawing" width="400" />
+ <img src="images/projectManagement.gif" alt="drawing" width="600"  height="600" />
 </p>
 
 ### Run Locally
