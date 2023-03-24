@@ -65,7 +65,7 @@ builder.Services
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("react-policy", 
+    options.AddPolicy("cors", 
         builder =>
     {
         builder.WithOrigins("http://localhost:5173", "http://localhost:3000")
@@ -106,6 +106,15 @@ builder.Services.AddScoped<ISubTaskRepo, SubTaskRepo>().AddScoped<ISubTaskServic
 
 var app = builder.Build();
 
+app.UseSwagger();
+app.UseSwaggerUI();    
+app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Project Management");
+        options.RoutePrefix = string.Empty;
+    });
+
+app.UseCors("cors");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -113,10 +122,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();    
     app.UseSwaggerUI(options =>
         {
-            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Demo”");
+            options.SwaggerEndpoint("/swagger/v1/swagger.json", "Project Management");
             options.RoutePrefix = string.Empty;
         });
-    app.UseCors("react-policy");
 
     using (var scope = app.Services.CreateScope())
     {
