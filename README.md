@@ -1,5 +1,5 @@
 # Fullstack Project Management System
-Hi, Welcome to my Fullstack Project Management Systme, I made this project using React/Typescript for the Front-end part and .Net Core for the Back-end part
+Hi, Welcome to my Fullstack Project Management System, I made this project using React/Typescript for the Front-end part and .Net Core for the Back-end part
 
 ## Funcionality
 * When a user is Logged can do:
@@ -13,3 +13,12 @@ Hi, Welcome to my Fullstack Project Management Systme, I made this project using
 * Add Comments into a task
 * Improve the Design and UX
 * Dark Mode
+
+## Projects
+<details>
+	<summary><h1>FRONT END</h1></summary>
+</details>
+
+<details>
+	<summary><h1>BACKEND END</h1></summary>
+</details>
