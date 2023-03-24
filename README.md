@@ -17,6 +17,14 @@ Hi, Welcome to my Fullstack Project Management System, I made this project using
 ## Projects
 <details>
 	<summary><h1>FRONT END</h1></summary>
+	## 🛠 Tech stack & Open-source libraries
+	- [React](https://github.com/facebook/react) - version 18.2.0
+	- [TypeScript](https://github.com/Microsoft/TypeScript) - version 4.9.4
+	- [React Router](https://github.com/remix-run/react-router#readme) - Routes App
+	- [Redux](https://github.com/reduxjs/redux) - Global State
+	- [Styled Components](https://github.com/styled-components/styled-components) - Styles App version 5.3.6
+	- [Axios](https://github.com/axios/axios) - Construct the REST APIs  version 1.2.1
+	- [Jest](https://github.com/facebook/jest) - Testing 
 </details>
 
 <details>
