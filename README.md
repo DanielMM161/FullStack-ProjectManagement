@@ -54,41 +54,56 @@ Start the server
 <summary>Open Project Structure</summary>
 ``` bash
 └───src
-   ├───components
-   │   ├───AssignUser
-   │   ├───ButtonInput
-   │   ├───CardProject
-   │   ├───ControlledInput
-   │   ├───DialogContent
-   │   ├───EmptyContent
-   │   ├───Forms
-   │   ├───HorizontalScrollLayout
-   │   ├───InputControlButton
-   │   ├───Layout
-   │   ├───ListButtonItem
-   │   ├───ListInfo
-   │   ├───LoadingPulsating
-   │   ├───MenuOptions
-   │   ├───MenuPriorityTask
-   │   ├───SelectUser
-   │   ├───SideBar
-   │   │   └───styled
-   │   ├───SubTaskItem
-   │   ├───TaskDetail
-   │   ├───TaskList
-   │   ├───TransferList
-   │   └───UserValidation
-   ├───hooks
-   ├───models
-   ├───pages
-   │   ├───Dashboard
-   │   ├───Project
-   │   └───Register
-   ├───redux
-   │   └───slice
-   ├───services
-   │   └───request
-   ├───transitions
-   └───utils
+    ├───assets
+    ├───components
+    │   ├───BreadCrumbs
+    │   ├───Button
+    │   ├───ButtonLoader
+    │   ├───CardProduct
+    │   ├───Cart
+    │   │   └───component
+    │   ├───Filter
+    │   ├───Footer
+    │   ├───Forms
+    │   │   ├───CreateProduct
+    │   │   ├───DeleteProduct
+    │   │   ├───EditProduct
+    │   │   ├───Login
+    │   │   └───Register
+    │   ├───HeroImage
+    │   ├───LoadingPulsating
+    │   ├───Modal
+    │   ├───NavBar
+    │   ├───NoProductFound
+    │   ├───ProductSlider
+    │   ├───SideBar
+    │   ├───SnackBar
+    │   ├───Switch
+    │   └───UserValidation
+    ├───context
+    ├───hooks
+    ├───models
+    ├───pages
+    │   ├───CategoryProduct
+    │   ├───Home
+    │   │   └───components
+    │   │       └───TopCategories
+    │   ├───Products
+    │   ├───Profile
+    │   │   └───components
+    │   │       └───Info
+    │   └───SingleProduct
+    │       └───components
+    │           ├───ProductDetail
+    │           └───UserAdmin
+    ├───redux
+    │   └───slices
+    ├───services
+    ├───styled
+    ├───tests
+    │   ├───Mocks
+    │   ├───reducers
+    │   └───servers
+    └───utilities
 ```
 </details>
