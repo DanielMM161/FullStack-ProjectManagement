@@ -55,7 +55,7 @@ Start the server
 This projects has been made with  ASP .NET Core (6), Entity Framework Core, PostgreSQ
 
 ### Entity Relationship Diagram
-![Database ERD](Images/ERdiagram.png)
+![Database ERD](images/ERdiagram.png)
 
 ### Main Endpoint
 * this is the Main Endpoint: https://backend-myprojectmanagement.azurewebsites.net/api/v1/
