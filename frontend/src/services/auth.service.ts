@@ -2,8 +2,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { emptyUser } from '../models/user.model';
 import instance from '../utils/constants';
 import { LoginRequest, RegisterRequest } from './request/user.request';
+import { showNotification } from '../utils/common';
+import { showLoading } from '../redux/slice/loading.slice';
+import { Loading } from './../models/loading.model';
 
-const getProfile = createAsyncThunk('profile', async () => {
+const getProfile = createAsyncThunk('profile', async (_, thunkAPI) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');
   const response = await instance.get('auths/profile', {
     headers: {
@@ -11,9 +14,7 @@ const getProfile = createAsyncThunk('profile', async () => {
     },
   });
 
-  console.log("get profile", response)
-
-  if (response.status === 200) {
+  if (response.status === 200) {        
     localStorage.setItem('profile', JSON.stringify(response.data));
     return response.data;
   }
@@ -21,27 +22,26 @@ const getProfile = createAsyncThunk('profile', async () => {
   return emptyUser;
 });
 
-const login = createAsyncThunk('login', async (payload: LoginRequest) => {
-  try {
-    
-    console.log("login")
-    const response = await instance.post('auths/login', payload);
-    console.log("login", response)
-  
-    if (response.status === 200) {
-      localStorage.setItem('token', JSON.stringify(response.data.token));
-      return response.data;
-    }
-    return emptyUser;
-  } catch (error) {
-    console.log("error -> ", error)
-    return emptyUser;
+const login = createAsyncThunk('login', async (payload: LoginRequest, thunkApi) => {          
+  thunkApi.dispatch(showLoading({
+    title: 'Welcome', 
+    show: true
+  } as Loading))
+  const response = await instance.post('auths/login', payload);    
+
+  if (response.status === 200) {    
+    localStorage.setItem('token', JSON.stringify(response.data.token));
+    return response.data;
   }
-
-
+  showNotification('Login', 'Error Login', 'danger');
+  return emptyUser;
 });
 
-const register = createAsyncThunk('register', async (payload: RegisterRequest) => {
+const register = createAsyncThunk('register', async (payload: RegisterRequest, thunkApi) => {
+  thunkApi.dispatch(showLoading({
+    title: 'Registering', 
+    show: true
+  } as Loading))
   const response = await instance.post('users', {
     firstName: payload.firstName,
     lastName: payload.lastName,
@@ -49,10 +49,12 @@ const register = createAsyncThunk('register', async (payload: RegisterRequest) =
     password: payload.password,
   });
 
-  if (response.status === 200) {
+  if (response.status === 200) {    
+    showNotification('Register', 'Register successfully', 'success');
     return response.data;
   }
 
+  showNotification('Register', 'Error Register', 'danger');
   return null;
 });
 

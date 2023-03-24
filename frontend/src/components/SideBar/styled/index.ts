@@ -20,3 +20,9 @@ export const SideBarLayout = styled('div') ({
 export const ListContainer = styled('div') ({
     padding: '1rem'
 })
+
+export const LogoutContainer = styled('div')({
+    position: 'fixed',
+    bottom: 0,
+    padding: '1rem'
+})

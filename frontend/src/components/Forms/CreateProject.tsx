@@ -84,7 +84,7 @@ function CreateProject({ dialogTitle, acceptOnClick, cancelClick }: CreateProjec
             <Typography>Add Users</Typography>
           </AccordionSummary>
 
-          {allUsers.length > 0 ? (
+          {allUsers && allUsers.length > 0 ? (
             <AccordionDetails>
               <TransferList allUsers={allUsers} usersIn={usersIn} onUsersIn={(value) => setUsersIn(value)} />
             </AccordionDetails>

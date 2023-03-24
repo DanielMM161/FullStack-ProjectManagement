@@ -14,6 +14,8 @@ import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import Layout from '../../components/Layout';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
 import './style.css';
+import { closeLoading } from '../../redux/slice/loading.slice';
+import EmptyContent from '../../components/EmptyContent';
 
 const ProjectSummaryContainer = styled('div')({
   display: 'flex',
@@ -52,6 +54,7 @@ function Dashboard() {
   const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
 
   const getUserProjects = useCallback(() => {
+    //dispatch(closeLoading());
     dispatch(getProjects());
   }, [dispatch]);
 
@@ -143,6 +146,9 @@ function Dashboard() {
               deleteProject={() => showDeleteProject(project)}
             />
         ))}
+      {projects.length == 0 && (
+          <EmptyContent message='Hey Try to Create a new Project'/>
+      )}
       </ProjectsContainer>
 
       <Dialog

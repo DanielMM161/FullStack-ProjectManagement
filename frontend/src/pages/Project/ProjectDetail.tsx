@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import styled from '@emotion/styled';
-import { Typography, IconButton, AvatarGroup, Avatar, Dialog, Button, Paper } from '@mui/material';
+import { Typography, AvatarGroup, Avatar, Dialog, Button, Paper, Chip } from '@mui/material';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
 import { createList, deleteList, getListsByProject } from '../../services/list.service';
 import { ListProject } from '../../models/listProject.model';
 import ListInfo from '../../components/ListInfo';
-import { getProjectId } from '../../services/project.service';
+import { getProjectId, updateProject } from '../../services/project.service';
 import { Project } from '../../models/project.model';
 import Transition from '../../transitions/transition';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
@@ -18,13 +18,14 @@ import useDialog, { FORMS } from '../../hooks/useModal.hook';
 import { formatDate } from '../../utils/common';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import AssignUser from '../../components/AssignUser';
+import EmptyContent from '../../components/EmptyContent';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const ProjectInfo = styled('div')({
   display: 'flex',
   flexDirection: 'column',  
   alignItems: 'flex-start',
   padding: '1.5rem',
-//  backgroundColor: '#ffffff',
   gap: 20,
   borderRadius: 18
 });
@@ -46,9 +47,16 @@ const ListContainer = styled(Paper)({
 
 const Container = styled('div')({
   display: 'flex',  
-  gap: 10,
+  gap: 20,
   alignItems: 'center',
-  justifyContent: 'center'
+  justifyContent: 'center',
+  '& .update-info': {
+    marginLeft: '2rem',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 });
 
 function ProjectDetail() {
@@ -165,16 +173,40 @@ function ProjectDetail() {
     toggleDialog();
   }
 
+  function handleAssignedUser(usersId: number[]) {
+    toggleDialog();
+    dispatch(updateProject({
+        id: actualProject?.id ?? 0,
+        name: actualProject?.name ?? '',
+        description: actualProject?.description ?? '',
+        usersId: usersId,
+      })
+    )
+    .then(result => {
+      if (result && result.payload) {
+        setActualProject(result.payload)
+      }
+    })
+  }
+
   return (
     <Layout>
       <ProjectInfo >
         <Container>
           <Typography sx={{textTransform: 'capitalize'}} variant="h2">{actualProject?.name}</Typography>
-          <Typography variant="subtitle1">Last Updated on: {formatDate(actualProject?.updatedAt ?? '')}</Typography>
+          <div className='update-info'>
+            <Typography variant="h6" sx={{fontWeight: 'bold'}}>Last Updated on:</Typography>
+            <Chip
+              icon={<CalendarMonthIcon />}
+              label={formatDate(actualProject?.updatedAt ?? '')}
+            />
+
+          </div>
         </Container>
         <Container>
-          <AvatarGroup max={4} sx={{ alignItems: 'center'}}>
-            {actualProject?.users.map(u => <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 24, height: 24 }} />)}
+          <AvatarGroup max={4} sx={{ alignItems: 'center'}} >
+            {actualProject?.users.map(u => <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />)}
+          </AvatarGroup>
           <Button
             onClick={() => handleAssignUser()}
             variant='outlined' 
@@ -183,13 +215,11 @@ function ProjectDetail() {
             <Person2OutlinedIcon />
             Assigned to Project
           </Button>         
-          </AvatarGroup>
         </Container>
       </ProjectInfo>
 
-      <ListContainer elevation={4}>
-        <>
-          {listProject &&
+      <ListContainer elevation={4}>        
+        {listProject &&
             listProject.map((l) => (
               <ListInfo
                 key={l.id}
@@ -201,9 +231,11 @@ function ProjectDetail() {
                 deleteTaskClick={(id) => handleShowDeleteTask(id, l.id)}
               />
             ))}
-          <ButtonInput labelText="List Name" buttonText="Add another List" addClick={(nameList) => handleAddList(nameList)} />
-        </>
+          <ButtonInput labelText="List Name" buttonText="Add another List" addClick={(nameList) => handleAddList(nameList)} />        
       </ListContainer>
+      {listProject.length == 0 && (
+          <EmptyContent message='Hey Try to Create a new List'/>
+      )}
 
       <Dialog
         open={showDialog}
@@ -235,7 +267,11 @@ function ProjectDetail() {
         ) : null}
 
         {showDialog && typeForm.form === FORMS.assign ? (
-          <AssignUser users={actualProject?.users ?? []}/>
+          <AssignUser 
+            users={actualProject?.users ?? []}
+            cancelClick={toggleDialog}
+            acceptClick={(usersId) => handleAssignedUser(usersId)}
+          />
         ) : null}
       </Dialog>
     </Layout>

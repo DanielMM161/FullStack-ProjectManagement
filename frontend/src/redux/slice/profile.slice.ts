@@ -1,11 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialProfileState } from '../../models/profile.model';
+import { emptyUser } from '../../models/user.model';
 import { getProfile, register } from '../../services/auth.service';
 
 export const profileSlice = createSlice({
   name: 'profile',
   initialState: initialProfileState,
-  reducers: {},
+  reducers: {
+    logOut: (state) => {
+      localStorage.removeItem('profile')
+      localStorage.removeItem('token')
+      state.profile = emptyUser
+    }
+  },
   extraReducers: (build) => {
     /** fulfilled */
     build.addCase(getProfile.fulfilled, (state, action) => {
@@ -16,5 +23,7 @@ export const profileSlice = createSlice({
     });
   },
 });
+
+export const { logOut } = profileSlice.actions;
 
 export default profileSlice.reducer;

@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { showNotification } from '../utils/common';
 import instance from '../utils/constants';
 import { CreateSubTaskRequest, UpdateDoneSubTaskRequest } from './request/subTask.request';
 
@@ -13,8 +14,11 @@ const createSubTask = createAsyncThunk('createSubTask', async (request: CreateSu
     },
   });
 
-  if (response.status === 200) return response.data;
+  if (response.status === 200) {    
+    return response.data;
+  }
 
+  showNotification('Add Subtask', 'Error Creating Subtask', 'danger');
   return null;
 });
 
