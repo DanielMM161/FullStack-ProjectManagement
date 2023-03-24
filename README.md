@@ -1,5 +1,6 @@
+
 # Fullstack Project Management System
-Hi, Welcome to my Fullstack Project Management System, I made this project using React/Typescript for the Front-end part and .Net Core for the Back-end part
+Hi, Welcome to my Fullstack Project Management Systme, I made this project using React/Typescript for the Front-end part and .Net Core for the Back-end part
 
 ## Funcionality
 * When a user is Logged can do:
@@ -14,19 +15,79 @@ Hi, Welcome to my Fullstack Project Management System, I made this project using
 * Improve the Design and UX
 * Dark Mode
 
-## Projects
-<details>
-	<summary><h1>FRONT END</h1></summary>
-	## 🛠 Tech stack & Open-source libraries
-	- [React](https://github.com/facebook/react) - version 18.2.0
-	- [TypeScript](https://github.com/Microsoft/TypeScript) - version 4.9.4
-	- [React Router](https://github.com/remix-run/react-router#readme) - Routes App
-	- [Redux](https://github.com/reduxjs/redux) - Global State
-	- [Styled Components](https://github.com/styled-components/styled-components) - Styles App version 5.3.6
-	- [Axios](https://github.com/axios/axios) - Construct the REST APIs  version 1.2.1
-	- [Jest](https://github.com/facebook/jest) - Testing 
-</details>
+## Front End Project
+A modern minimal Vite + React + TypeScript template with pre-configured ESLint (with Airbnb JS/React rules), Prettier
+### Run Locally
 
+Clone the project
+
+[Here](https://github.com/DanielMM161/FullStack-ProjectManagement/archive/refs/heads/main.zip) 
+
+Go to the frontend directory
+
+```bash
+  cd frontend
+```
+
+Install dependencies
+
+```bash
+  npm install / yarn
+```
+
+Start the server
+
+```bash
+  npm run dev / yarn run dev
+```
+### 🛠 Tech stack & Open-source libraries
+- [React](https://github.com/facebook/react) - version ^18.2.0
+- [TypeScript](https://github.com/Microsoft/TypeScript) - version ^4.8.2
+- [React Router](https://github.com/remix-run/react-router#readme) - Routes App
+- [Redux](https://github.com/reduxjs/redux) - Global State
+- [Axios](https://github.com/axios/axios) - Construct the REST APIs: version 1.2.1
+- [Mui Components](https://mui.com/material-ui/getting-started/installation/) - Mui Library Components: version ^5.11.8
+- [React Notifications Component](https://github.com/teodosii/react-notifications-component) - version ^4.0.1
+
+## Project Structure
 <details>
-	<summary><h1>BACKEND END</h1></summary>
+<summary>Open Project Structure</summary>
+``` bash
+├───components
+│   ├───AssignUser
+│   ├───ButtonInput
+│   ├───CardProject
+│   ├───ControlledInput
+│   ├───DialogContent
+│   ├───EmptyContent
+│   ├───Forms
+│   ├───HorizontalScrollLayout
+│   ├───InputControlButton
+│   ├───Layout
+│   ├───ListButtonItem
+│   ├───ListInfo
+│   ├───LoadingPulsating
+│   ├───MenuOptions
+│   ├───MenuPriorityTask
+│   ├───SelectUser
+│   ├───SideBar
+│   │   └───styled
+│   ├───SubTaskItem
+│   ├───TaskDetail
+│   ├───TaskList
+│   ├───TransferList
+│   └───UserValidation
+├───hooks
+├───models
+├───pages
+│   ├───Dashboard
+│   ├───Project
+│   └───Register
+├───redux
+│   └───slice
+├───services
+│   └───request
+├───transitions
+└───utils
+```
 </details>
