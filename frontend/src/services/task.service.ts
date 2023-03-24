@@ -6,10 +6,12 @@ import instance from '../utils/constants';
 import { CreateTaskRequest, TaskUserRequest, UpdateTaskRequest } from './request/task.request';
 
 const createTask = createAsyncThunk('createTask', async (request: CreateTaskRequest, thunkApi) => {
-  thunkApi.dispatch(showLoading({
-    title: 'Creating Task', 
-    show: true
-  } as Loading)) 
+  thunkApi.dispatch(
+    showLoading({
+      title: 'Creating Task',
+      show: true,
+    } as Loading),
+  );
   const token = JSON.parse(localStorage.getItem('token') ?? '');
   const response = await instance.post('tasks', request, {
     headers: {
@@ -47,7 +49,7 @@ const removeUser = createAsyncThunk('removeUser', async (request: TaskUserReques
     },
   );
 
-  if (response.status === 200) {    
+  if (response.status === 200) {
     return response.data;
   }
 
@@ -67,7 +69,7 @@ const assignUser = createAsyncThunk('assignUser', async (request: TaskUserReques
     },
   );
 
-  if (response.status === 200) {    
+  if (response.status === 200) {
     return response.data;
   }
 
@@ -91,17 +93,19 @@ const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequ
       },
     },
   );
-  
+
   if (response.status === 200) return response.data;
 
   return false;
 });
 
 const deleteTask = createAsyncThunk('createTask', async (id: number, thunkApi) => {
-  thunkApi.dispatch(showLoading({
-    title: 'Deleting Task', 
-    show: true
-  } as Loading))
+  thunkApi.dispatch(
+    showLoading({
+      title: 'Deleting Task',
+      show: true,
+    } as Loading),
+  );
   const token = JSON.parse(localStorage.getItem('token') ?? '');
   const response = await instance.delete(`tasks/${id}`, {
     headers: {
@@ -109,8 +113,8 @@ const deleteTask = createAsyncThunk('createTask', async (id: number, thunkApi) =
     },
   });
 
-  if (response.status === 200) {    
-    return response.data
+  if (response.status === 200) {
+    return response.data;
   }
 
   showNotification('Delete Task', 'Error Deleting Task', 'danger');

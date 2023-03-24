@@ -5,17 +5,15 @@ export const loadingSlice = createSlice({
   name: 'loading',
   initialState: initialLoadingState,
   reducers: {
-    showLoading: (state, action) => {      
-        state.loading = action.payload      
+    showLoading: (state, action) => {
+      state.loading = action.payload;
     },
     closeLoading: (state) => {
-        console.log("close loading")
-      state.loading = initialLoadingState.loading
-    }
+      console.log('close loading');
+      state.loading = initialLoadingState.loading;
+    },
   },
-  extraReducers: (build) => {
-
-  },
+  extraReducers: (build) => {},
 });
 
 export const { showLoading, closeLoading } = loadingSlice.actions;

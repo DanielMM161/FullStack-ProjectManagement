@@ -23,18 +23,18 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 const ProjectInfo = styled('div')({
   display: 'flex',
-  flexDirection: 'column',  
+  flexDirection: 'column',
   alignItems: 'flex-start',
   padding: '1.5rem',
   gap: 20,
-  borderRadius: 18
+  borderRadius: 18,
 });
 
 const ListContainer = styled(Paper)({
   marginTop: '1rem',
   display: 'grid',
   height: '100%',
-  width: '100%',  
+  width: '100%',
   overflowX: 'scroll',
   alignItems: 'flex-start',
   padding: '1.5rem',
@@ -42,11 +42,11 @@ const ListContainer = styled(Paper)({
   gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
   gap: '25px',
   borderRadius: 18,
-  overflow: 'hidden'
+  overflow: 'hidden',
 });
 
 const Container = styled('div')({
-  display: 'flex',  
+  display: 'flex',
   gap: 20,
   alignItems: 'center',
   justifyContent: 'center',
@@ -55,8 +55,8 @@ const Container = styled('div')({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 });
 
 function ProjectDetail() {
@@ -67,7 +67,7 @@ function ProjectDetail() {
   const [listSelectedId, setListSelectedId] = useState(0);
   const [taskSelectedId, setTaskSelectedId] = useState(0);
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
-  const [showDeleteTask, setShowDeleteTask] = useState(false);  
+  const [showDeleteTask, setShowDeleteTask] = useState(false);
 
   useEffect(() => {
     const id = Number.parseInt(projectId ?? '0', 10);
@@ -141,27 +141,26 @@ function ProjectDetail() {
   }
 
   function handleShowDeleteTask(taskId: number, listId: number) {
-    setListSelectedId(listId)
-    setTaskSelectedId(taskId)
+    setListSelectedId(listId);
+    setTaskSelectedId(taskId);
     setTypeForm({
       title: 'Delete Task',
       form: FORMS.delete,
     });
-    setShowDeleteTask(!showDeleteTask)
+    setShowDeleteTask(!showDeleteTask);
     toggleDialog();
   }
 
   function handleDeleteTask() {
-    dispatch(deleteTask(taskSelectedId))
-    .then(result => {      
+    dispatch(deleteTask(taskSelectedId)).then((result) => {
       if (result && result.payload) {
-        let items = [...listProject]
-        const item = items.filter(i => i.id === listSelectedId)
-        const index = items.indexOf(item[0])
-        items[index].tasks = item[0].tasks.filter(t => t.id !== taskSelectedId)        
-        setListProject(items)        
+        let items = [...listProject];
+        const item = items.filter((i) => i.id === listSelectedId);
+        const index = items.indexOf(item[0]);
+        items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
+        setListProject(items);
       }
-    })
+    });
     toggleDialog();
   }
 
@@ -175,67 +174,71 @@ function ProjectDetail() {
 
   function handleAssignedUser(usersId: number[]) {
     toggleDialog();
-    dispatch(updateProject({
+    dispatch(
+      updateProject({
         id: actualProject?.id ?? 0,
         name: actualProject?.name ?? '',
         description: actualProject?.description ?? '',
         usersId: usersId,
-      })
-    )
-    .then(result => {
+      }),
+    ).then((result) => {
       if (result && result.payload) {
-        setActualProject(result.payload)
+        setActualProject(result.payload);
       }
-    })
+    });
   }
 
   return (
     <Layout>
-      <ProjectInfo >
+      <ProjectInfo>
         <Container>
-          <Typography sx={{textTransform: 'capitalize'}} variant="h2">{actualProject?.name}</Typography>
-          <div className='update-info'>
-            <Typography variant="h6" sx={{fontWeight: 'bold'}}>Last Updated on:</Typography>
-            <Chip
-              icon={<CalendarMonthIcon />}
-              label={formatDate(actualProject?.updatedAt ?? '')}
-            />
-
+          <Typography sx={{ textTransform: 'capitalize' }} variant="h2">
+            {actualProject?.name}
+          </Typography>
+          <div className="update-info">
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Last Updated on:
+            </Typography>
+            <Chip icon={<CalendarMonthIcon />} label={formatDate(actualProject?.updatedAt ?? '')} />
           </div>
         </Container>
         <Container>
-          <AvatarGroup max={4} sx={{ alignItems: 'center'}} >
-            {actualProject?.users.map(u => <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />)}
+          <AvatarGroup max={4} sx={{ alignItems: 'center' }}>
+            {actualProject?.users.map((u) => (
+              <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />
+            ))}
           </AvatarGroup>
           <Button
             onClick={() => handleAssignUser()}
-            variant='outlined' 
-            sx={{ border: 'none', color: 'black', gap: 1, fontWeight: 'bold', textTransform: 'none'}}
+            variant="outlined"
+            sx={{ border: 'none', color: 'black', gap: 1, fontWeight: 'bold', textTransform: 'none' }}
           >
             <Person2OutlinedIcon />
             Assigned to Project
-          </Button>         
+          </Button>
         </Container>
       </ProjectInfo>
 
-      <ListContainer elevation={4}>        
+      <ListContainer elevation={4}>
         {listProject &&
-            listProject.map((l) => (
-              <ListInfo
-                key={l.id}
-                title={l.title}
-                tasks={l.tasks}
-                taskClick={(id) => handleTaskClick(id)}
-                addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
-                deleteListClick={() => handleDeleteListClick(l.id)}
-                deleteTaskClick={(id) => handleShowDeleteTask(id, l.id)}
-              />
-            ))}
-          <ButtonInput labelText="List Name" buttonText="Add another List" addClick={(nameList) => handleAddList(nameList)} />        
+          listProject.map((l) => (
+            <ListInfo
+              key={l.id}
+              title={l.title}
+              tasks={l.tasks}
+              taskClick={(id) => handleTaskClick(id)}
+              addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
+              deleteListClick={() => handleDeleteListClick(l.id)}
+              deleteTaskClick={(id) => handleShowDeleteTask(id, l.id)}
+            />
+          ))}
+        <ButtonInput
+          labelText="List Name"
+          buttonText="Add another List"
+          addClick={(nameList) => handleAddList(nameList)}
+        />
       </ListContainer>
-      {listProject.length == 0 && (
-          <EmptyContent message='Hey Try to Create a new List'/>
-      )}
+      {listProject.length == 0 && <EmptyContent message="Hey Try to Create a new List" />}
 
       <Dialog
         open={showDialog}
@@ -267,7 +270,7 @@ function ProjectDetail() {
         ) : null}
 
         {showDialog && typeForm.form === FORMS.assign ? (
-          <AssignUser 
+          <AssignUser
             users={actualProject?.users ?? []}
             cancelClick={toggleDialog}
             acceptClick={(usersId) => handleAssignedUser(usersId)}

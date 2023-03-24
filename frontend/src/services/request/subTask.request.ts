@@ -1,11 +1,11 @@
 export interface CreateSubTaskRequest {
-    taskParentId: number
-    title: string
-    createdById: number
+  taskParentId: number;
+  title: string;
+  createdById: number;
 }
 
 export interface UpdateDoneSubTaskRequest {
-    taskParentId: number,
-    subTaskId: number,
-    done: boolean
+  taskParentId: number;
+  subTaskId: number;
+  done: boolean;
 }

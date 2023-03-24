@@ -22,7 +22,7 @@ function SideBar() {
       <div className="avatar-info">
         <div className="info-name">
           <Avatar alt={profile.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 36, height: 36 }} />
-          <Typography variant='h6' sx={{marginLeft: '8px'}}>
+          <Typography variant="h6" sx={{ marginLeft: '8px' }}>
             {profile.firstName} {profile.lastName}
           </Typography>
         </div>
@@ -36,10 +36,15 @@ function SideBar() {
             <SettingsIcon />
           </ListButtonItem>
         </List>
-      </ListContainer>      
-      <LogoutContainer >
+      </ListContainer>
+      <LogoutContainer>
         <List>
-          <ListButtonItem title='Log out' onClick={() => {dispatch(logOut())}}>
+          <ListButtonItem
+            title="Log out"
+            onClick={() => {
+              dispatch(logOut());
+            }}
+          >
             <LogoutIcon />
           </ListButtonItem>
         </List>

@@ -7,7 +7,7 @@ export const store = configureStore({
   reducer: {
     profile: profileSlice.reducer,
     projects: projectSlice.reducer,
-    loading: loadingSlice.reducer
+    loading: loadingSlice.reducer,
   },
 });
 

@@ -18,7 +18,7 @@ function ControlledInput({ onUpdate }: ControlledInputProps) {
 
   return (
     <TextField
-      autoFocus={true}       
+      autoFocus={true}
       id="standard-basic"
       label="Search User"
       variant="outlined"
@@ -26,7 +26,7 @@ function ControlledInput({ onUpdate }: ControlledInputProps) {
       sx={{
         marginBottom: '1rem',
         marginTop: '1rem',
-        width: '100%'
+        width: '100%',
       }}
       onChange={(e) => setValue(e.target.value)}
     />

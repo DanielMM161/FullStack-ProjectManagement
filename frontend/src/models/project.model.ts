@@ -10,7 +10,7 @@ export interface Project {
   description: string;
   created: Date;
   users: User[];
-  updatedAt: string
+  updatedAt: string;
 }
 
 export const initialProjectState: ProjectInitialState = {

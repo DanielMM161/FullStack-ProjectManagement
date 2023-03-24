@@ -46,7 +46,7 @@ const InfoContainer = styled(Box)({
   display: 'flex',
   gap: 30,
   width: '100%',
-  alignItems: 'center', 
+  alignItems: 'center',
   marginBottom: '1rem',
 });
 
@@ -58,8 +58,8 @@ const ChipContainer = styled(Box)({
 });
 
 const SubTaskContainer = styled('div')({
-    display: 'flex',
-    flexDirection: 'column'
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 interface TaskDetailProps {
@@ -76,17 +76,16 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
   const [taskTitle, setTaskTitle] = useState(task.title);
   const [taskDescription, setTaskDescription] = useState(task.description);
   const [editing, setEditing] = useState(false);
-  const [showAddSubTask, setShowAddSubTask] = useState(false);  
+  const [showAddSubTask, setShowAddSubTask] = useState(false);
   const [value, setValue] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
-    dispatch(getTaskById(taskId))
-    .then((result) => {
+    dispatch(getTaskById(taskId)).then((result) => {
       if (result && result.payload) {
         setIsLoading(!isLoading);
-        const item = result.payload as Task
-        setTask(item);        
+        const item = result.payload as Task;
+        setTask(item);
         setTaskDescription(item.description);
       }
     });
@@ -164,7 +163,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         if (result && result.payload) {
           setTask(result.payload);
         }
-      });      
+      });
     }
   }
 
@@ -182,52 +181,53 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         if (result && result.payload) {
           setTask(result.payload);
         }
-      });      
+      });
     }
   }
 
   function handleAddSubTask(subTaskName: string) {
-    dispatch(createSubTask({
+    dispatch(
+      createSubTask({
         taskParentId: task.id,
         title: subTaskName,
-        createdById: profile.id
-    }))
-    .then(result => {
-        if (result && result.payload) {
-            const item = {...task}
-            item.subTasks?.push(result.payload)
-            setTask(item)
-        }
-    })
-    setShowAddSubTask(!showAddSubTask)
+        createdById: profile.id,
+      }),
+    ).then((result) => {
+      if (result && result.payload) {
+        const item = { ...task };
+        item.subTasks?.push(result.payload);
+        setTask(item);
+      }
+    });
+    setShowAddSubTask(!showAddSubTask);
   }
 
   function handleDeleteSubTask(subTaskId: number) {
-    dispatch(deleteTask(subTaskId))
-    .then(result => {
-        if (result && result.payload) {
-            const item = {...task}
-            item.subTasks = item.subTasks?.filter(i => i.id !== subTaskId)
-            setTask(item)
-        }
-    })
+    dispatch(deleteTask(subTaskId)).then((result) => {
+      if (result && result.payload) {
+        const item = { ...task };
+        item.subTasks = item.subTasks?.filter((i) => i.id !== subTaskId);
+        setTask(item);
+      }
+    });
   }
 
   function handleUpdateDoneSubTask(done: boolean, subTaskId: number) {
-    dispatch(updateDoneSubTask({
+    dispatch(
+      updateDoneSubTask({
         taskParentId: task.id,
         subTaskId: subTaskId,
-        done:done
-    }))
-    .then(result => {
+        done: done,
+      }),
+    ).then((result) => {
       if (result && result.payload) {
-        const item = {...task}
-        const subTask = item.subTasks?.filter(st => st.id !== subTaskId)
+        const item = { ...task };
+        const subTask = item.subTasks?.filter((st) => st.id !== subTaskId);
         subTask?.push(result.payload);
         item.subTasks = subTask;
-        setTask(item)
+        setTask(item);
       }
-    })
+    });
   }
 
   return (
@@ -241,12 +241,12 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     >
       {editing ? (
         <TextField
-          autoFocus={true}       
+          autoFocus={true}
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
           onBlur={() => {
-            handleUpdateTitle()
-            setEditing(!editing)
+            handleUpdateTitle();
+            setEditing(!editing);
           }}
           size="small"
           onKeyDown={(e) => {
@@ -260,8 +260,11 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
       )}
 
       <Typography variant="caption" marginTop="4px" marginBottom="4px">
-        Priority: 
-        <MenuPriorityTask actualPriority={task?.priority} selectPriorityClick={(priority) => handleUpdatePriority(priority)} />
+        Priority:
+        <MenuPriorityTask
+          actualPriority={task?.priority}
+          selectPriorityClick={(priority) => handleUpdatePriority(priority)}
+        />
       </Typography>
       <Divider />
 
@@ -273,7 +276,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         <ChipContainer>
           {task?.users.map((user) => (
             <Chip
-            key={user.email}
+              key={user.email}
               avatar={<Avatar key={user.email} alt={user.firstName} src={user.avatar} />}
               label={user.firstName}
               onDelete={() => handleRemoveUser(user.id)}
@@ -287,7 +290,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         <Typography variant="subtitle2" display="block" gutterBottom>
           Due Date
         </Typography>
-        {formatDate(task?.dueDate.toString())}        
+        {formatDate(task?.dueDate.toString())}
       </InfoContainer>
 
       <InfoContainer>
@@ -325,15 +328,13 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
             }}
           />
         </TabPanel>
-        <TabPanel value={value} index={1}>
-          
-        </TabPanel>
+        <TabPanel value={value} index={1}></TabPanel>
       </Box>
 
       <InfoContainer paddingTop="1rem">
         {showAddSubTask ? (
           <InputControlButton
-            label='Subtask Name'
+            label="Subtask Name"
             addClick={(value) => handleAddSubTask(value)}
             closeClick={() => setShowAddSubTask(!showAddSubTask)}
           />
@@ -348,17 +349,18 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           </Typography>
         )}
       </InfoContainer>
-        <SubTaskContainer>
-            {task.subTasks && task.subTasks.map(st => 
-                <SubTaskItem 
-                    key={st.id} 
-                    title={st.title} 
-                    done={st.done} 
-                    deleteOnClick={() => handleDeleteSubTask(st.id)} 
-                    checkedClick={(done) => handleUpdateDoneSubTask(done, st.id)}
-                />
-            )}
-        </SubTaskContainer>
+      <SubTaskContainer>
+        {task.subTasks &&
+          task.subTasks.map((st) => (
+            <SubTaskItem
+              key={st.id}
+              title={st.title}
+              done={st.done}
+              deleteOnClick={() => handleDeleteSubTask(st.id)}
+              checkedClick={(done) => handleUpdateDoneSubTask(done, st.id)}
+            />
+          ))}
+      </SubTaskContainer>
     </Box>
   );
 }

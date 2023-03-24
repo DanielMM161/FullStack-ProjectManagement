@@ -6,7 +6,7 @@ export enum FORMS {
   update,
   delete,
   detail,
-  assign
+  assign,
 }
 
 interface IStateForms {

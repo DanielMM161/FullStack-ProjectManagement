@@ -11,12 +11,12 @@ const Layout = styled(Paper)({
   width: '100%',
   maxHeight: '40px',
   backgroundColor: 'white',
-  borderRadius: 3
+  borderRadius: 3,
 });
 
 const TitleContainer = styled('div')({
   width: '100%',
-})
+});
 
 interface TaskListProps {
   title: string;
@@ -24,17 +24,15 @@ interface TaskListProps {
   onDeleteClick: () => void;
 }
 
-function TaskList({ title, onClick, onDeleteClick }: TaskListProps) {  
+function TaskList({ title, onClick, onDeleteClick }: TaskListProps) {
   return (
     <Layout elevation={1}>
-      <TitleContainer onClick={onClick}>
-        {title}
-      </TitleContainer>
+      <TitleContainer onClick={onClick}>{title}</TitleContainer>
       <IconButton onClick={onDeleteClick}>
         <DeleteIcon />
       </IconButton>
     </Layout>
-  )
+  );
 }
 
 export default TaskList;

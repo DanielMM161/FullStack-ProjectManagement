@@ -3,7 +3,7 @@ import useAuth from '../../hooks/useAuth.hook';
 
 function UserValidation() {
   const isAuth = useAuth();
-  return isAuth ? <Outlet /> : <Navigate to="/login" />;
+  return isAuth ? <Outlet /> : <Navigate to="/" />;
 }
 
 export default UserValidation;

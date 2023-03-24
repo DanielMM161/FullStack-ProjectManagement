@@ -1,15 +1,15 @@
 export interface Loading {
-    title: string,
-    show: boolean
+  title: string;
+  show: boolean;
 }
 
 interface LoadingSlice {
-    loading: Loading
+  loading: Loading;
 }
 
 export const initialLoadingState: LoadingSlice = {
-    loading: {
-        title: '',
-        show: false
-    }
-}
+  loading: {
+    title: '',
+    show: false,
+  },
+};

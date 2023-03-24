@@ -14,14 +14,16 @@ const createList = createAsyncThunk('createList', async (request: CreateListRequ
     });
 
     if (response.status === 200) {
-      thunkApi.dispatch(showLoading({
-        title: 'Creating List', 
-        show: true
-      } as Loading))
+      thunkApi.dispatch(
+        showLoading({
+          title: 'Creating List',
+          show: true,
+        } as Loading),
+      );
       return response.data;
     }
     return null;
-  } catch (error) {    
+  } catch (error) {
     return null;
   }
 });
@@ -34,7 +36,7 @@ const getListsByProject = createAsyncThunk('getListsByProject', async (projectId
     },
   });
 
-  if (response.status === 200) {    
+  if (response.status === 200) {
     return response.data;
   }
   return null;
@@ -49,10 +51,12 @@ const deleteList = createAsyncThunk('deleteList', async (id: number, thunkApi) =
   });
 
   if (response.status === 200) {
-    thunkApi.dispatch(showLoading({
-      title: 'Deleting List', 
-      show: true
-    } as Loading))
+    thunkApi.dispatch(
+      showLoading({
+        title: 'Deleting List',
+        show: true,
+      } as Loading),
+    );
     return response.data;
   }
 

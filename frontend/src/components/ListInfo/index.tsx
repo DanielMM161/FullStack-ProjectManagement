@@ -9,7 +9,7 @@ const Container = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
-  height: '100%',  
+  height: '100%',
 });
 
 const Content = styled(Paper)({
@@ -18,7 +18,7 @@ const Content = styled(Paper)({
   flexDirection: 'column',
   width: '100%',
   backgroundColor: '#e1e1e1',
-  borderRadius: 3
+  borderRadius: 3,
 });
 
 const TaskContent = styled('div')({
@@ -26,7 +26,7 @@ const TaskContent = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
-  gap: 10,  
+  gap: 10,
 });
 
 const Header = styled('div')({
@@ -41,11 +41,11 @@ interface ListInfoProps {
   tasks: Task[];
   taskClick: (id: number) => void;
   addTaskClick: (taskName: string) => void;
-  deleteListClick: () => void;  
-  deleteTaskClick: (taskId: number) => void;  
+  deleteListClick: () => void;
+  deleteTaskClick: (taskId: number) => void;
 }
 
-function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, deleteTaskClick }: ListInfoProps) {  
+function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, deleteTaskClick }: ListInfoProps) {
   return (
     <Container>
       <Content elevation={2}>
@@ -59,12 +59,17 @@ function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, dele
         {tasks && tasks.length > 0 && (
           <TaskContent>
             {tasks.map((t) => (
-              <TaskList key={t.id} onClick={() => taskClick(t.id)} title={t.title} onDeleteClick={() => deleteTaskClick(t.id)} />
+              <TaskList
+                key={t.id}
+                onClick={() => taskClick(t.id)}
+                title={t.title}
+                onDeleteClick={() => deleteTaskClick(t.id)}
+              />
             ))}
           </TaskContent>
         )}
 
-        <ButtonInput labelText='Task Name' buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
+        <ButtonInput labelText="Task Name" buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
       </Content>
     </Container>
   );

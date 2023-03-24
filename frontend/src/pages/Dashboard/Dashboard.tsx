@@ -23,27 +23,26 @@ const ProjectSummaryContainer = styled('div')({
   alignItems: 'center',
   '& .textContainer': {
     display: 'flex',
-   'flex-direction': 'column'
-  }
+    'flex-direction': 'column',
+  },
 });
 
 const ProjectsContainer = styled(Paper)({
   marginTop: '1rem',
   height: '100%',
   display: 'grid',
-  overflow: 'scroll',  
+  overflow: 'scroll',
   //gridAutoFlow: 'column',
   //gridTemplateRows: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
   gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
   padding: '1.5rem',
-  backgroundColor: '#ffffff',  
+  backgroundColor: '#ffffff',
   gap: '18px',
   borderRadius: 18,
   '&::-webkit-scrollbar': {
-    display: 'none'
-  }
+    display: 'none',
+  },
 });
-
 
 function Dashboard() {
   const dispatch = useAppDispatch();
@@ -118,12 +117,14 @@ function Dashboard() {
   return (
     <Layout>
       <ProjectSummaryContainer>
-        <div className='textContainer'>
-          <Typography variant='h4'>Project Summary</Typography>
-          <Typography variant='subtitle2' sx={{ color: 'gray' }}>You can edit all the stufs as you wish</Typography>
+        <div className="textContainer">
+          <Typography variant="h4">Project Summary</Typography>
+          <Typography variant="subtitle2" sx={{ color: 'gray' }}>
+            You can edit all the stufs as you wish
+          </Typography>
         </div>
         <Button
-          sx={{heigh: '70%'}}
+          sx={{ heigh: '70%' }}
           variant="outlined"
           onClick={() => {
             showCreateProject();
@@ -145,10 +146,8 @@ function Dashboard() {
               editProject={() => showEditProject(project)}
               deleteProject={() => showDeleteProject(project)}
             />
-        ))}
-      {projects.length == 0 && (
-          <EmptyContent message='Hey Try to Create a new Project'/>
-      )}
+          ))}
+        {projects.length == 0 && <EmptyContent message="Hey Try to Create a new Project" />}
       </ProjectsContainer>
 
       <Dialog

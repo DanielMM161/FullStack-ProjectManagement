@@ -82,7 +82,7 @@ function Register() {
           </Typography>
           <form style={{ width: '100%' }}>
             <TextField
-              autoFocus={true}       
+              autoFocus={true}
               id="name"
               label="Name"
               variant="outlined"

@@ -8,10 +8,10 @@ export const profileSlice = createSlice({
   initialState: initialProfileState,
   reducers: {
     logOut: (state) => {
-      localStorage.removeItem('profile')
-      localStorage.removeItem('token')
-      state.profile = emptyUser
-    }
+      localStorage.removeItem('profile');
+      localStorage.removeItem('token');
+      state.profile = emptyUser;
+    },
   },
   extraReducers: (build) => {
     /** fulfilled */

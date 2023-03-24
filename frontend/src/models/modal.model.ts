@@ -1,28 +1,27 @@
 export enum FORMS {
-    none,
-    create,
-    update,
-    delete,
-    detail,
+  none,
+  create,
+  update,
+  delete,
+  detail,
 }
-  
+
 export interface ModalState {
-    show: boolean
-    title: string;
-    message: string;
-    form: FORMS;
+  show: boolean;
+  title: string;
+  message: string;
+  form: FORMS;
 }
 
 export interface modalInitialState {
-    modal: ModalState
+  modal: ModalState;
 }
 
 export const initialModalState: modalInitialState = {
-    modal: {
-        show: false,
-        title: '',
-        message: '',
-        form: FORMS.none
-    }
-}
-  
+  modal: {
+    show: false,
+    title: '',
+    message: '',
+    form: FORMS.none,
+  },
+};
