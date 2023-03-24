@@ -54,6 +54,21 @@ Start the server
 ## Back End Project
 This projects has been made with  ASP .NET Core (6), Entity Framework Core, PostgreSQ
 
+### Entity Relationship Diagram
+![Database ERD](images/ERdiagram.png)
+
+### Main Endpoint
+* this is the Main Endpoint: https://backend-myprojectmanagement.azurewebsites.net/api/v1/
+If you want to use the api check the swagger docu: [Swagger](https://backend-myprojectmanagement.azurewebsites.net/index.html)
+
+### 🛠 Tech stack & Open-source libraries
+- [AutoMapper](https://www.nuget.org/packages/automapper/) - version 12.0.1
+- [Naming Convention](https://www.nuget.org/packages/EFCore.NamingConventions) - version 6.0.0
+- [JwtBearer](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer) - version 6.0.14
+- [Entity Framework core](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore) - version 6.0.14
+- [Entity Framework Design](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Design/) - version 6.0.14
+- [Jwt](https://www.nuget.org/packages/System.IdentityModel.Tokens.Jwt/) - version 6.27.0
+
 ### Run Locally
 
 Clone the project
@@ -128,19 +143,3 @@ Start the server
 ```bash
   dotnet run
 ```
-
-### Entity Relationship Diagram
-![Database ERD](Images/db_erd.png)
-
-### Main Endpoint
-* this is the Main Endpoint: https://backend-myprojectmanagement.azurewebsites.net/api/v1/
-If you want to use the api check the swagger docu: [Swagger](https://backend-myprojectmanagement.azurewebsites.net/index.html)
-
-### 🛠 Tech stack & Open-source libraries
-- [AutoMapper](https://www.nuget.org/packages/automapper/) - version 12.0.1
-- [Naming Convention](https://www.nuget.org/packages/EFCore.NamingConventions) - version 6.0.0
-- [JwtBearer](https://www.nuget.org/packages/Microsoft.AspNetCore.Authentication.JwtBearer) - version 6.0.14
-- [Entity Framework core](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore) - version 6.0.14
-- [Entity Framework Design](https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.Design/) - version 6.0.14
-- [Jwt](https://www.nuget.org/packages/System.IdentityModel.Tokens.Jwt/) - version 6.27.0
-
