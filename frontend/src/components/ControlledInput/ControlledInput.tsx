@@ -1,5 +1,5 @@
-import { TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { TextField } from '@mui/material';
 
 interface ControlledInputProps {
   onUpdate: (value: string) => void;
@@ -18,7 +18,7 @@ function ControlledInput({ onUpdate }: ControlledInputProps) {
 
   return (
     <TextField
-      autoFocus={true}
+      autoFocus
       id="standard-basic"
       label="Search User"
       variant="outlined"

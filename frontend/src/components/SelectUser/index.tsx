@@ -1,27 +1,14 @@
-import styled from '@emotion/styled';
 import { Avatar, Chip, Divider, IconButton, Menu, Paper, Typography } from '@mui/material';
 import { useState } from 'react';
 import { Add } from '@mui/icons-material';
-import { User } from '../../models/user.model';
+import { User } from '../../models/user';
 import ControlledInput from '../ControlledInput/ControlledInput';
+import LayoutUserContainer from './styled';
 
 interface SelectUserProps {
   users: User[];
   selectUserClick: (user: User) => void;
 }
-
-const Layout = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  padding: '1rem',
-});
-
-const UserContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  scrollBehavior: 'smooth',
-  overflowY: 'scroll',
-});
 
 function SelectUser({ users, selectUserClick }: SelectUserProps) {
   const [members, setMembers] = useState(users);
@@ -36,7 +23,7 @@ function SelectUser({ users, selectUserClick }: SelectUserProps) {
     setAnchorEl(null);
   }
 
-  function handleOnUpdateInput(text: string) {    
+  function handleOnUpdateInput(text: string) {
     if (text.trim() === '') {
       setMembers(users);
     } else {
@@ -66,7 +53,7 @@ function SelectUser({ users, selectUserClick }: SelectUserProps) {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <Layout>
+        <LayoutUserContainer>
           <Typography variant="subtitle1" textAlign="center">
             Members
           </Typography>
@@ -75,7 +62,7 @@ function SelectUser({ users, selectUserClick }: SelectUserProps) {
           <Typography variant="subtitle1" sx={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
             All Members
           </Typography>
-          <UserContainer>
+          <div className="user-container">
             {members.map((u) => (
               <Chip
                 key={u.email}
@@ -86,8 +73,8 @@ function SelectUser({ users, selectUserClick }: SelectUserProps) {
                 onClick={() => handleSelectUser(u)}
               />
             ))}
-          </UserContainer>
-        </Layout>
+          </div>
+        </LayoutUserContainer>
       </Menu>
     </>
   );

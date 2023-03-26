@@ -1,15 +1,15 @@
 import { Route, Routes } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
-import Dashboard from './pages/Dashboard/Dashboard';
+import { ReactNotifications } from 'react-notifications-component';
+import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import AppContent from './AppContent';
-import Register from './pages/Register/Register';
-import ProjectDetail from './pages/Project/ProjectDetail';
+import Register from './pages/Register';
+import ProjectDetail from './pages/Project';
 import UserValidation from './components/UserValidation/UserValidation';
-import { ReactNotifications } from 'react-notifications-component';
 import 'react-notifications-component/dist/theme.css';
-import './App.css';
 import LoadingPulsating from './components/LoadingPulsating';
+import './App.css';
 
 function App() {
   return (

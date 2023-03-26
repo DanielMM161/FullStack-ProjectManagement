@@ -1,4 +1,4 @@
-import { emptyUser, User } from './user.model';
+import { emptyUser, User } from './user';
 
 export interface ProfileInitialState {
   profile: User;

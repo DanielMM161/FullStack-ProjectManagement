@@ -16,8 +16,8 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import TransferList from '../TransferList/TransferList';
-import { User } from '../../models/user.model';
-import { CreateProjectRequest } from '../../services/request/project.request';
+import { User } from '../../models/user';
+import { CreateProjectRequest } from '../../services/request/project';
 import useUsers from '../../hooks/useUsers.hook';
 import { useAppSelector } from '../../hooks/redux.hook';
 import './style.css';

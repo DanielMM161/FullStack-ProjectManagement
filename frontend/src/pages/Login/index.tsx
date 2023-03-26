@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router';
-import { useAppDispatch } from '../hooks/redux.hook';
-import { getProfile, login } from '../services/auth.service';
+import { useAppDispatch } from '../../hooks/redux.hook';
+import { getProfile, login } from '../../services/auth';
 
 function Login() {
   const dispatch = useAppDispatch();
@@ -60,7 +60,7 @@ function Login() {
           </Typography>
           <form style={{ width: '100%' }}>
             <TextField
-              autoFocus={true}
+              autoFocus
               id="email"
               label="Email"
               variant="outlined"

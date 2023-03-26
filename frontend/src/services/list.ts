@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Loading } from '../models/loading.model';
-import { showLoading } from '../redux/slice/loading.slice';
+import { Loading } from '../models/loading';
+import { showLoading } from '../redux/slice/loading';
 import instance from '../utils/constants';
-import { CreateListRequest } from './request/list.request';
+import { CreateListRequest } from './request/list';
 
 const createList = createAsyncThunk('createList', async (request: CreateListRequest, thunkApi) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');

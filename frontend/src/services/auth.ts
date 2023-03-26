@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { emptyUser } from '../models/user.model';
+import { emptyUser } from '../models/user';
 import instance from '../utils/constants';
-import { LoginRequest, RegisterRequest } from './request/user.request';
+import { LoginRequest, RegisterRequest } from './request/user';
 import { showNotification } from '../utils/common';
-import { showLoading } from '../redux/slice/loading.slice';
-import { Loading } from './../models/loading.model';
+import { showLoading } from '../redux/slice/loading';
+import { Loading } from '../models/loading';
 
 const getProfile = createAsyncThunk('profile', async (_, thunkAPI) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');

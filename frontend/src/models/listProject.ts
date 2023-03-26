@@ -1,4 +1,4 @@
-import { Task } from './task.model';
+import { Task } from './task';
 
 export interface ListProject {
   id: number;

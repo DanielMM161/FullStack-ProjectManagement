@@ -13,9 +13,9 @@ export function formatDate(dateStr: string) {
 
 export function showNotification(title: string, message: string, type: NOTIFICATION_TYPE) {
   Store.addNotification({
-    title: title,
-    message: message,
-    type: type,
+    title,
+    message,
+    type,
     insert: 'bottom',
     container: 'bottom-right',
     animationIn: ['animate__animated', 'animate__fadeIn'],

@@ -10,7 +10,7 @@ const pulseRing = keyframes`
   }
 `;
 
-export const StyledLoadingPulsating = styled('div')({
+const StyledLoadingPulsating = styled('div')({
   display: 'flex',
   position: 'fixed',
   top: 0,
@@ -46,3 +46,5 @@ export const StyledLoadingPulsating = styled('div')({
     color: 'black',
   },
 });
+
+export default StyledLoadingPulsating;

@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { StyledEmptyContent } from './styled';
+import StyledEmptyContent from './styled';
 
 interface EmptyContentProps {
   message: string;

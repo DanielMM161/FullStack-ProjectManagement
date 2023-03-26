@@ -1,30 +1,8 @@
-import { Avatar, Typography, MenuItem, Paper, styled, AvatarGroup, Chip } from '@mui/material';
-import { Project } from '../../models/project.model';
-import MenuOptions from '../MenuOptions';
+import { Avatar, Typography, MenuItem, AvatarGroup, Chip } from '@mui/material';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
-
-const CardLayout = styled(Paper)({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'space-between',
-  maxWidth: 345,
-  padding: '1rem',
-  borderRadius: 8,
-  minHeight: 240,
-  maxHeight: 280,
-  '& .title-info': {
-    display: 'flex',
-    'justify-content': 'space-between',
-  },
-  '& .users-container': {
-    'margin-bottom': '1rem',
-    display: 'flex',
-    'justify-content': 'space-between',
-    '& .icons-content': {
-      display: 'flex',
-    },
-  },
-});
+import { Project } from '../../models/project';
+import MenuOptions from '../MenuOptions';
+import CardLayout from './styled';
 
 interface CardProjectProps {
   project: Project;

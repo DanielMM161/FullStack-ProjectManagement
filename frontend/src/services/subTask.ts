@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { showNotification } from '../utils/common';
 import instance from '../utils/constants';
-import { CreateSubTaskRequest, UpdateDoneSubTaskRequest } from './request/subTask.request';
+import { CreateSubTaskRequest, UpdateDoneSubTaskRequest } from './request/subTask';
 
 const createSubTask = createAsyncThunk('createSubTask', async (request: CreateSubTaskRequest) => {
   const token = JSON.parse(localStorage.getItem('token') ?? '');

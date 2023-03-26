@@ -1,15 +1,12 @@
-import { Avatar, IconButton, List, Typography } from '@mui/material';
+import { useNavigate } from 'react-router';
+import { Avatar, List, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SettingsIcon from '@mui/icons-material/Settings';
-
+import LogoutIcon from '@mui/icons-material/Logout';
 import ListButtonItem from '../ListButtonItem/ListButtonItem';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
-import { useNavigate } from 'react-router';
-//import './style.css';
-import { ListContainer, LogoutContainer, SideBarLayout } from './styled';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Logout } from '@mui/icons-material';
-import { logOut } from '../../redux/slice/profile.slice';
+import StyledSideBar from './styled';
+import { logOut } from '../../redux/slice/profile';
 
 function SideBar() {
   const dispatch = useAppDispatch();
@@ -18,7 +15,7 @@ function SideBar() {
   const { profile } = profileState;
 
   return (
-    <SideBarLayout>
+    <StyledSideBar>
       <div className="avatar-info">
         <div className="info-name">
           <Avatar alt={profile.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 36, height: 36 }} />
@@ -27,7 +24,7 @@ function SideBar() {
           </Typography>
         </div>
       </div>
-      <ListContainer>
+      <div className="list-container">
         <List>
           <ListButtonItem title="Dashboard" onClick={() => navigate('/dashboard')}>
             <DashboardIcon />
@@ -36,8 +33,8 @@ function SideBar() {
             <SettingsIcon />
           </ListButtonItem>
         </List>
-      </ListContainer>
-      <LogoutContainer>
+      </div>
+      <div className="logout-container">
         <List>
           <ListButtonItem
             title="Log out"
@@ -48,8 +45,8 @@ function SideBar() {
             <LogoutIcon />
           </ListButtonItem>
         </List>
-      </LogoutContainer>
-    </SideBarLayout>
+      </div>
+    </StyledSideBar>
   );
 }
 

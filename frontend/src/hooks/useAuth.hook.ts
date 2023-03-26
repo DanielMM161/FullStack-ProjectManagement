@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './redux.hook';
-import { getProfile } from '../services/auth.service';
+import { getProfile } from '../services/auth';
 
 const useAuth = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getProfile());    
+    dispatch(getProfile());
   }, [dispatch]);
 
   const profileState = useAppSelector((store) => store.profile);

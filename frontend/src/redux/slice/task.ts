@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { initialTaskState } from '../../models/task.model';
+import { initialTaskState } from '../../models/task';
 
 export const taskSlice = createSlice({
   name: 'task',

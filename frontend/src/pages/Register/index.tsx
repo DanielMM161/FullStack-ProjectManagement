@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Container, Box, Typography, TextField, Button } from '@mui/material';
-
 import { useAppDispatch } from '../../hooks/redux.hook';
-import { login, register } from '../../services/auth.service';
+import { login, register } from '../../services/auth';
 
 function Register() {
   const dispatch = useAppDispatch();
@@ -82,7 +81,7 @@ function Register() {
           </Typography>
           <form style={{ width: '100%' }}>
             <TextField
-              autoFocus={true}
+              autoFocus
               id="name"
               label="Name"
               variant="outlined"

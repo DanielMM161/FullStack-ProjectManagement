@@ -1,14 +1,8 @@
 import { Chip, Menu, styled } from '@mui/material';
 import { useState } from 'react';
-import { Priority } from '../../models/task.model';
 import FlagIcon from '@mui/icons-material/Flag';
-
-const PrioritiesContainer = styled('div')({
-  padding: '0.5rem',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: 10,
-});
+import { Priority } from '../../models/task';
+import PrioritiesContainer from './styled';
 
 interface MenuPriorityTaskProps {
   actualPriority: Priority;

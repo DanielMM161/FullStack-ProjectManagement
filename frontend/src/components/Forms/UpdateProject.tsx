@@ -15,10 +15,10 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import TransferList from '../TransferList/TransferList';
-import { User } from '../../models/user.model';
+import { User } from '../../models/user';
 
 import './style.css';
-import { Project } from '../../models/project.model';
+import { Project } from '../../models/project';
 import useUsers from '../../hooks/useUsers.hook';
 
 interface IUpdateProjectProps {

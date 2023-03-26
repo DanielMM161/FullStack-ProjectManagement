@@ -1,8 +1,7 @@
-import { StyledLoadingPulsating } from './styled';
 import { useEffect } from 'react';
-import { useAppSelector } from '../../hooks/redux.hook';
-import { useAppDispatch } from './../../hooks/redux.hook';
-import { closeLoading } from '../../redux/slice/loading.slice';
+import { useAppSelector, useAppDispatch } from '../../hooks/redux.hook';
+import { closeLoading } from '../../redux/slice/loading';
+import StyledLoadingPulsating from './styled';
 
 function LoadingPulsating() {
   const dispatch = useAppDispatch();
@@ -21,7 +20,7 @@ function LoadingPulsating() {
     <>
       {loading.show ? (
         <StyledLoadingPulsating>
-          <div className="pulsating-circle"></div>
+          <div className="pulsating-circle" />
           <span>{loading.title}</span>
         </StyledLoadingPulsating>
       ) : null}

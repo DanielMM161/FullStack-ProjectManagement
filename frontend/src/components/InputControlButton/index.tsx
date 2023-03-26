@@ -1,18 +1,7 @@
-import { Button, IconButton, styled, TextField } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react';
-
-const Container = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-});
-
-const ButtonsContainer = styled('div')({
-  marginTop: 5,
-  display: 'flex',
-  alignItems: 'flex-start',
-  gap: 5,
-});
+import { Button, IconButton, TextField } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import StyledInputControlButton from './styled';
 
 interface InputControlButtonProps {
   label: string;
@@ -30,9 +19,9 @@ function InputControlButton({ label, addClick, closeClick }: InputControlButtonP
   }
 
   return (
-    <Container>
+    <StyledInputControlButton>
       <TextField
-        autoFocus={true}
+        autoFocus
         id="outlined-basic"
         size="small"
         label={label}
@@ -40,15 +29,15 @@ function InputControlButton({ label, addClick, closeClick }: InputControlButtonP
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
       />
-      <ButtonsContainer>
+      <div className="buttons-container">
         <Button onClick={() => handleAddClick()} variant="contained" size="small">
           Add
         </Button>
         <IconButton size="small" onClick={closeClick}>
           <CloseIcon />
         </IconButton>
-      </ButtonsContainer>
-    </Container>
+      </div>
+    </StyledInputControlButton>
   );
 }
 

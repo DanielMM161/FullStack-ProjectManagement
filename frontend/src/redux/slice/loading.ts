@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { initialLoadingState } from '../../models/loading.model';
+import { initialLoadingState } from '../../models/loading';
 
 export const loadingSlice = createSlice({
   name: 'loading',
@@ -8,7 +8,7 @@ export const loadingSlice = createSlice({
     showLoading: (state, action) => {
       state.loading = action.payload;
     },
-    closeLoading: (state) => {      
+    closeLoading: (state) => {
       state.loading = initialLoadingState.loading;
     },
   },

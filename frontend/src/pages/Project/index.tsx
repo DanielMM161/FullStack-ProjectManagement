@@ -1,63 +1,25 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import styled from '@emotion/styled';
 import { Typography, AvatarGroup, Avatar, Dialog, Button, Paper, Chip } from '@mui/material';
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
-import { createList, deleteList, getListsByProject } from '../../services/list.service';
-import { ListProject } from '../../models/listProject.model';
+import { createList, deleteList, getListsByProject } from '../../services/list';
+import { ListProject } from '../../models/listProject';
 import ListInfo from '../../components/ListInfo';
-import { getProjectId, updateProject } from '../../services/project.service';
-import { Project } from '../../models/project.model';
-import Transition from '../../transitions/transition';
+import { getProjectId, updateProject } from '../../services/project';
+import { Project } from '../../models/project';
+import Transition from '../../transitions';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
-import { createTask, deleteTask } from '../../services/task.service';
+import { createTask, deleteTask } from '../../services/task';
 import TaskDetail from '../../components/TaskDetail';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
 import { formatDate } from '../../utils/common';
-import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import AssignUser from '../../components/AssignUser';
 import EmptyContent from '../../components/EmptyContent';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-
-const ProjectInfo = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  padding: '1.5rem',
-  gap: 20,
-  borderRadius: 18,
-});
-
-const ListContainer = styled(Paper)({
-  marginTop: '1rem',
-  display: 'grid',
-  height: '100%',
-  width: '100%',
-  overflowX: 'scroll',
-  alignItems: 'flex-start',
-  padding: '1.5rem',
-  backgroundColor: '#ffffff',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
-  gap: '25px',
-  borderRadius: 18,
-  overflow: 'hidden',
-});
-
-const Container = styled('div')({
-  display: 'flex',
-  gap: 20,
-  alignItems: 'center',
-  justifyContent: 'center',
-  '& .update-info': {
-    marginLeft: '2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
+import { ListContainer, ProjectInfo } from './styled';
 
 function ProjectDetail() {
   const { projectId } = useParams();
@@ -106,7 +68,7 @@ function ProjectDetail() {
     dispatch(deleteList(listSelectedId)).then((result) => {
       if (result && result.payload) {
         const newList = listProject.filter((l) => l.id !== listSelectedId);
-        console.log("new list --< ", newList)
+        console.log('new list --< ', newList);
         setListProject(newList);
       }
     });
@@ -155,7 +117,7 @@ function ProjectDetail() {
   function handleDeleteTask() {
     dispatch(deleteTask(taskSelectedId)).then((result) => {
       if (result && result.payload) {
-        let items = [...listProject];
+        const items = [...listProject];
         const item = items.filter((i) => i.id === listSelectedId);
         const index = items.indexOf(item[0]);
         items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
@@ -180,7 +142,7 @@ function ProjectDetail() {
         id: actualProject?.id ?? 0,
         name: actualProject?.name ?? '',
         description: actualProject?.description ?? '',
-        usersId: usersId,
+        usersId,
       }),
     ).then((result) => {
       if (result && result.payload) {
@@ -192,7 +154,7 @@ function ProjectDetail() {
   return (
     <Layout>
       <ProjectInfo>
-        <Container>
+        <div className="project-info-container">
           <Typography sx={{ textTransform: 'capitalize' }} variant="h2">
             {actualProject?.name}
           </Typography>
@@ -202,8 +164,8 @@ function ProjectDetail() {
             </Typography>
             <Chip icon={<CalendarMonthIcon />} label={formatDate(actualProject?.updatedAt ?? '')} />
           </div>
-        </Container>
-        <Container>
+        </div>
+        <div className="project-info-container">
           <AvatarGroup max={4} sx={{ alignItems: 'center' }}>
             {actualProject?.users.map((u) => (
               <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />
@@ -217,7 +179,7 @@ function ProjectDetail() {
             <Person2OutlinedIcon />
             Assigned to Project
           </Button>
-        </Container>
+        </div>
       </ProjectInfo>
 
       <ListContainer elevation={4}>
@@ -239,7 +201,7 @@ function ProjectDetail() {
           addClick={(nameList) => handleAddList(nameList)}
         />
       </ListContainer>
-      {listProject.length == 0 && <EmptyContent message="Hey Try to Create a new List" />}
+      {listProject.length === 0 && <EmptyContent message="Hey Try to Create a new List" />}
 
       <Dialog
         open={showDialog}

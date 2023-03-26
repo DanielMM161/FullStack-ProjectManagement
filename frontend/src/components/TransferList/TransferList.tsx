@@ -1,20 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
-import {
-  Avatar,
-  Button,
-  Card,
-  CardHeader,
-  Checkbox,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  TextField,
-} from '@mui/material';
+import { Avatar, Button, Card, CardHeader, Checkbox, Divider, Grid, List, ListItem, ListItemText } from '@mui/material';
 
-import { User } from '../../models/user.model';
+import { User } from '../../models/user';
 import ControlledInput from '../ControlledInput/ControlledInput';
 
 function not(a: readonly User[], b: readonly User[]) {

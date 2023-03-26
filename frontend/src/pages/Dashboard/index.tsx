@@ -1,48 +1,20 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Dialog, styled, Typography, Paper } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { Button, Dialog, Typography, Paper } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import CardProject from '../../components/CardProject/CardProject';
 import CreateProject from '../../components/Forms/CreateProject';
-import { CreateProjectRequest } from '../../services/request/project.request';
-import Transition from '../../transitions/transition';
-import { createProject, deleteProject, getProjects, updateProject } from '../../services/project.service';
-import { removeProject } from '../../redux/slice/project.slice';
+import { CreateProjectRequest } from '../../services/request/project';
+import Transition from '../../transitions';
+import { createProject, deleteProject, getProjects, updateProject } from '../../services/project';
+import { removeProject } from '../../redux/slice/project';
 import UpdateProject from '../../components/Forms/UpdateProject';
-import { Project } from '../../models/project.model';
+import { Project } from '../../models/project';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import Layout from '../../components/Layout';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
-import './style.css';
-import { closeLoading } from '../../redux/slice/loading.slice';
 import EmptyContent from '../../components/EmptyContent';
-
-const ProjectSummaryContainer = styled('div')({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  '& .textContainer': {
-    display: 'flex',
-    'flex-direction': 'column',
-  },
-});
-
-const ProjectsContainer = styled(Paper)({
-  marginTop: '1rem',
-  height: '100%',
-  display: 'grid',
-  overflow: 'scroll',
-  //gridAutoFlow: 'column',
-  //gridTemplateRows: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
-  padding: '1.5rem',
-  backgroundColor: '#ffffff',
-  gap: '18px',
-  borderRadius: 18,
-  '&::-webkit-scrollbar': {
-    display: 'none',
-  },
-});
+import { ProjectsContainer, ProjectSummaryContainer } from './styled';
 
 function Dashboard() {
   const dispatch = useAppDispatch();
@@ -53,7 +25,6 @@ function Dashboard() {
   const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
 
   const getUserProjects = useCallback(() => {
-    //dispatch(closeLoading());
     dispatch(getProjects());
   }, [dispatch]);
 

@@ -13,11 +13,11 @@ export interface ModalState {
   form: FORMS;
 }
 
-export interface modalInitialState {
+export interface ModalInitialState {
   modal: ModalState;
 }
 
-export const initialModalState: modalInitialState = {
+export const initialModalState: ModalInitialState = {
   modal: {
     show: false,
     title: '',

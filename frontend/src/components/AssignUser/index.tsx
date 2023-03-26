@@ -1,15 +1,9 @@
-import styled from '@emotion/styled';
-import { Button, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useState } from 'react';
+import { Button, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import useUsers from '../../hooks/useUsers.hook';
-import { User } from '../../models/user.model';
+import { User } from '../../models/user';
 import TransferList from '../TransferList/TransferList';
-
-const Layout = styled('div')({
-  padding: '1rem',
-  display: 'flex',
-  flexDirection: 'column',
-});
+import StyledAssignUser from './styled';
 
 interface AssignUserProps {
   users: User[];
@@ -22,7 +16,7 @@ function AssignUser({ users, cancelClick, acceptClick }: AssignUserProps) {
   const { allUsers } = useUsers();
 
   return (
-    <Layout>
+    <StyledAssignUser>
       <DialogTitle>Assign User</DialogTitle>
       <DialogContent className="create-project-content" sx={{ width: '100%' }}>
         {allUsers.length > 0 ? (
@@ -33,7 +27,7 @@ function AssignUser({ users, cancelClick, acceptClick }: AssignUserProps) {
         <Button onClick={() => cancelClick()}>Cancel</Button>
         <Button onClick={() => acceptClick(usersIn.map((u) => u.id))}>Acept</Button>
       </DialogActions>
-    </Layout>
+    </StyledAssignUser>
   );
 }
 

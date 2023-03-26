@@ -1,20 +1,7 @@
-import styled from '@emotion/styled';
+import { useState } from 'react';
 import { Checkbox, IconButton, Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from 'react';
-
-const Layout = styled('div')({
-  display: 'flex',
-  width: '100%',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-});
-
-const TitleContainer = styled('div')({
-  display: 'flex',
-  alignItems: 'center',
-  gap: 8,
-});
+import StyledSubTaskItem from './styled';
 
 interface SubTaskItemProps {
   title: string;
@@ -32,15 +19,15 @@ function SubTaskItem({ title, done, deleteOnClick, checkedClick }: SubTaskItemPr
   }
 
   return (
-    <Layout>
-      <TitleContainer>
+    <StyledSubTaskItem>
+      <div className="title-container">
         <Checkbox defaultChecked size="small" checked={checked} onClick={() => handleCheckedClick()} />
         <Typography variant="subtitle1">{title}</Typography>
-      </TitleContainer>
+      </div>
       <IconButton onClick={deleteOnClick}>
         <DeleteIcon />
       </IconButton>
-    </Layout>
+    </StyledSubTaskItem>
   );
 }
 

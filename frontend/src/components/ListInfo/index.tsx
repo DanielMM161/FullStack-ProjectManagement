@@ -1,40 +1,9 @@
-import styled from '@emotion/styled';
-import { MenuItem, Paper } from '@mui/material';
+import { MenuItem } from '@mui/material';
 import TaskList from '../TaskList';
 import ButtonInput from '../ButtonInput';
 import MenuOptions from '../MenuOptions';
-import { Task } from '../../models/task.model';
-
-const Container = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  height: '100%',
-});
-
-const Content = styled(Paper)({
-  padding: '1rem',
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  backgroundColor: '#e1e1e1',
-  borderRadius: 3,
-});
-
-const TaskContent = styled('div')({
-  marginBottom: '1rem',
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  gap: 10,
-});
-
-const Header = styled('div')({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: '1rem',
-});
+import { Task } from '../../models/task';
+import { Content, StyledListInfo } from './styled';
 
 interface ListInfoProps {
   title: string;
@@ -47,17 +16,17 @@ interface ListInfoProps {
 
 function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, deleteTaskClick }: ListInfoProps) {
   return (
-    <Container>
+    <StyledListInfo>
       <Content elevation={2}>
-        <Header>
+        <div className="head-list">
           {title}
           <MenuOptions>
             <MenuItem onClick={deleteListClick}>Delete</MenuItem>
           </MenuOptions>
-        </Header>
+        </div>
 
         {tasks && tasks.length > 0 && (
-          <TaskContent>
+          <div className="task-content">
             {tasks.map((t) => (
               <TaskList
                 key={t.id}
@@ -66,12 +35,12 @@ function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, dele
                 onDeleteClick={() => deleteTaskClick(t.id)}
               />
             ))}
-          </TaskContent>
+          </div>
         )}
 
         <ButtonInput labelText="Task Name" buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
       </Content>
-    </Container>
+    </StyledListInfo>
   );
 }
 

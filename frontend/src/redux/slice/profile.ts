@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { initialProfileState } from '../../models/profile.model';
-import { emptyUser } from '../../models/user.model';
-import { getProfile, register } from '../../services/auth.service';
+import { initialProfileState } from '../../models/profile';
+import { emptyUser } from '../../models/user';
+import { getProfile, register } from '../../services/auth';
 
 export const profileSlice = createSlice({
   name: 'profile',

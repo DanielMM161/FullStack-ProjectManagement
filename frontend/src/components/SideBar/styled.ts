@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const SideBarLayout = styled('div')({
+const StyledSideBar = styled('div')({
   position: 'fixed',
   width: '300px',
   height: '100%',
@@ -15,14 +15,14 @@ export const SideBarLayout = styled('div')({
       alignItems: 'center',
     },
   },
+  '& .list-container': {
+    padding: '1rem',
+  },
+  '& .logout-container': {
+    position: 'fixed',
+    bottom: 0,
+    padding: '1rem',
+  },
 });
 
-export const ListContainer = styled('div')({
-  padding: '1rem',
-});
-
-export const LogoutContainer = styled('div')({
-  position: 'fixed',
-  bottom: 0,
-  padding: '1rem',
-});
+export default StyledSideBar;

@@ -1,7 +1,6 @@
-import { BorderAll } from '@mui/icons-material';
 import { styled } from '@mui/material';
 
-export const StyledEmptyContent = styled('div')({
+const StyledEmptyContent = styled('div')({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -17,3 +16,5 @@ export const StyledEmptyContent = styled('div')({
   maxHeight: '200px',
   border: 'solid 1px',
 });
+
+export default StyledEmptyContent;

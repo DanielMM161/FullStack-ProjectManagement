@@ -1,4 +1,4 @@
-import { emptyUser, User } from './user.model';
+import { emptyUser, User } from './user';
 
 interface TaskInitialState {
   tasks: Task[];

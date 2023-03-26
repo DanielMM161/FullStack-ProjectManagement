@@ -1,9 +1,9 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Loading } from '../models/loading.model';
-import { showLoading } from '../redux/slice/loading.slice';
+import { Loading } from '../models/loading';
+import { showLoading } from '../redux/slice/loading';
 import { showNotification } from '../utils/common';
 import instance from '../utils/constants';
-import { CreateTaskRequest, TaskUserRequest, UpdateTaskRequest } from './request/task.request';
+import { CreateTaskRequest, TaskUserRequest, UpdateTaskRequest } from './request/task';
 
 const createTask = createAsyncThunk('createTask', async (request: CreateTaskRequest, thunkApi) => {
   thunkApi.dispatch(

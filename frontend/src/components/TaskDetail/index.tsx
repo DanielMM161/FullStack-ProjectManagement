@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
 import { Avatar, Chip, Divider, styled, Tab, Tabs, TextField, Typography, Box } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
-import { initialTaskValue, Task } from '../../models/task.model';
-import { assignUser, deleteTask, getTaskById, removeUser, updateTask } from '../../services/task.service';
-import { User } from '../../models/user.model';
+import { initialTaskValue, Task } from '../../models/task';
+import { assignUser, deleteTask, getTaskById, removeUser, updateTask } from '../../services/task';
+import { User } from '../../models/user';
 import SelectUser from '../SelectUser';
 
 import InputControlButton from '../InputControlButton';
-import { createSubTask, updateDoneSubTask } from '../../services/subTask.service';
+import { createSubTask, updateDoneSubTask } from '../../services/subTask';
 import SubTaskItem from '../SubTaskItem';
 import { formatDate } from '../../utils/common';
 import MenuPriorityTask from '../MenuPriorityTask';
+import { InfoContainer, StyledTaskDetail } from './styled';
 
 interface TabPanelProps {
   children: React.ReactNode;
@@ -41,26 +42,6 @@ function a11yProps(index: number) {
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-
-const InfoContainer = styled(Box)({
-  display: 'flex',
-  gap: 30,
-  width: '100%',
-  alignItems: 'center',
-  marginBottom: '1rem',
-});
-
-const ChipContainer = styled(Box)({
-  display: 'grid',
-  width: '100%',
-  gap: 5,
-  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 6rem), 1fr))',
-});
-
-const SubTaskContainer = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-});
 
 interface TaskDetailProps {
   members: User[];
@@ -174,7 +155,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           id: task.id,
           title: task.title,
           description: task.description,
-          priority: priority,
+          priority,
           dueDate: task.dueDate.toString(),
         }),
       ).then((result) => {
@@ -193,7 +174,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         createdById: profile.id,
       }),
     ).then((result) => {
-      if (result && result.payload) {        
+      if (result && result.payload) {
         const item = { ...task };
         item.subTasks?.push(result.payload);
         setTask(item);
@@ -216,8 +197,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     dispatch(
       updateDoneSubTask({
         taskParentId: task.id,
-        subTaskId: subTaskId,
-        done: done,
+        subTaskId,
+        done,
       }),
     ).then((result) => {
       if (result && result.payload) {
@@ -231,17 +212,10 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
   }
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        padding: '1rem',
-        flexDirection: 'column',
-        width: '500px',
-      }}
-    >
+    <StyledTaskDetail>
       {editing ? (
         <TextField
-          autoFocus={true}
+          autoFocus
           value={taskTitle}
           onChange={(e) => setTaskTitle(e.target.value)}
           onBlur={() => {
@@ -273,7 +247,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           Assigness
         </Typography>
         <SelectUser users={members} selectUserClick={(user) => handleAssignUser(user)} />
-        <ChipContainer>
+        <div className="chip-container">
           {task?.users.map((user) => (
             <Chip
               key={user.email}
@@ -283,7 +257,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
               size="small"
             />
           ))}
-        </ChipContainer>
+        </div>
       </InfoContainer>
 
       <InfoContainer>
@@ -328,14 +302,16 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
             }}
           />
         </TabPanel>
-        <TabPanel value={value} index={1}></TabPanel>
+        <TabPanel value={value} index={1}>
+          <></>
+        </TabPanel>
       </Box>
 
       <InfoContainer paddingTop="1rem">
         {showAddSubTask ? (
           <InputControlButton
             label="Subtask Name"
-            addClick={(value) => handleAddSubTask(value)}
+            addClick={(inputValue) => handleAddSubTask(inputValue)}
             closeClick={() => setShowAddSubTask(!showAddSubTask)}
           />
         ) : (
@@ -349,7 +325,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           </Typography>
         )}
       </InfoContainer>
-      <SubTaskContainer>
+      <div className="subtask-container">
         {task.subTasks &&
           task.subTasks.map((st) => (
             <SubTaskItem
@@ -360,8 +336,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
               checkedClick={(done) => handleUpdateDoneSubTask(done, st.id)}
             />
           ))}
-      </SubTaskContainer>
-    </Box>
+      </div>
+    </StyledTaskDetail>
   );
 }
 
