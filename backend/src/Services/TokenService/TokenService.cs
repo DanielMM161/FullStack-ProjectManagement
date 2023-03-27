@@ -1,4 +1,4 @@
-namespace backend.src.Services.TokenService.cs;
+namespace backend.src.Services.TokenService;
 
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

@@ -1,4 +1,4 @@
-namespace backend.src.Services.AuthService.cs;
+namespace backend.src.Services.AuthService;
 
 using backend.src.DTOs.Auth;
 using backend.src.DTOs.User;

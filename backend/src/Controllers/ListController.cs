@@ -9,14 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 [Authorize]
 public class ListController : BaseController<List, ListReadDTO, ListCreateDTO, ListUpdateDTO>
 {
+    private readonly IListService _service;    
 
-    private readonly IListService _service;
-    private readonly ILogger<ProjectController> _logger;
-
-    public ListController(ILogger<ProjectController> logger, IListService service) : base(service)
+    public ListController(IListService service) : base(service)
     {
-        _service = service;
-        _logger = logger;
+        _service = service;        
     }
 
     [HttpGet("project/{projectId:int}")]

@@ -16,12 +16,7 @@ public class UserController : ApiControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(UserCreateDTO request)
     {
-        var user = await _service.Create(request);
-        if (user is null) 
-        {
-            return BadRequest();
-        }
-        return Ok(user);        
+        return Ok( await _service.Create(request));        
     }
     
     [HttpGet]

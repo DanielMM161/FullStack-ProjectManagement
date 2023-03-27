@@ -10,13 +10,11 @@ using backend.src.Models;
 public class ProjectController : BaseController<Project, ProjectReadDTO, ProjectCreateDTO, ProjectUpdateDTO>
 {
     private readonly IAuthorizationService _authService;
-    private readonly IProjectService _service;    
-    private readonly ILogger<ProjectController> _logger;
+    private readonly IProjectService _service;        
 
-    public ProjectController(ILogger<ProjectController> logger, IProjectService service, IAuthorizationService authService) : base(service)
+    public ProjectController(IProjectService service, IAuthorizationService authService) : base(service)
     {
-        _service = service;
-        _logger = logger;
+        _service = service;        
         _authService = authService;
     }
 

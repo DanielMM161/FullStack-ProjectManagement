@@ -1,4 +1,4 @@
-namespace backend.src.Services.AuthService.cs;
+namespace backend.src.Services.AuthService;
 
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,7 +6,7 @@ using backend.src.DTOs.Auth;
 using backend.src.DTOs.User;
 using backend.src.Helpers;
 using backend.src.Models;
-using backend.src.Services.TokenService.cs;
+using backend.src.Services.TokenService;
 using Microsoft.AspNetCore.Identity;
 
 public class AuthService : IAuthService

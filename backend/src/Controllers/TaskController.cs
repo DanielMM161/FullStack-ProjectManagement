@@ -5,7 +5,7 @@ using backend.src.DTOs.SubTask;
 using backend.src.DTOs.Task;
 using backend.src.Models;
 using backend.src.Services.SubTaskService;
-using backend.src.Services.TaskService.cs;
+using backend.src.Services.TaskService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,14 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 public class TaskController : BaseController<TaskList, TaskReadDTO, TaskCreateDTO, TaskUpdateDTO>
 {
     private readonly ITaskService _service;
-    private readonly ISubTaskService _subTaskService;
-    private readonly ILogger<TaskController> _logger;
+    private readonly ISubTaskService _subTaskService;    
 
-    public TaskController(ILogger<TaskController> logger, ITaskService service, ISubTaskService subTaskService) : base(service)
+    public TaskController(ITaskService service, ISubTaskService subTaskService) : base(service)
     {
         _service = service;
-        _subTaskService = subTaskService;
-        _logger = logger;
+        _subTaskService = subTaskService;        
     }
 
     [HttpPatch("{taskId:int}/assign-user")]

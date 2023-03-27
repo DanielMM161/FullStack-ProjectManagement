@@ -1,4 +1,4 @@
-namespace backend.src.Services.TaskService.cs;
+namespace backend.src.Services.TaskService;
 
 using AutoMapper;
 using backend.src.DTOs.Task;

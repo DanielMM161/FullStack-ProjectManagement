@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using backend.src.Models;
 using Microsoft.AspNetCore.Authorization;
 
-public class IsUserBelongProjectHandler : AuthorizationHandler<IsUserBelongProject, Project>
+public class BelongProjectHandlerRequirement : AuthorizationHandler<BelongProjectHandlerRequirement.BelongProjectRequirement, Project>
 {
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsUserBelongProject requirement, Project resource)
+    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, BelongProjectHandlerRequirement.BelongProjectRequirement requirement, Project resource)
     {
         var claim = context.User.FindFirst(ClaimTypes.NameIdentifier);
         var userId = Convert.ToInt32(claim != null ? claim.Value : "-1");
@@ -17,4 +17,6 @@ public class IsUserBelongProjectHandler : AuthorizationHandler<IsUserBelongProje
         }
         return Task.CompletedTask;
     }
+
+    public class BelongProjectRequirement : IAuthorizationRequirement {}
 }

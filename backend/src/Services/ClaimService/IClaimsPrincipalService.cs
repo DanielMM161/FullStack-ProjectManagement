@@ -1,9 +1,8 @@
+namespace backend.src.Helpers;
+
 using System.Security.Claims;
-using System.Security.Principal;
 using backend.src.Models;
 using backend.src.Repositories.ProjectRepo;
-
-namespace backend.src.Helpers;
 
 public interface IClaimsPrincipalService
 {

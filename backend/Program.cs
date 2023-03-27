@@ -3,19 +3,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
 using backend.src.Db;
 using backend.src.Models;
 using backend.src.Services.ProjectService;
 using backend.src.Services.UserService;
-using backend.src.Services.AuthService.cs;
+using backend.src.Services.AuthService;
 using backend.src.Services.ListService;
-using backend.src.Services.TokenService.cs;
+using backend.src.Services.TokenService;
 using backend.src.Repositories.ProjectRepo;
 using backend.src.Repositories.UserRepo;
 using backend.src.Repositories.ListRepo;
 using backend.src.Repositories.TaskRepo;
-using backend.src.Services.TaskService.cs;
+using backend.src.Services.TaskService;
 using backend.src.Services.SubTaskService;
 using backend.src.Repositories.SubTaskRepo;
 using backend.src.Authorization;
@@ -80,7 +79,7 @@ builder.Services.AddAuthorization(option =>
     option.AddPolicy(
         "Belong",
         policyBuuilder => policyBuuilder.AddRequirements(
-            new IsUserBelongProject())
+            new BelongProjectHandlerRequirement.BelongProjectRequirement())
         );
     });
 
@@ -93,7 +92,7 @@ builder.Services.AddTransient<ErrorHandleMiddleware>();
 builder.Services.AddTransient<ClaimsPrincipal>(s =>
     s.GetService<IHttpContextAccessor>().HttpContext.User);
 
-builder.Services.AddSingleton<IAuthorizationHandler, IsUserBelongProjectHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, BelongProjectHandlerRequirement>();
 
 builder.Services.AddScoped<IClaimsPrincipalService, ClaimsPrincipalService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

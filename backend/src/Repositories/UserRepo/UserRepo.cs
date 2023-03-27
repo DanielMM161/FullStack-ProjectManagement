@@ -5,7 +5,7 @@ using backend.src.DTOs.User;
 using backend.src.Models;
 using Microsoft.AspNetCore.Identity;
 using backend.src.Db;
-using backend.src.Services.TokenService.cs;
+using backend.src.Services.TokenService;
 using Microsoft.EntityFrameworkCore;
 
 public class UserRepo : IUserRepo

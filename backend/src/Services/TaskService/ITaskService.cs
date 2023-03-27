@@ -1,4 +1,4 @@
-namespace backend.src.Services.TaskService.cs;
+namespace backend.src.Services.TaskService;
 
 using backend.src.DTOs.Task;
 using backend.src.Models;

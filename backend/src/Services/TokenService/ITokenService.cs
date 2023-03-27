@@ -1,4 +1,4 @@
-namespace backend.src.Services.TokenService.cs;
+namespace backend.src.Services.TokenService;
 
 using backend.src.DTOs.Auth;
 using backend.src.Models;
