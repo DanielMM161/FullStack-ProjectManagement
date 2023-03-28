@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Container, Box, Typography, TextField, Button } from '@mui/material';
 import { useNavigate } from 'react-router';
+import { Box, Typography, TextField, Button } from '@mui/material';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import { getProfile, login } from '../../services/auth';
+import loginSVG from '../../assets/login.svg'
+import login2SVG from '../../assets/login-2.svg'
+import Layout from '../../styled/LoginRegisterLayout';
 
 function Login() {
   const dispatch = useAppDispatch();
@@ -41,65 +44,77 @@ function Login() {
   };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: '#f5f5f5',
-      }}
-    >
-      <Container maxWidth="sm">
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 10, mb: 4 }}>
-          <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
-            Welcome back!
+    <Layout>
+      <div className='left-side'>    
+        <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
+          Welcome back!
+        </Typography>
+        <Typography variant="body1" sx={{ mb: 4 }}>
+          Log in to your account to continue.
+        </Typography>
+        <Button variant="contained" fullWidth onClick={() => handleSubmit()}>
+            Log In With Google
+        </Button>
+        <div className='divider-area'>
+          <hr />
+          <Typography variant="subtitle1" >
+            Or Login With Email
           </Typography>
-          <Typography variant="body1" sx={{ mb: 4 }}>
-            Log in to your account to continue.
+          <hr />
+        </div>
+
+        <form style={{ width: '100%' }}>
+          <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
+            Email
           </Typography>
-          <form style={{ width: '100%' }}>
-            <TextField
-              autoFocus
-              id="email"
-              label="Email"
-              variant="outlined"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              error={Boolean(errors.email)}
-              helperText={errors.email}
-              required
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              id="password"
-              label="Password"
-              variant="outlined"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              error={Boolean(errors.password)}
-              helperText={errors.password}
-              type="password"
-              required
-              fullWidth
-              sx={{ mb: 2 }}
-            />
-            <Button variant="contained" fullWidth onClick={() => handleSubmit()}>
-              Log In
+          <TextField
+            autoFocus
+            id="email"
+            label="Email"
+            variant="outlined"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            error={Boolean(errors.email)}
+            helperText={errors.email}
+            required
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
+            Password
+          </Typography>
+          <TextField
+            id="password"
+            label="Password"
+            variant="outlined"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            error={Boolean(errors.password)}
+            helperText={errors.password}
+            type="password"
+            required
+            fullWidth
+            sx={{ mb: 2 }}
+          />
+          <Button variant="contained" sx={{marginTop: '1rem'}} fullWidth onClick={() => handleSubmit()}>
+            Log In
+          </Button>          
+        </form>
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="body1">
+            Don&apos;t have an account yet?{' '}
+            <Button component="a" href="/register" sx={{ pl: 0 }}>
+              Sign up now
             </Button>
-          </form>
-          <Box sx={{ mt: 4 }}>
-            <Typography variant="body1">
-              Don&apos;t have an account yet?{' '}
-              <Button component="a" href="/register" sx={{ pl: 0 }}>
-                Sign up now
-              </Button>
-            </Typography>
-          </Box>
+          </Typography>
         </Box>
-      </Container>
-    </Box>
+      </div>
+
+      <div className='right-side'>
+        <img id='first-logo' src={login2SVG} alt='logo' />
+        <img id='second-logo' src={loginSVG} alt='logo' />
+      </div>      
+    </Layout>
   );
 }
 

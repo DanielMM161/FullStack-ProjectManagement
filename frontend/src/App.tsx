@@ -10,23 +10,27 @@ import UserValidation from './components/UserValidation/UserValidation';
 import 'react-notifications-component/dist/theme.css';
 import LoadingPulsating from './components/LoadingPulsating';
 import './App.css';
+import { ThemeProvider } from '@mui/material';
+import theme from './theme';
 
 function App() {
   return (
     <BrowserRouter>
       <LoadingPulsating />
       <ReactNotifications />
-      <Routes>
-        <Route element={<UserValidation />}>
-          <Route element={<AppContent />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/project/:projectId" element={<ProjectDetail />} />
+      <ThemeProvider theme={theme}>
+        <Routes>
+          <Route element={<UserValidation />}>
+            <Route element={<AppContent />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/project/:projectId" element={<ProjectDetail />} />
+            </Route>
           </Route>
-        </Route>
-        <Route path="/login" element={<Login />} />
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }
