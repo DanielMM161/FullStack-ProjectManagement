@@ -1,20 +1,18 @@
 import styled from '@emotion/styled';
-import { Paper } from '@mui/material';
 
 export const StyledListInfo = styled('div')({
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
   height: '100%',
+  minWidth: '210px',
+  maxWidth: '210px'
 });
 
-export const Content = styled(Paper)({
-  padding: '1rem',
+export const Content = styled('div')({  
   display: 'flex',
   flexDirection: 'column',
-  width: '100%',
-  backgroundColor: '#e1e1e1',
-  borderRadius: 3,
+  width: '100%',  
   '& .head-list': {
     display: 'flex',
     justifyContent: 'space-between',
@@ -28,4 +26,10 @@ export const Content = styled(Paper)({
     width: '100%',
     gap: 10,
   },
+  '& .button-add-task': {
+    height: '30px',
+    background: 'white',
+    color: '#838383',
+    marginBottom: '1rem',
+  }
 });

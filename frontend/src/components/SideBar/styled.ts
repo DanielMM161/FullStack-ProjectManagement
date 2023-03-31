@@ -2,6 +2,7 @@ import { styled } from "@mui/material";
 
 const StyledSideBar = styled('div')(
   ({ theme }) => ({
+    zIndex: 1,
     position: 'fixed',
     width: '300px',
     height: '100%',
@@ -61,12 +62,7 @@ const StyledSideBar = styled('div')(
     },
     '& .list-container': {
       padding: '1rem',
-    },
-    // '& .logout-container': {
-    //   position: 'fixed',
-    //   bottom: 0,
-    //   padding: '1rem',
-    // },
+    }
   })
 )
 

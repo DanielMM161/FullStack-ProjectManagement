@@ -10,11 +10,14 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { logOut } from '../../redux/slice/profile';
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import { useState } from 'react';
+import { toggleSideBar } from '../../redux/slice/actions';
 
 function SideBar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const profileState = useAppSelector((state) => state.profile);
+  const actionsState = useAppSelector((state) => state.actions);
+  const { showSideBar } = actionsState;
   const [ dashboardItem, setDashboardItem] = useState(false);
   const [ projectItem, setProjectItem] = useState(false);
   const [ closeSideBar, setCloseSideBar] = useState(false);  
@@ -33,14 +36,14 @@ function SideBar() {
   }
 
   return (
-    <StyledSideBar className={closeSideBar ? 'close-side-bar glassmorphism' : 'open-side-bar'}>
+    <StyledSideBar className={showSideBar ? 'close-side-bar glassmorphism' : 'open-side-bar'}>
       <div className='top-side'>
         <div className="avatar-info">
           <div className="info-name">
             <Avatar alt={profile.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 56, height: 56 }} />
-            <KeyboardArrowLeftIcon  className='arrow-icon' onClick={() => setCloseSideBar(!closeSideBar)}/>
-            {closeSideBar ? (
-              <ExpandCircleDownIcon className='expand-icon' onClick={() => setCloseSideBar(!closeSideBar)} />
+            <KeyboardArrowLeftIcon  className='arrow-icon' onClick={() => dispatch(toggleSideBar())}/>
+            {showSideBar ? (
+              <ExpandCircleDownIcon className='expand-icon' onClick={() => dispatch(toggleSideBar())} />
             ) : null}
           </div>
             <Typography variant="h6">

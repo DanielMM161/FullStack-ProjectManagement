@@ -1,4 +1,4 @@
-import { MenuItem } from '@mui/material';
+import { MenuItem, Typography } from '@mui/material';
 import TaskList from '../TaskList';
 import ButtonInput from '../ButtonInput';
 import MenuOptions from '../MenuOptions';
@@ -14,16 +14,20 @@ interface ListInfoProps {
   deleteTaskClick: (taskId: number) => void;
 }
 
-function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, deleteTaskClick }: ListInfoProps) {
+function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, deleteTaskClick }: ListInfoProps) {  
   return (
     <StyledListInfo>
-      <Content elevation={2}>
+      <Content>
         <div className="head-list">
-          {title}
+          <Typography variant='h5'>
+            {title}
+          </Typography>
           <MenuOptions>
-            <MenuItem onClick={deleteListClick}>Delete</MenuItem>
+            <MenuItem onClick={() => deleteListClick()}>Delete</MenuItem>
           </MenuOptions>
         </div>
+
+        <ButtonInput className='button-add-task' labelText="Task Name" buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
 
         {tasks && tasks.length > 0 && (
           <div className="task-content">
@@ -38,7 +42,6 @@ function ListInfo({ title, tasks, taskClick, addTaskClick, deleteListClick, dele
           </div>
         )}
 
-        <ButtonInput labelText="Task Name" buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
       </Content>
     </StyledListInfo>
   );

@@ -2,6 +2,7 @@ import { User } from './user';
 
 export interface ProjectInitialState {
   projects: Project[];
+  fetching: boolean;
 }
 
 export interface Project {
@@ -15,4 +16,5 @@ export interface Project {
 
 export const initialProjectState: ProjectInitialState = {
   projects: [],
+  fetching: false,
 };

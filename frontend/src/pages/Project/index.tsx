@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Typography, AvatarGroup, Avatar, Dialog, Button, Paper, Chip } from '@mui/material';
-import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import { Typography, AvatarGroup, Avatar, Dialog, Chip, IconButton } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
@@ -18,30 +17,58 @@ import TaskDetail from '../../components/TaskDetail';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
 import { formatDate } from '../../utils/common';
 import AssignUser from '../../components/AssignUser';
-import EmptyContent from '../../components/EmptyContent';
-import { ListContainer, ProjectInfo } from './styled';
+import { ListContainer, ListOptions, ProjectInfo } from './styled';
+import Assigne from '../../components/Filter/Assigne';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import LineLoader from '../../components/LineLoader';
+import ListEmpty from '../../assets/listEmpty.svg';
+import EmptyElement from '../../components/EmptyElement';
+
+interface ListProjectState {
+  list: ListProject[],
+  loading: boolean,
+}
 
 function ProjectDetail() {
   const { projectId } = useParams();
   const dispatch = useAppDispatch();
-  const [listProject, setListProject] = useState<ListProject[]>([]);
+  const [listProject, setListProject] = useState<ListProjectState>({
+    list: [],
+    loading: false,
+  });
   const [actualProject, setActualProject] = useState<Project>();
   const [listSelectedId, setListSelectedId] = useState(0);
   const [taskSelectedId, setTaskSelectedId] = useState(0);
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
   const [showDeleteTask, setShowDeleteTask] = useState(false);
 
+  
   useEffect(() => {
     const id = Number.parseInt(projectId ?? '0', 10);
+    fetchProjectById(id)
+    fetchListByProject(id)
+  }, [projectId]);
+  
+  function fetchListByProject(id: number) {
+    setListProject({...listProject, loading: true });
+    dispatch(getListsByProject(id))
+    .then((result) => {
+      if (result && result.payload) {
+        setListProject({list: result.payload, loading: false });
+      }
+    })
+    .catch((error) => {
+      setListProject({...listProject, loading: false });
+    })
+  }
+
+  function fetchProjectById(id: number) {
     dispatch(getProjectId(id)).then((result) => {
       if (result != null) {
         setActualProject(result.payload);
       }
-    });
-    dispatch(getListsByProject(id)).then((result) => {
-      setListProject(result.payload);
-    });
-  }, [dispatch, projectId]);
+    })
+  }
 
   function handleAddList(nameList: string) {
     dispatch(
@@ -49,12 +76,13 @@ function ProjectDetail() {
         title: nameList,
         projectId: parseInt(projectId ?? '0', 10),
       }),
-    ).then((result) => {
-      if (result) setListProject([...listProject, result.payload]);
+    ).then((result) => {      
+      if (result) setListProject({list: [...listProject.list, result.payload], loading: false });
     });
   }
 
   function handleDeleteListClick(listId: number) {
+    setShowDeleteTask(false);
     setTypeForm({
       title: 'Delete List',
       form: FORMS.delete,
@@ -63,13 +91,12 @@ function ProjectDetail() {
     setListSelectedId(listId);
   }
 
-  function handleDeleteList() {
+  function handleDeleteList() {    
     toggleDialog();
     dispatch(deleteList(listSelectedId)).then((result) => {
       if (result && result.payload) {
-        const newList = listProject.filter((l) => l.id !== listSelectedId);
-        console.log('new list --< ', newList);
-        setListProject(newList);
+        const newList = listProject.list.filter((l) => l.id !== listSelectedId);               
+        setListProject({...listProject, list: newList});
       }
     });
   }
@@ -82,14 +109,14 @@ function ProjectDetail() {
       }),
     ).then((result) => {
       if (result) {
-        const index = listProject.findIndex((l) => l.id === listId);
-        const list = [...listProject];
+        const index = listProject.list.findIndex((l) => l.id === listId);
+        const list = [...listProject.list];
         const item = {
           ...list[index],
           tasks: [...list[index].tasks, result.payload],
         };
         list[index] = item;
-        setListProject(list);
+        setListProject({...listProject, list: list});
       }
     });
   }
@@ -110,18 +137,18 @@ function ProjectDetail() {
       title: 'Delete Task',
       form: FORMS.delete,
     });
-    setShowDeleteTask(!showDeleteTask);
+    setShowDeleteTask(true);
     toggleDialog();
   }
 
   function handleDeleteTask() {
     dispatch(deleteTask(taskSelectedId)).then((result) => {
       if (result && result.payload) {
-        const items = [...listProject];
+        const items = [...listProject.list];
         const item = items.filter((i) => i.id === listSelectedId);
         const index = items.indexOf(item[0]);
-        items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
-        setListProject(items);
+        items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);        
+        setListProject({...listProject, list: items});
       }
     });
     toggleDialog();
@@ -155,54 +182,63 @@ function ProjectDetail() {
     <Layout>
       <ProjectInfo>
         <div className="project-info-container">
-          <Typography sx={{ textTransform: 'capitalize' }} variant="h2">
-            {actualProject?.name}
-          </Typography>
-          <div className="update-info">
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-              Last Updated on:
+          <div className='name-container'>
+            <Typography sx={{ textTransform: 'capitalize' }} variant="h2">
+              {actualProject?.name}
             </Typography>
-            <Chip icon={<CalendarMonthIcon />} label={formatDate(actualProject?.updatedAt ?? '')} />
+            <div className="update-info">
+              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                Last Updated on:
+              </Typography>
+              <Chip icon={<CalendarMonthIcon />} label={formatDate(actualProject?.updatedAt ?? '')} />
+            </div>
           </div>
-        </div>
-        <div className="project-info-container">
-          <AvatarGroup max={4} sx={{ alignItems: 'center' }}>
-            {actualProject?.users.map((u) => (
-              <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />
-            ))}
-          </AvatarGroup>
-          <Button
-            onClick={() => handleAssignUser()}
-            variant="outlined"
-            sx={{ border: 'none', color: 'black', gap: 1, fontWeight: 'bold', textTransform: 'none' }}
-          >
-            <Person2OutlinedIcon />
-            Assigned to Project
-          </Button>
+          <div className='avatar-container'>
+            <AvatarGroup max={4} sx={{ alignItems: 'center' }}>
+              {actualProject?.users.map((u) => (
+                <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />
+              ))}
+            </AvatarGroup>
+            <IconButton onClick={() => handleAssignUser()}>
+              <AddCircleOutlineIcon />
+            </IconButton>
+          </div>
         </div>
       </ProjectInfo>
 
-      <ListContainer elevation={4}>
-        {listProject &&
-          listProject.map((l) => (
-            <ListInfo
-              key={l.id}
-              title={l.title}
-              tasks={l.tasks}
-              taskClick={(id) => handleTaskClick(id)}
-              addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
-              deleteListClick={() => handleDeleteListClick(l.id)}
-              deleteTaskClick={(id) => handleShowDeleteTask(id, l.id)}
-            />
-          ))}
+      <ListOptions>
+        <Assigne />        
         <ButtonInput
           labelText="List Name"
           buttonText="Add another List"
           addClick={(nameList) => handleAddList(nameList)}
         />
-      </ListContainer>
-      {listProject.length === 0 && <EmptyContent message="Hey Try to Create a new List" />}
-
+      </ListOptions>
+      
+      {listProject.loading ? (
+        <LineLoader />
+      ) : (
+        <>
+          {listProject.list.length > 0 ? (
+            <ListContainer >
+              {listProject.list.map((l) => (
+                <ListInfo
+                  key={l.id}
+                  title={l.title}
+                  tasks={l.tasks}
+                  taskClick={(id) => handleTaskClick(id)}
+                  addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
+                  deleteListClick={() => handleDeleteListClick(l.id)}
+                  deleteTaskClick={(id) => handleShowDeleteTask(id, l.id)}
+                />
+              ))}
+            </ListContainer>
+          ) : (
+            <EmptyElement src={ListEmpty} />
+          )}
+        </>
+      )}
+         
       <Dialog
         open={showDialog}
         TransitionComponent={Transition}

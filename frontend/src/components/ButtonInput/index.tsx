@@ -8,9 +8,10 @@ interface ButtonInputProps {
   labelText: string;
   addClick: (inputValue: string) => void;
   children?: React.ReactNode;
+  className?: string;
 }
 
-function ButtonInput({ buttonText, addClick, labelText, children = <Add /> }: ButtonInputProps) {
+function ButtonInput({ buttonText, addClick, labelText, children = <Add />, className = "" }: ButtonInputProps) {
   const [showForm, setShowForm] = useState(false);
 
   function handleAddTaskClick(taskName: string) {
@@ -27,7 +28,7 @@ function ButtonInput({ buttonText, addClick, labelText, children = <Add /> }: Bu
           closeClick={() => setShowForm(!showForm)}
         />
       ) : (
-        <Button variant="contained" onClick={() => setShowForm(!showForm)}>
+        <Button className={className} variant="contained" onClick={() => setShowForm(!showForm)}>
           {children}
           {buttonText}
         </Button>

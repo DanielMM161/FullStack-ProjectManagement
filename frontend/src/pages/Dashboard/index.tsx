@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Button, Dialog, Typography, Paper } from '@mui/material';
+import { Button, Dialog, Typography, Paper, Skeleton } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import CardProject from '../../components/CardProject/CardProject';
 import CreateProject from '../../components/Forms/CreateProject';
@@ -13,14 +13,16 @@ import { Project } from '../../models/project';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import Layout from '../../components/Layout';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
-import EmptyContent from '../../components/EmptyContent';
-import { ProjectsContainer, ProjectSummaryContainer } from './styled';
+import { EmptyList, ProjectsContainer, ProjectSummaryContainer } from './styled';
+import EmtpyContent from '../../assets/empty.svg';
+import CardProjectSkeleton from '../../components/CardProjectSkeleton';
+import EmptyElement from '../../components/EmptyElement';
 
 function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const projectState = useAppSelector((state) => state.projects);
-  const { projects } = projectState;
+  const { projects, fetching } = projectState;
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
   const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
 
@@ -97,29 +99,39 @@ function Dashboard() {
         <Button
           sx={{ heigh: '70%' }}
           variant="outlined"
-          onClick={() => {
-            showCreateProject();
-          }}
+          onClick={() =>  showCreateProject()}
         >
           Create Project
         </Button>
       </ProjectSummaryContainer>
 
-      <ProjectsContainer elevation={4}>
-        {projects.length > 0 &&
-          projects.map((project) => (
-            <CardProject
-              key={project.name}
-              project={project}
-              onClick={(projectId) => {
-                navigate(`project/${projectId}`);
-              }}
-              editProject={() => showEditProject(project)}
-              deleteProject={() => showDeleteProject(project)}
-            />
-          ))}
-        {projects.length == 0 && <EmptyContent message="Hey Try to Create a new Project" />}
-      </ProjectsContainer>
+      {fetching ? (
+        <ProjectsContainer>
+           <CardProjectSkeleton />
+           <CardProjectSkeleton />           
+        </ProjectsContainer>
+      ) : (
+        <>
+          {projects.length > 0 ? (
+            <ProjectsContainer>
+              {projects.length > 0 &&
+                projects.map((project) => (
+                  <CardProject
+                    key={project.name}
+                    project={project}
+                    onClick={(projectId) => {
+                      navigate(`project/${projectId}`);
+                    }}
+                    editProject={() => showEditProject(project)}
+                    deleteProject={() => showDeleteProject(project)}
+                  />
+                ))}         
+            </ProjectsContainer>
+          ) : (
+             <EmptyElement src={EmtpyContent} />
+          )}
+        </>
+      )}
 
       <Dialog
         open={showDialog}

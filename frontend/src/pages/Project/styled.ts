@@ -1,39 +1,67 @@
-import styled from '@emotion/styled';
-import { Paper } from '@mui/material';
+import { styled } from "@mui/material";
 
-export const ProjectInfo = styled('div')({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  padding: '1.5rem',
-  gap: 20,
-  borderRadius: 18,
-  '& .project-info-container': {
+
+export const ProjectInfo = styled('div')(
+  ({ theme }) => ({
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',  
     gap: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    '& .update-info': {
-      marginLeft: '2rem',
+    borderRadius: 18,  
+    '& .project-info-container': {
+      width: '100%',
       display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
+      gap: 20,
       alignItems: 'center',
+      justifyContent: 'space-between',
+      '& .name-container': {
+        display: 'flex',
+        gap: 10,
+        [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
+          flexDirection: 'column',    
+          gap: 0,
+          '& .update-info': {
+            marginLeft: '0',           
+          },    
+      },
+      },
+      '& .update-info': {
+        marginLeft: '2rem',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      '& .avatar-container':{
+        display: 'flex'
+      }
     },
-  },
-});
+  })
+)
 
-export const ListContainer = styled(Paper)({
-  marginTop: '1rem',
-  display: 'grid',
+export const ListOptions = styled('div')(
+  ({ theme }) => ({
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginTop: '4rem',
+    maxHeight: '40px',
+    '& .filter-tasks': {
+      display: 'flex',
+      justifyContent: 'space-between',
+      gap: 5
+    }
+  })
+)
+
+export const ListContainer = styled('div')({
+  marginTop: '4rem',
+  display: 'flex',
   height: '100%',
   width: '100%',
-  overflowX: 'scroll',
+  overflowX: 'auto',
+  overflowY: 'hidden',
   alignItems: 'flex-start',
-  padding: '1.5rem',
-  backgroundColor: '#ffffff',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
-  gap: '25px',
-  borderRadius: 18,
-  overflow: 'hidden',
+  scrollBehavior: 'smooth', 
+  gap: '25px',  
 });

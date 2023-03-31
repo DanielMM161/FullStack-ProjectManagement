@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-import { initialProjectState, Project, ProjectInitialState } from '../../models/project';
+import { initialProjectState } from '../../models/project';
 import { createProject, getProjects, updateProject } from '../../services/project';
 
 export const projectSlice = createSlice({
@@ -12,9 +11,14 @@ export const projectSlice = createSlice({
     },
   },
   extraReducers: (build) => {
+    /** Pending */
+    build.addCase(getProjects.pending, (state, _) => {
+      state.fetching = !state.fetching;
+    });
     /** fulfilled */
     build.addCase(getProjects.fulfilled, (state, action) => {
       state.projects = action.payload;
+      state.fetching = !state.fetching;
     });
     build.addCase(createProject.fulfilled, (state, action) => {
       const { payload } = action;

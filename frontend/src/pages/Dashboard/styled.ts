@@ -1,5 +1,4 @@
 import styled from '@emotion/styled';
-import { Paper } from '@mui/material';
 
 export const ProjectSummaryContainer = styled('div')({
   display: 'flex',
@@ -8,20 +7,34 @@ export const ProjectSummaryContainer = styled('div')({
   '& .textContainer': {
     display: 'flex',
     flexDirection: 'column',
-  },
+  }
 });
 
-export const ProjectsContainer = styled(Paper)({
-  marginTop: '1rem',
+export const ProjectsContainer = styled('div')({
+  marginTop: '2rem',
   height: '100%',
   display: 'grid',
   overflow: 'scroll',
   gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
-  padding: '1.5rem',
-  backgroundColor: '#ffffff',
+  gridTemplateRows: 'repeat(auto-fill, minmax(min(100%, 15rem), 1fr))',
   gap: '18px',
   borderRadius: 18,
   '&::-webkit-scrollbar': {
     display: 'none',
   },
+});
+
+export const EmptyList = styled('div')({
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  position: 'relative',
+  textAlign: 'center',
+  '& img': {
+    height: '58%',    
+    bottom: '100px'
+  }
 });

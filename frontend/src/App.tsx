@@ -7,11 +7,11 @@ import AppContent from './AppContent';
 import Register from './pages/Register';
 import ProjectDetail from './pages/Project';
 import UserValidation from './components/UserValidation/UserValidation';
-import 'react-notifications-component/dist/theme.css';
 import LoadingPulsating from './components/LoadingPulsating';
-import './App.css';
 import { ThemeProvider } from '@mui/material';
 import theme from './theme';
+import 'react-notifications-component/dist/theme.css';
+import './App.css';
 
 function App() {
   return (
