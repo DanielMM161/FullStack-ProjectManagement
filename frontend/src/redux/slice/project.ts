@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialProjectState } from '../../models/project';
-import { createProject, getProjects, updateProject } from '../../services/project';
+import { createProject, deleteProject, getProjects, updateProject } from '../../services/project';
 
 export const projectSlice = createSlice({
   name: 'project',

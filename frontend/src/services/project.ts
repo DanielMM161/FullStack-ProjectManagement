@@ -21,7 +21,7 @@ const getProjectId = createAsyncThunk('getProjectId', async (id: number, thunkAp
 });
 
 const getProjects = createAsyncThunk('getUserProjects', async (_, thunkApi) => {  
-  return await http.get<Project[]>(`projects/user?page=1&pageSize=20`)
+  return await http.get(`projects/user?page=1&pageSize=20`)
   .then(result => {
     return result.data
   })

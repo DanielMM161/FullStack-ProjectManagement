@@ -2,83 +2,61 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Loading } from '../models/loading';
 import instance from '../utils/constants';
 import { CreateListRequest, UpdateListRequest } from './request/list';
-import { showLoading } from '../redux/slice/actions';
+import { closeLoading, showLoading } from '../redux/slice/actions';
+import { handleThunkApi, showNotification } from '../utils/common';
 
 const createList = createAsyncThunk('createList', async (request: CreateListRequest, thunkApi) => {
-  thunkApi.dispatch(
-    showLoading({
-      title: 'Creating List',
-      show: true,
-    } as Loading),
-  );
-  const token = JSON.parse(localStorage.getItem('token') ?? '');
-  try {
-    const response = await instance.post('lists', request, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (response.status === 200) {
-      return response.data;
-    }
-    return null;
-  } catch (error) {
-    return null;
-  }
-});
-
-const getListsByProject = createAsyncThunk('getListsByProject', async (projectId: number) => {
-  const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await instance.get(`lists/project/${projectId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+  handleThunkApi(thunkApi, 'Creating List')
+  return await instance.post('lists', request)
+  .then(result => {
+    thunkApi.dispatch(closeLoading()) 
+    return result.data
+  })
+  .catch(err => {
+    console.error("Error createList -> ", err)
+    showNotification('Create List', 'Error Creating List', 'danger');
+    thunkApi.dispatch(closeLoading())
+    return null
   });
-
-  if (response.status === 200) {
-    return response.data;
-  }
-  return null;
 });
 
-const updateList = createAsyncThunk('updateList', async (request: UpdateListRequest) => {
-  const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await instance.put(`lists/${request.id}`, { 
-    title: request.title
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  },
-);
+const getListsByProject = createAsyncThunk('getListsByProject', async (projectId: number) => {  
+  return await instance.get(`lists/project/${projectId}`)
+  .then(result => {
+    return result.data
+  })
+  .catch(err => {
+    console.error("Error getListsByProject -> ", err)
+    showNotification('Get Lists', 'Error Fetching Lists', 'danger');
+    return null
+  });
+});
 
-  if (response.status === 200) {
-    return response.data;
-  }
-  return null;
+const updateList = createAsyncThunk('updateList', async (request: UpdateListRequest) => {  
+  return await instance.put(`lists/${request.id}`, { title: request.title})
+  .then(result => {
+    return result.data
+  })
+  .catch(err => {
+    console.error("Error updateList -> ", err)
+    showNotification("Update List", 'Error Updating Lists', 'danger');
+    return null
+  });
 });
 
 const deleteList = createAsyncThunk('deleteList', async (id: number, thunkApi) => {
-  thunkApi.dispatch(
-    showLoading({
-      title: 'Deleting List',
-      show: true,
-    } as Loading),
-  );
-  const token = JSON.parse(localStorage.getItem('token') ?? '');
-  const response = await instance.delete(`lists/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+  handleThunkApi(thunkApi, 'Deleting List')  
+  return await instance.delete(`lists/${id}`)
+  .then(result => {
+    thunkApi.dispatch(closeLoading())
+    return result.data
+  })
+  .catch(err => {
+    console.error("Error getListsByProject -> ", err)
+    showNotification("Delete List", 'Error Deleting Lists', 'danger');
+    thunkApi.dispatch(closeLoading())
+    return false
   });
-
-  if (response.status === 200) {
-    return response.data;
-  }
-
-  return false;
 });
 
 export { createList, getListsByProject, deleteList, updateList };

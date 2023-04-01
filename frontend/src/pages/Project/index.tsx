@@ -46,39 +46,36 @@ function ProjectDetail() {
   
   useEffect(() => {
     const id = Number.parseInt(projectId ?? '0', 10);
-    fetchProjectById(id)
-    fetchListByProject(id)
+    fetchProjectById(id)    
   }, [projectId]);
   
+  function fetchProjectById(id: number) {
+    dispatch(getProjectId(id)).then((result) => {      
+      const { payload } = result;
+      if (payload) setActualProject(payload);
+      fetchListByProject(id)
+    })   
+  }
+
   function fetchListByProject(id: number) {
     setListProject({...listProject, loading: true });
     dispatch(getListsByProject(id))
     .then((result) => {
-      if (result && result.payload) {
-        setListProject({list: result.payload, loading: false });
-      }
-    })
-    .catch((error) => {
-      setListProject({...listProject, loading: false });
-    })
-  }
-
-  function fetchProjectById(id: number) {
-    dispatch(getProjectId(id)).then((result) => {
       dispatch(closeLoading())
-      const { payload } = result;
-      if (payload) setActualProject(payload);
-    })   
+      const { payload } = result
+      const value = payload ?? []
+      setListProject({list: value, loading: false });
+    })
   }
 
   function handleAddList(nameList: string) {
-    dispatch(
-      createList({
-        title: nameList,
-        projectId: parseInt(projectId ?? '0', 10),
-      }),
-    ).then((result) => {      
-      if (result) setListProject({list: [...listProject.list, result.payload], loading: false });
+    dispatch(createList({
+      title: nameList,
+      projectId: parseInt(projectId ?? '0', 10),
+    }))
+    .then((result) => {
+      const { payload } = result  
+      if (payload) setListProject({list: [...listProject.list, payload], loading: false });
     });
   }
 
@@ -95,7 +92,8 @@ function ProjectDetail() {
   function handleDeleteList() {    
     toggleDialog();
     dispatch(deleteList(listSelectedId)).then((result) => {
-      if (result && result.payload) {
+      const { payload } = result;      
+      if (payload) {
         const newList = listProject.list.filter((l) => l.id !== listSelectedId);               
         setListProject({...listProject, list: newList});
       }
@@ -185,7 +183,8 @@ function ProjectDetail() {
       title: newTitle,
     }))
     .then((result) => {
-      if (result && result.payload) {
+      const { payload } = result      
+      if (payload) {
         const items = [...listProject.list];        
         const item = items.filter((i) => i.id === listId);
         const index = items.indexOf(item[0]);
