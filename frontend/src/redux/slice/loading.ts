@@ -15,6 +15,6 @@ export const loadingSlice = createSlice({
   extraReducers: (build) => {},
 });
 
-export const { showLoading, closeLoading } = loadingSlice.actions;
+export const {  } = loadingSlice.actions;
 
 export default loadingSlice.reducer;

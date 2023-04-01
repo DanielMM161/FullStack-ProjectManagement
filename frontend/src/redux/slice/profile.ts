@@ -16,10 +16,16 @@ export const profileSlice = createSlice({
   extraReducers: (build) => {
     /** fulfilled */
     build.addCase(getProfile.fulfilled, (state, action) => {
-      state.profile = action.payload;
+      const { payload } = action
+      if (payload) {
+        state.profile = payload
+      } else {
+        state.profile = emptyUser;
+      }      
     });
-    build.addCase(register.fulfilled, (state, action) => {
-      state.profile = action.payload;
+    build.addCase(register.fulfilled, (state, action) => {      
+      const { payload } = action
+      if (payload) state.profile = payload      
     });
   },
 });

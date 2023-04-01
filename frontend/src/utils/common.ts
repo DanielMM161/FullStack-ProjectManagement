@@ -1,4 +1,6 @@
 import { NOTIFICATION_TYPE, Store } from 'react-notifications-component';
+import { Loading } from '../models/loading';
+import { showLoading } from '../redux/slice/actions';
 
 export function formatDate(dateStr: string) {
   try {
@@ -25,4 +27,13 @@ export function showNotification(title: string, message: string, type: NOTIFICAT
       onScreen: true,
     },
   });
+}
+
+export function handleThunkApi(thunkAPI: any, message: string) {
+  thunkAPI.dispatch(
+    showLoading({
+      title: message,
+      show: true,
+    } as Loading),
+  );
 }

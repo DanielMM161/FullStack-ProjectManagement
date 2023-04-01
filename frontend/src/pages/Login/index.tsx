@@ -30,15 +30,17 @@ function Login() {
   };
 
   const handleGetProfile = () => {
-    dispatch(getProfile()).then(() => {
-      navigate('/dashboard');
+    dispatch(getProfile()).then((result) => {
+      const { payload } = result;
+      if (payload) navigate('/dashboard');      
     });
   };
 
   const handleSubmit = () => {
     if (!checkFields()) {
-      dispatch(login({ email, password })).then(() => {
-        handleGetProfile();
+      dispatch(login({ email, password })).then((result) => {
+        const { payload } = result;
+        if (payload) handleGetProfile();                
       });
     }
   };

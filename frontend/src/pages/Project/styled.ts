@@ -1,6 +1,5 @@
 import { styled } from "@mui/material";
 
-
 export const ProjectInfo = styled('div')(
   ({ theme }) => ({
     display: 'flex',
@@ -16,9 +15,10 @@ export const ProjectInfo = styled('div')(
       justifyContent: 'space-between',
       '& .name-container': {
         display: 'flex',
+        flexDirection: 'inline',
         gap: 10,
         [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
-          flexDirection: 'column',    
+          flexDirection: 'column',
           gap: 0,
           '& .update-info': {
             marginLeft: '0',           

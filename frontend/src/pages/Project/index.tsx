@@ -5,7 +5,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
-import { createList, deleteList, getListsByProject } from '../../services/list';
+import { createList, deleteList, getListsByProject, updateList } from '../../services/list';
 import { ListProject } from '../../models/listProject';
 import ListInfo from '../../components/ListInfo';
 import { getProjectId, updateProject } from '../../services/project';
@@ -23,6 +23,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import LineLoader from '../../components/LineLoader';
 import ListEmpty from '../../assets/listEmpty.svg';
 import EmptyElement from '../../components/EmptyElement';
+import { closeLoading } from '../../redux/slice/actions';
 
 interface ListProjectState {
   list: ListProject[],
@@ -64,10 +65,10 @@ function ProjectDetail() {
 
   function fetchProjectById(id: number) {
     dispatch(getProjectId(id)).then((result) => {
-      if (result != null) {
-        setActualProject(result.payload);
-      }
-    })
+      dispatch(closeLoading())
+      const { payload } = result;
+      if (payload) setActualProject(payload);
+    })   
   }
 
   function handleAddList(nameList: string) {
@@ -178,6 +179,22 @@ function ProjectDetail() {
     });
   }
 
+  function handleUpdateList(listId: number, newTitle: string) {
+    dispatch(updateList({
+      id: listId,
+      title: newTitle,
+    }))
+    .then((result) => {
+      if (result && result.payload) {
+        const items = [...listProject.list];        
+        const item = items.filter((i) => i.id === listId);
+        const index = items.indexOf(item[0]);
+        items[index].title = newTitle;
+        setListProject({...listProject, list: items});
+      }
+    })
+  }
+
   return (
     <Layout>
       <ProjectInfo>
@@ -221,15 +238,16 @@ function ProjectDetail() {
         <>
           {listProject.list.length > 0 ? (
             <ListContainer >
-              {listProject.list.map((l) => (
+              {listProject.list.map((list) => (
                 <ListInfo
-                  key={l.id}
-                  title={l.title}
-                  tasks={l.tasks}
+                  key={list.id}
+                  title={list.title}
+                  tasks={list.tasks}
                   taskClick={(id) => handleTaskClick(id)}
-                  addTaskClick={(taskTitle) => handleCreateTask(taskTitle, l.id)}
-                  deleteListClick={() => handleDeleteListClick(l.id)}
-                  deleteTaskClick={(id) => handleShowDeleteTask(id, l.id)}
+                  addTaskClick={(taskTitle) => handleCreateTask(taskTitle, list.id)}
+                  deleteListClick={() => handleDeleteListClick(list.id)}
+                  deleteTaskClick={(id) => handleShowDeleteTask(id, list.id)}
+                  updateTitleList={(title) => handleUpdateList(list.id, title)}
                 />
               ))}
             </ListContainer>

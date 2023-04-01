@@ -13,10 +13,12 @@ import { Project } from '../../models/project';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import Layout from '../../components/Layout';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
-import { EmptyList, ProjectsContainer, ProjectSummaryContainer } from './styled';
+import { ProjectsContainer, ProjectSummaryContainer } from './styled';
 import EmtpyContent from '../../assets/empty.svg';
 import CardProjectSkeleton from '../../components/CardProjectSkeleton';
 import EmptyElement from '../../components/EmptyElement';
+import { closeLoading } from '../../redux/slice/actions';
+
 
 function Dashboard() {
   const dispatch = useAppDispatch();
@@ -27,6 +29,7 @@ function Dashboard() {
   const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
 
   const getUserProjects = useCallback(() => {
+    dispatch(closeLoading())
     dispatch(getProjects());
   }, [dispatch]);
 

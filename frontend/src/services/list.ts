@@ -1,8 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Loading } from '../models/loading';
-import { showLoading } from '../redux/slice/loading';
 import instance from '../utils/constants';
-import { CreateListRequest } from './request/list';
+import { CreateListRequest, UpdateListRequest } from './request/list';
+import { showLoading } from '../redux/slice/actions';
 
 const createList = createAsyncThunk('createList', async (request: CreateListRequest, thunkApi) => {
   thunkApi.dispatch(
@@ -42,6 +42,24 @@ const getListsByProject = createAsyncThunk('getListsByProject', async (projectId
   return null;
 });
 
+const updateList = createAsyncThunk('updateList', async (request: UpdateListRequest) => {
+  const token = JSON.parse(localStorage.getItem('token') ?? '');
+  const response = await instance.put(`lists/${request.id}`, { 
+    title: request.title
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  },
+);
+
+  if (response.status === 200) {
+    return response.data;
+  }
+  return null;
+});
+
 const deleteList = createAsyncThunk('deleteList', async (id: number, thunkApi) => {
   thunkApi.dispatch(
     showLoading({
@@ -63,4 +81,4 @@ const deleteList = createAsyncThunk('deleteList', async (id: number, thunkApi) =
   return false;
 });
 
-export { createList, getListsByProject, deleteList };
+export { createList, getListsByProject, deleteList, updateList };

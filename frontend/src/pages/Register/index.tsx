@@ -57,7 +57,8 @@ function Register() {
           password,
         }),
       ).then((result) => {
-        if (result) {
+        const { payload } = result
+        if (payload) {          
           handleLogin();
         }
       });
