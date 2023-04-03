@@ -7,7 +7,7 @@ export const ProjectSummaryContainer = styled('div')({
   '& .textContainer': {
     display: 'flex',
     flexDirection: 'column',
-  }
+  },
 });
 
 export const ProjectsContainer = styled('div')({
@@ -34,7 +34,7 @@ export const EmptyList = styled('div')({
   position: 'relative',
   textAlign: 'center',
   '& img': {
-    height: '58%',    
-    bottom: '100px'
-  }
+    height: '58%',
+    bottom: '100px',
+  },
 });

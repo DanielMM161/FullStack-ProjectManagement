@@ -5,15 +5,15 @@ export const actionsSlice = createSlice({
   name: 'actions',
   initialState: initialActionsState,
   reducers: {
-    showLoading: (state, action) => {      
-      state.loading = action.payload
+    showLoading: (state, action) => {
+      state.loading = action.payload;
     },
     closeLoading: (state) => {
-      state.loading = initialLoadingState
+      state.loading = initialLoadingState;
     },
     toggleSideBar: (state) => {
-      state.showSideBar = !state.showSideBar
-    }
+      state.showSideBar = !state.showSideBar;
+    },
   },
   extraReducers: (build) => {},
 });

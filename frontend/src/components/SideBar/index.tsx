@@ -18,64 +18,67 @@ function SideBar() {
   const profileState = useAppSelector((state) => state.profile);
   const actionsState = useAppSelector((state) => state.actions);
   const { showSideBar } = actionsState;
-  const [ dashboardItem, setDashboardItem] = useState(false);
-  const [ projectItem, setProjectItem] = useState(false);
-  const [ closeSideBar, setCloseSideBar] = useState(false);  
+  const [dashboardItem, setDashboardItem] = useState(false);
+  const [projectItem, setProjectItem] = useState(false);
+  const [closeSideBar, setCloseSideBar] = useState(false);
   const { profile } = profileState;
 
-
   function handleDashboardClick() {
-    setDashboardItem(!dashboardItem)
-    setProjectItem(false)
-    navigate('/dashboard')
+    setDashboardItem(!dashboardItem);
+    setProjectItem(false);
+    navigate('/dashboard');
   }
 
   function handleProjectClick() {
-    setDashboardItem(false)
-    setProjectItem(!projectItem)
+    setDashboardItem(false);
+    setProjectItem(!projectItem);
   }
 
   return (
     <StyledSideBar className={showSideBar ? 'close-side-bar glassmorphism' : 'open-side-bar'}>
-      <div className='top-side'>
+      <div className="top-side">
         <div className="avatar-info">
           <div className="info-name">
             <Avatar alt={profile.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 56, height: 56 }} />
-            <KeyboardArrowLeftIcon  className='arrow-icon' onClick={() => dispatch(toggleSideBar())}/>
+            <KeyboardArrowLeftIcon className="arrow-icon" onClick={() => dispatch(toggleSideBar())} />
             {showSideBar ? (
-              <ExpandCircleDownIcon className='expand-icon' onClick={() => dispatch(toggleSideBar())} />
+              <ExpandCircleDownIcon className="expand-icon" onClick={() => dispatch(toggleSideBar())} />
             ) : null}
           </div>
-            <Typography variant="h6">
-              {profile.firstName} {profile.lastName}
-            </Typography>
-            <Typography variant="subtitle1">
-              {profile.email}
-            </Typography>
+          <Typography variant="h6">
+            {profile.firstName} {profile.lastName}
+          </Typography>
+          <Typography variant="subtitle1">{profile.email}</Typography>
         </div>
         <div className="list-container">
           <List>
-            <ListButtonItem title="Dashboard" onClick={() => handleDashboardClick() } selected={dashboardItem}>
+            <ListButtonItem title="Dashboard" onClick={() => handleDashboardClick()} selected={dashboardItem}>
               <DashboardIcon />
             </ListButtonItem>
-            <ListButtonItem  title="Project" onClick={() => {handleProjectClick()}} selected={projectItem}>
-              <FolderIcon  />
+            <ListButtonItem
+              title="Project"
+              onClick={() => {
+                handleProjectClick();
+              }}
+              selected={projectItem}
+            >
+              <FolderIcon />
             </ListButtonItem>
           </List>
         </div>
       </div>
-      <div className='bottom-side'>
-          <List>
-            <ListButtonItem
-              title="Log out"
-              onClick={() => {
-                dispatch(logOut());
-              }}
-              selected={false}
-            >
-              <LogoutIcon />
-            </ListButtonItem>
-          </List>        
+      <div className="bottom-side">
+        <List>
+          <ListButtonItem
+            title="Log out"
+            onClick={() => {
+              dispatch(logOut());
+            }}
+            selected={false}
+          >
+            <LogoutIcon />
+          </ListButtonItem>
+        </List>
       </div>
     </StyledSideBar>
   );

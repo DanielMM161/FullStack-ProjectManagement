@@ -1,4 +1,4 @@
-export interface AuthResponse { 
-    token: string;
-    expiration: string;
+export interface AuthResponse {
+  token: string;
+  expiration: string;
 }

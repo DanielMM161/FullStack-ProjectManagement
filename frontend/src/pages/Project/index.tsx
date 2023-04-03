@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Typography, AvatarGroup, Avatar, Dialog, Chip, IconButton } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import { useAppDispatch } from '../../hooks/redux.hook';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
 import { createList, deleteList, getListsByProject, updateList } from '../../services/list';
@@ -20,62 +20,58 @@ import AssignUser from '../../components/AssignUser';
 import { ListContainer, ListOptions, ProjectInfo } from './styled';
 import Assigne from '../../components/Filter/Assigne';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import LineLoader from '../../components/LineLoader';
 import ListEmpty from '../../assets/listEmpty.svg';
 import EmptyElement from '../../components/EmptyElement';
-import { closeLoading } from '../../redux/slice/actions';
-
-interface ListProjectState {
-  list: ListProject[],
-  loading: boolean,
-}
+import { closeLoading, showLoading } from '../../redux/slice/actions';
+import { Loading } from '../../models/loading';
 
 function ProjectDetail() {
   const { projectId } = useParams();
   const dispatch = useAppDispatch();
-  const [listProject, setListProject] = useState<ListProjectState>({
-    list: [],
-    loading: false,
-  });
+  const actionState = useAppSelector((state) => state.actions);
+  const { loading } = actionState;
+  const [listProject, setListProject] = useState<ListProject[]>([]);
   const [actualProject, setActualProject] = useState<Project>();
   const [listSelectedId, setListSelectedId] = useState(0);
   const [taskSelectedId, setTaskSelectedId] = useState(0);
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
   const [showDeleteTask, setShowDeleteTask] = useState(false);
 
-  
   useEffect(() => {
     const id = Number.parseInt(projectId ?? '0', 10);
-    fetchProjectById(id)    
+    fetchProjectById(id);
+    fetchListByProject(id);
   }, [projectId]);
-  
+
   function fetchProjectById(id: number) {
-    dispatch(getProjectId(id)).then((result) => {      
+    dispatch(getProjectId(id)).then((result) => {
       const { payload } = result;
       if (payload) setActualProject(payload);
-      fetchListByProject(id)
-    })   
+    });
   }
 
   function fetchListByProject(id: number) {
-    setListProject({...listProject, loading: true });
-    dispatch(getListsByProject(id))
-    .then((result) => {
-      dispatch(closeLoading())
-      const { payload } = result
-      const value = payload ?? []
-      setListProject({list: value, loading: false });
-    })
+    dispatch(getListsByProject(id)).then((result) => {
+      dispatch(closeLoading());
+      const { payload } = result;
+      const value = payload ?? [];
+      setListProject(value);
+    });
   }
 
   function handleAddList(nameList: string) {
-    dispatch(createList({
-      title: nameList,
-      projectId: parseInt(projectId ?? '0', 10),
-    }))
-    .then((result) => {
-      const { payload } = result  
-      if (payload) setListProject({list: [...listProject.list, payload], loading: false });
+    dispatch(
+      createList({
+        title: nameList,
+        projectId: parseInt(projectId ?? '0', 10),
+      }),
+    ).then((result) => {
+      const { payload } = result;
+      if (payload)
+        setListProject(() => {
+          dispatch(closeLoading());
+          return [...listProject, payload];
+        });
     });
   }
 
@@ -89,13 +85,13 @@ function ProjectDetail() {
     setListSelectedId(listId);
   }
 
-  function handleDeleteList() {    
+  function handleDeleteList() {
     toggleDialog();
     dispatch(deleteList(listSelectedId)).then((result) => {
-      const { payload } = result;      
+      const { payload } = result;
       if (payload) {
-        const newList = listProject.list.filter((l) => l.id !== listSelectedId);               
-        setListProject({...listProject, list: newList});
+        const newList = listProject.filter((l) => l.id !== listSelectedId);
+        setListProject(newList);
       }
     });
   }
@@ -107,15 +103,16 @@ function ProjectDetail() {
         listId,
       }),
     ).then((result) => {
-      if (result) {
-        const index = listProject.list.findIndex((l) => l.id === listId);
-        const list = [...listProject.list];
+      const { payload } = result;
+      if (payload) {
+        const index = listProject.findIndex((l) => l.id === listId);
+        const list = [...listProject];
         const item = {
           ...list[index],
           tasks: [...list[index].tasks, result.payload],
         };
         list[index] = item;
-        setListProject({...listProject, list: list});
+        setListProject(list);
       }
     });
   }
@@ -141,13 +138,21 @@ function ProjectDetail() {
   }
 
   function handleDeleteTask() {
+    dispatch(
+      showLoading({
+        title: 'Deleting Task',
+        show: true,
+      } as Loading),
+    );
     dispatch(deleteTask(taskSelectedId)).then((result) => {
-      if (result && result.payload) {
-        const items = [...listProject.list];
+      dispatch(closeLoading());
+      const { payload } = result;
+      if (payload) {
+        const items = [...listProject];
         const item = items.filter((i) => i.id === listSelectedId);
         const index = items.indexOf(item[0]);
-        items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);        
-        setListProject({...listProject, list: items});
+        items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
+        setListProject(items);
       }
     });
     toggleDialog();
@@ -171,34 +176,36 @@ function ProjectDetail() {
         usersId,
       }),
     ).then((result) => {
-      if (result && result.payload) {
+      const { payload } = result;
+      if (payload) {
         setActualProject(result.payload);
       }
     });
   }
 
   function handleUpdateList(listId: number, newTitle: string) {
-    dispatch(updateList({
-      id: listId,
-      title: newTitle,
-    }))
-    .then((result) => {
-      const { payload } = result      
+    dispatch(
+      updateList({
+        id: listId,
+        title: newTitle,
+      }),
+    ).then((result) => {
+      const { payload } = result;
       if (payload) {
-        const items = [...listProject.list];        
+        const items = [...listProject];
         const item = items.filter((i) => i.id === listId);
         const index = items.indexOf(item[0]);
         items[index].title = newTitle;
-        setListProject({...listProject, list: items});
+        setListProject(items);
       }
-    })
+    });
   }
 
   return (
     <Layout>
       <ProjectInfo>
         <div className="project-info-container">
-          <div className='name-container'>
+          <div className="name-container">
             <Typography sx={{ textTransform: 'capitalize' }} variant="h2">
               {actualProject?.name}
             </Typography>
@@ -209,7 +216,7 @@ function ProjectDetail() {
               <Chip icon={<CalendarMonthIcon />} label={formatDate(actualProject?.updatedAt ?? '')} />
             </div>
           </div>
-          <div className='avatar-container'>
+          <div className="avatar-container">
             <AvatarGroup max={4} sx={{ alignItems: 'center' }}>
               {actualProject?.users.map((u) => (
                 <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />
@@ -223,21 +230,19 @@ function ProjectDetail() {
       </ProjectInfo>
 
       <ListOptions>
-        <Assigne />        
+        <Assigne />
         <ButtonInput
           labelText="List Name"
           buttonText="Add another List"
           addClick={(nameList) => handleAddList(nameList)}
         />
       </ListOptions>
-      
-      {listProject.loading ? (
-        <LineLoader />
-      ) : (
+
+      {loading.show && listProject.length == 0 ? null : (
         <>
-          {listProject.list.length > 0 ? (
-            <ListContainer >
-              {listProject.list.map((list) => (
+          {listProject.length > 0 ? (
+            <ListContainer>
+              {listProject.map((list) => (
                 <ListInfo
                   key={list.id}
                   title={list.title}
@@ -255,7 +260,7 @@ function ProjectDetail() {
           )}
         </>
       )}
-         
+
       <Dialog
         open={showDialog}
         TransitionComponent={Transition}

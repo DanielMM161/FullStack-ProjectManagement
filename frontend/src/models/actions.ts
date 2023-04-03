@@ -1,16 +1,16 @@
-import { Loading } from "./loading";
+import { Loading } from './loading';
 
 interface Actions {
-    loading: Loading,
-    showSideBar: boolean
+  loading: Loading;
+  showSideBar: boolean;
 }
 
 export const initialLoadingState: Loading = {
-    title: '',
-    show: false,
-}
+  title: '',
+  show: false,
+};
 
 export const initialActionsState: Actions = {
-    loading: initialLoadingState,
-    showSideBar: false
-}
+  loading: initialLoadingState,
+  showSideBar: false,
+};

@@ -57,8 +57,8 @@ function Register() {
           password,
         }),
       ).then((result) => {
-        const { payload } = result
-        if (payload) {          
+        const { payload } = result;
+        if (payload) {
           handleLogin();
         }
       });
@@ -67,7 +67,7 @@ function Register() {
 
   return (
     <Layout>
-      <div className='left-side'>
+      <div className="left-side">
         <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
           Join the team!
         </Typography>
@@ -137,7 +137,7 @@ function Register() {
             fullWidth
             sx={{ mb: 2 }}
           />
-          <Button variant="contained" fullWidth sx={{marginTop: '1rem'}} onClick={() => handleRegister()}>
+          <Button variant="contained" fullWidth sx={{ marginTop: '1rem' }} onClick={() => handleRegister()}>
             Sign Up
           </Button>
         </form>
@@ -150,9 +150,9 @@ function Register() {
           </Typography>
         </Box>
       </div>
-      <div className='right-side'>
-        <img id='first-logo' src={RegisterSVG} alt='logo' />
-        <img id='second-logo' src={Register2SVG} alt='logo' />
+      <div className="right-side">
+        <img id="first-logo" src={RegisterSVG} alt="logo" />
+        <img id="second-logo" src={Register2SVG} alt="logo" />
       </div>
     </Layout>
   );

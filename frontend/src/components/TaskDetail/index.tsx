@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Avatar, Chip, Divider, styled, Tab, Tabs, TextField, Typography, Box } from '@mui/material';
+import { Avatar, Chip, Divider, Tab, Tabs, TextField, Typography, Box } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import { initialTaskValue, Task } from '../../models/task';
 import { assignUser, deleteTask, getTaskById, removeUser, updateTask } from '../../services/task';
 import { User } from '../../models/user';
 import SelectUser from '../SelectUser';
-
 import InputControlButton from '../InputControlButton';
 import { createSubTask, updateDoneSubTask } from '../../services/subTask';
 import SubTaskItem from '../SubTaskItem';
@@ -63,7 +62,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
   useEffect(() => {
     setIsLoading(true);
     dispatch(getTaskById(taskId)).then((result) => {
-      if (result && result.payload) {
+      const { payload } = result;
+      if (payload) {
         setIsLoading(!isLoading);
         const item = result.payload as Task;
         setTask(item);
@@ -88,7 +88,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         userId,
       }),
     ).then((result) => {
-      if (result) {
+      const { payload } = result;
+      if (payload) {
         const copyTask = { ...task };
         copyTask.users = copyTask.users.filter((u) => u.id !== userId);
         setTask(copyTask);
@@ -103,7 +104,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         userId: user.id,
       }),
     ).then((result) => {
-      if (result && result.payload) {
+      const { payload } = result;
+      if (payload) {
         const copyTask = { ...task };
         copyTask.users.push(user);
         setTask(copyTask);
@@ -141,8 +143,9 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           dueDate: task.dueDate.toString(),
         }),
       ).then((result) => {
-        if (result && result.payload) {
-          setTask(result.payload);
+        const { payload } = result;
+        if (payload) {
+          setTask({ ...task, description: payload });
         }
       });
     }
@@ -159,7 +162,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           dueDate: task.dueDate.toString(),
         }),
       ).then((result) => {
-        if (result && result.payload) {
+        const { payload } = result;
+        if (payload) {
           setTask(result.payload);
         }
       });
@@ -174,7 +178,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         createdById: profile.id,
       }),
     ).then((result) => {
-      if (result && result.payload) {
+      const { payload } = result;
+      if (payload) {
         const item = { ...task };
         item.subTasks?.push(result.payload);
         setTask(item);
@@ -185,7 +190,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
 
   function handleDeleteSubTask(subTaskId: number) {
     dispatch(deleteTask(subTaskId)).then((result) => {
-      if (result && result.payload) {
+      const { payload } = result;
+      if (payload) {
         const item = { ...task };
         item.subTasks = item.subTasks?.filter((i) => i.id !== subTaskId);
         setTask(item);
@@ -201,7 +207,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
         done,
       }),
     ).then((result) => {
-      if (result && result.payload) {
+      const { payload } = result;
+      if (payload) {
         const item = { ...task };
         const subTask = item.subTasks?.filter((st) => st.id !== subTaskId);
         subTask?.push(result.payload);

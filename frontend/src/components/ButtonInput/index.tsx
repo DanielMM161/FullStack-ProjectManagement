@@ -11,7 +11,7 @@ interface ButtonInputProps {
   className?: string;
 }
 
-function ButtonInput({ buttonText, addClick, labelText, children = <Add />, className = "" }: ButtonInputProps) {
+function ButtonInput({ buttonText, addClick, labelText, children = <Add />, className = '' }: ButtonInputProps) {
   const [showForm, setShowForm] = useState(false);
 
   function handleAddTaskClick(taskName: string) {

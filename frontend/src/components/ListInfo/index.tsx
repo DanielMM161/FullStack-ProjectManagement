@@ -16,21 +16,21 @@ interface ListInfoProps {
   updateTitleList: (newTitle: string) => void;
 }
 
-function ListInfo({ 
-  title, 
-  tasks, 
-  taskClick, 
-  addTaskClick, 
-  deleteListClick, 
-  deleteTaskClick, 
-  updateTitleList 
-}: ListInfoProps) {  
+function ListInfo({
+  title,
+  tasks,
+  taskClick,
+  addTaskClick,
+  deleteListClick,
+  deleteTaskClick,
+  updateTitleList,
+}: ListInfoProps) {
   const [titleList, setTitleList] = useState(title);
   const [editing, setEditing] = useState(false);
 
   function handleUpdateTitleList() {
-    if(titleList === '') {
-      setTitleList(title)
+    if (titleList === '') {
+      setTitleList(title);
     }
     setEditing(!editing);
     updateTitleList(titleList);
@@ -45,7 +45,7 @@ function ListInfo({
               autoFocus
               value={titleList}
               onChange={(e) => setTitleList(e.target.value)}
-              onBlur={() => {               
+              onBlur={() => {
                 handleUpdateTitleList();
               }}
               size="small"
@@ -54,7 +54,7 @@ function ListInfo({
               }}
             />
           ) : (
-            <Typography variant='h5' onClick={() => setEditing(!editing)}>
+            <Typography variant="h5" onClick={() => setEditing(!editing)}>
               {titleList}
             </Typography>
           )}
@@ -63,7 +63,12 @@ function ListInfo({
           </MenuOptions>
         </div>
 
-        <ButtonInput className='button-add-task' labelText="Task Name" buttonText="Add Task" addClick={(value) => addTaskClick(value)} />
+        <ButtonInput
+          className="button-add-task"
+          labelText="Task Name"
+          buttonText="Add Task"
+          addClick={(value) => addTaskClick(value)}
+        />
 
         {tasks && tasks.length > 0 && (
           <div className="task-content">
@@ -77,7 +82,6 @@ function ListInfo({
             ))}
           </div>
         )}
-
       </Content>
     </StyledListInfo>
   );

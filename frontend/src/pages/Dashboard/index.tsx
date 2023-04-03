@@ -19,7 +19,6 @@ import CardProjectSkeleton from '../../components/CardProjectSkeleton';
 import EmptyElement from '../../components/EmptyElement';
 import { closeLoading } from '../../redux/slice/actions';
 
-
 function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -29,7 +28,7 @@ function Dashboard() {
   const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
 
   const getUserProjects = useCallback(() => {
-    dispatch(closeLoading())
+    dispatch(closeLoading());
     dispatch(getProjects());
   }, [dispatch]);
 
@@ -99,19 +98,15 @@ function Dashboard() {
             You can edit all the stufs as you wish
           </Typography>
         </div>
-        <Button
-          sx={{ heigh: '70%' }}
-          variant="outlined"
-          onClick={() =>  showCreateProject()}
-        >
+        <Button sx={{ heigh: '70%' }} variant="outlined" onClick={() => showCreateProject()}>
           Create Project
         </Button>
       </ProjectSummaryContainer>
 
       {fetching ? (
         <ProjectsContainer>
-           <CardProjectSkeleton />
-           <CardProjectSkeleton />           
+          <CardProjectSkeleton />
+          <CardProjectSkeleton />
         </ProjectsContainer>
       ) : (
         <>
@@ -128,10 +123,10 @@ function Dashboard() {
                     editProject={() => showEditProject(project)}
                     deleteProject={() => showDeleteProject(project)}
                   />
-                ))}         
+                ))}
             </ProjectsContainer>
           ) : (
-             <EmptyElement src={EmtpyContent} />
+            <EmptyElement src={EmtpyContent} />
           )}
         </>
       )}

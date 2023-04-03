@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { useAppDispatch } from '../../hooks/redux.hook';
 import { getProfile, login } from '../../services/auth';
-import loginSVG from '../../assets/login.svg'
-import login2SVG from '../../assets/login-2.svg'
+import loginSVG from '../../assets/login.svg';
+import login2SVG from '../../assets/login-2.svg';
 import Layout from '../../styled/LoginRegisterLayout';
 
 function Login() {
@@ -32,7 +32,7 @@ function Login() {
   const handleGetProfile = () => {
     dispatch(getProfile()).then((result) => {
       const { payload } = result;
-      if (payload) navigate('/dashboard');      
+      if (payload) navigate('/dashboard');
     });
   };
 
@@ -40,14 +40,14 @@ function Login() {
     if (!checkFields()) {
       dispatch(login({ email, password })).then((result) => {
         const { payload } = result;
-        if (payload) handleGetProfile();                
+        if (payload) handleGetProfile();
       });
     }
   };
 
   return (
     <Layout>
-      <div className='left-side'>    
+      <div className="left-side">
         <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
           Welcome back!
         </Typography>
@@ -55,13 +55,11 @@ function Login() {
           Log in to your account to continue.
         </Typography>
         <Button variant="contained" fullWidth onClick={() => handleSubmit()}>
-            Log In With Google
+          Log In With Google
         </Button>
-        <div className='divider-area'>
+        <div className="divider-area">
           <hr />
-          <Typography variant="subtitle1" >
-            Or Login With Email
-          </Typography>
+          <Typography variant="subtitle1">Or Login With Email</Typography>
           <hr />
         </div>
 
@@ -98,9 +96,9 @@ function Login() {
             fullWidth
             sx={{ mb: 2 }}
           />
-          <Button variant="contained" sx={{marginTop: '1rem'}} fullWidth onClick={() => handleSubmit()}>
+          <Button variant="contained" sx={{ marginTop: '1rem' }} fullWidth onClick={() => handleSubmit()}>
             Log In
-          </Button>          
+          </Button>
         </form>
         <Box sx={{ mt: 4 }}>
           <Typography variant="body1">
@@ -112,10 +110,10 @@ function Login() {
         </Box>
       </div>
 
-      <div className='right-side'>
-        <img id='first-logo' src={login2SVG} alt='logo' />
-        <img id='second-logo' src={loginSVG} alt='logo' />
-      </div>      
+      <div className="right-side">
+        <img id="first-logo" src={login2SVG} alt="logo" />
+        <img id="second-logo" src={loginSVG} alt="logo" />
+      </div>
     </Layout>
   );
 }

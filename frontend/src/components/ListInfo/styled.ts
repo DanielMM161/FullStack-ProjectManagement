@@ -6,13 +6,13 @@ export const StyledListInfo = styled('div')({
   width: '100%',
   height: '100%',
   minWidth: '210px',
-  maxWidth: '210px'
+  maxWidth: '210px',
 });
 
-export const Content = styled('div')({  
+export const Content = styled('div')({
   display: 'flex',
   flexDirection: 'column',
-  width: '100%',  
+  width: '100%',
   '& .head-list': {
     display: 'flex',
     justifyContent: 'space-between',
@@ -31,5 +31,5 @@ export const Content = styled('div')({
     background: 'white',
     color: '#838383',
     marginBottom: '1rem',
-  }
+  },
 });
