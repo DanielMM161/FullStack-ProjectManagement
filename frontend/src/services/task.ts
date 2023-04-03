@@ -59,7 +59,7 @@ const assignUser = createAsyncThunk('assignUser', async (request: TaskUserReques
     });
 });
 
-const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequest, thunkApi) => {
+const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequest) => {
   return await instance
     .put(`tasks/${request.id}`, {
       title: request.title,
