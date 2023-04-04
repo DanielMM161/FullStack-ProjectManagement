@@ -1,7 +1,7 @@
-import styled from '@emotion/styled';
-import { Box } from '@mui/material';
 
-export const StyledTaskDetail = styled(Box)({
+import { Box, styled } from '@mui/material';
+
+export const StyledTaskDetail = styled(Box)(({ theme }) => ({
   display: 'flex',
   padding: '1rem',
   flexDirection: 'column',
@@ -10,7 +10,10 @@ export const StyledTaskDetail = styled(Box)({
     display: 'flex',
     flexDirection: 'column',
   },
-});
+  [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
+   width: '300px'
+  },
+}));
 
 export const InfoContainer = styled(Box)({
   display: 'flex',

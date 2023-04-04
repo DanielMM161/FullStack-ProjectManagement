@@ -1,7 +1,7 @@
 import { styled } from '@mui/material';
 
 const StyledSideBar = styled('div')(({ theme }) => ({
-  zIndex: 1,
+  zIndex: 4,
   position: 'fixed',
   width: '300px',
   height: '100%',

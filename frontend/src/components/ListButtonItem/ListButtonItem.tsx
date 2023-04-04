@@ -2,16 +2,17 @@ import { ListItem, ListItemButton, ListItemIcon, ListItemText, Typography } from
 
 interface IButtonIconProps {
   title: string;
+  disabled?: boolean;
   onClick: () => void;
   children: React.ReactNode;
-  selected: boolean;
+  selected?: boolean;
 }
 
-function ListButtonItem({ title, onClick, children, selected }: IButtonIconProps) {
+function ListButtonItem({ title, disabled = false, onClick, children, selected }: IButtonIconProps) {
   return (
-    <ListItem key={title} disablePadding onClick={() => onClick()} sx={{ color: selected ? 'green' : 'black' }}>
-      <ListItemButton color={selected ? 'green' : 'red'}>
-        <ListItemIcon sx={{ color: selected ? 'green' : 'default' }}>{children}</ListItemIcon>
+    <ListItem key={title} disablePadding onClick={() => onClick()} >
+      <ListItemButton  disabled={disabled}>
+        <ListItemIcon>{children}</ListItemIcon>
         <ListItemText primary={title} sx={{ fontWeight: 'bold', fontSize: '34px' }} />
       </ListItemButton>
     </ListItem>

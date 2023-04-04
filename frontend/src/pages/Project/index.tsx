@@ -24,6 +24,7 @@ import ListEmpty from '../../assets/listEmpty.svg';
 import EmptyElement from '../../components/EmptyElement';
 import { closeLoading, showLoading } from '../../redux/slice/actions';
 import { Loading } from '../../models/loading';
+import { selectProjectId } from '../../redux/slice/project';
 
 function ProjectDetail() {
   const { projectId } = useParams();
@@ -44,6 +45,7 @@ function ProjectDetail() {
   }, [projectId]);
 
   function fetchProjectById(id: number) {
+    dispatch(selectProjectId(projectId))
     dispatch(getProjectId(id)).then((result) => {
       const { payload } = result;
       if (payload) setActualProject(payload);
@@ -230,7 +232,7 @@ function ProjectDetail() {
       </ProjectInfo>
 
       <ListOptions>
-        <Assigne />
+        {/* <Assigne /> */}
         <ButtonInput
           labelText="List Name"
           buttonText="Add another List"

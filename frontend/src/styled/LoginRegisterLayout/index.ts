@@ -18,8 +18,8 @@ const Layout = styled('div')(({ theme }) => ({
       alignItems: 'center',
       justifyContent: 'space-between',
       gap: 5,
-      marginTop: '2rem',
-      marginBottom: '2rem',
+      marginTop: '1rem',
+      marginBottom: '1rem',
       width: '100%',
       '& hr': {
         width: '35%',
@@ -29,6 +29,10 @@ const Layout = styled('div')(({ theme }) => ({
     [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
       width: '100%',
       padding: '50px 50px',
+      height: '100%',
+      display: 'flex',
+      justifyContent: 'normal',
+      alignItems: 'normal',
       '.divider-area > hr': {
         width: '20%',
       },

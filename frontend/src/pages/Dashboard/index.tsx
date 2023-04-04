@@ -7,7 +7,7 @@ import CreateProject from '../../components/Forms/CreateProject';
 import { CreateProjectRequest } from '../../services/request/project';
 import Transition from '../../transitions';
 import { createProject, deleteProject, getProjects, updateProject } from '../../services/project';
-import { removeProject } from '../../redux/slice/project';
+import { removeProject, selectProjectId } from '../../redux/slice/project';
 import UpdateProject from '../../components/Forms/UpdateProject';
 import { Project } from '../../models/project';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
@@ -118,6 +118,7 @@ function Dashboard() {
                     key={project.name}
                     project={project}
                     onClick={(projectId) => {
+                      dispatch(selectProjectId(projectId))
                       navigate(`project/${projectId}`);
                     }}
                     editProject={() => showEditProject(project)}

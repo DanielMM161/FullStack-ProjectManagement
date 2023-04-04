@@ -1,5 +1,5 @@
-import styled from '@emotion/styled';
-import { Paper } from '@mui/material';
+
+import { Paper, styled } from '@mui/material';
 
 export const EmptyLayout = styled('div')({
   height: '100%',
@@ -20,4 +20,11 @@ export const ImageContainer = styled(Paper)(({ theme }) => ({
   textAlign: 'center',
   background: 'white',
   padding: '2rem',
+  [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
+    width: '100%',
+    height: '80%',
+    '& > img': {
+      width: '100%',
+    }
+  },
 }));

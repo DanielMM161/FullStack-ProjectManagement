@@ -51,12 +51,12 @@ function Login() {
         <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
           Welcome back!
         </Typography>
-        <Typography variant="body1" sx={{ mb: 4 }}>
+        <Typography variant="body1" >
           Log in to your account to continue.
         </Typography>
-        <Button variant="contained" fullWidth onClick={() => handleSubmit()}>
+        {/* <Button variant="contained" fullWidth onClick={() => handleSubmit()}>
           Log In With Google
-        </Button>
+        </Button> */}
         <div className="divider-area">
           <hr />
           <Typography variant="subtitle1">Or Login With Email</Typography>

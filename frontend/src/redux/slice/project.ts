@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { initialProjectState } from '../../models/project';
-import { createProject, deleteProject, getProjects, updateProject } from '../../services/project';
+import { createProject, getProjects, updateProject } from '../../services/project';
 
 export const projectSlice = createSlice({
   name: 'project',
@@ -8,6 +8,9 @@ export const projectSlice = createSlice({
   reducers: {
     removeProject: (state, action) => {
       state.projects = state.projects.filter((item) => item.id !== action.payload);
+    },
+    selectProjectId: (state, action) => {
+      state.projectSelectedId = action.payload
     },
   },
   extraReducers: (build) => {
@@ -38,6 +41,6 @@ export const projectSlice = createSlice({
   },
 });
 
-export const { removeProject } = projectSlice.actions;
+export const { removeProject, selectProjectId } = projectSlice.actions;
 
 export default projectSlice.reducer;

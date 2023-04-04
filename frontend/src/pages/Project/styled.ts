@@ -25,6 +25,7 @@ export const ProjectInfo = styled('div')(({ theme }) => ({
       },
     },
     '& .update-info': {
+      gap: '5px',
       marginLeft: '2rem',
       display: 'flex',
       flexDirection: 'column',
