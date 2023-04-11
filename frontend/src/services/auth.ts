@@ -41,7 +41,7 @@ const login = createAsyncThunk('login', async (payload: LoginRequest, thunkApi) 
 const register = createAsyncThunk('register', async (request: RegisterRequest, thunkApi) => {
   handleThunkApi(thunkApi, 'Registering');
   return await http
-    .post<UserResponse>('userss', request)
+    .post<UserResponse>('users', request)
     .then((result) => {
       return result.data;
     })

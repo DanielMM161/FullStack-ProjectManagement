@@ -1,4 +1,3 @@
-
 import { Paper, styled } from '@mui/material';
 
 export const EmptyLayout = styled('div')({
@@ -25,6 +24,6 @@ export const ImageContainer = styled(Paper)(({ theme }) => ({
     height: '80%',
     '& > img': {
       width: '100%',
-    }
+    },
   },
 }));

@@ -18,13 +18,12 @@ import useDialog, { FORMS } from '../../hooks/useModal.hook';
 import { formatDate } from '../../utils/common';
 import AssignUser from '../../components/AssignUser';
 import { ListContainer, ListOptions, ProjectInfo } from './styled';
-import Assigne from '../../components/Filter/Assigne';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ListEmpty from '../../assets/listEmpty.svg';
 import EmptyElement from '../../components/EmptyElement';
 import { closeLoading, showLoading } from '../../redux/slice/actions';
 import { Loading } from '../../models/loading';
-import { selectProjectId } from '../../redux/slice/project';
+import { setProject } from '../../redux/slice/project';
 
 function ProjectDetail() {
   const { projectId } = useParams();
@@ -45,9 +44,9 @@ function ProjectDetail() {
   }, [projectId]);
 
   function fetchProjectById(id: number) {
-    dispatch(selectProjectId(projectId))
     dispatch(getProjectId(id)).then((result) => {
       const { payload } = result;
+      dispatch(setProject({id: projectId, name: payload.name ?? 'Project'}));
       if (payload) setActualProject(payload);
     });
   }

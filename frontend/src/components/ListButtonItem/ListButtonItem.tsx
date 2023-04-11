@@ -10,8 +10,8 @@ interface IButtonIconProps {
 
 function ListButtonItem({ title, disabled = false, onClick, children, selected }: IButtonIconProps) {
   return (
-    <ListItem key={title} disablePadding onClick={() => onClick()} >
-      <ListItemButton  disabled={disabled}>
+    <ListItem key={title} disablePadding onClick={() => onClick()}>
+      <ListItemButton disabled={disabled}>
         <ListItemIcon>{children}</ListItemIcon>
         <ListItemText primary={title} sx={{ fontWeight: 'bold', fontSize: '34px' }} />
       </ListItemButton>

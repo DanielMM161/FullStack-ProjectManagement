@@ -1,4 +1,3 @@
-
 import { Box, styled } from '@mui/material';
 
 export const StyledTaskDetail = styled(Box)(({ theme }) => ({
@@ -11,7 +10,7 @@ export const StyledTaskDetail = styled(Box)(({ theme }) => ({
     flexDirection: 'column',
   },
   [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
-   width: '300px'
+    width: '300px',
   },
 }));
 
