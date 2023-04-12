@@ -117,6 +117,11 @@ function Login() {
             </Button>
           </Typography>
         </Box>
+
+        <div className='user-demo'>
+          <h3>userdemo@example.com</h3>
+          <h3>userDemo456*</h3>
+        </div>
       </div>
 
       <div className="right-side">
@@ -124,7 +129,7 @@ function Login() {
         <img id="second-logo" src={loginSVG} alt="logo" />
       </div>
     </Layout>
-  );
+  )
 }
 
 export default Login;

@@ -220,7 +220,7 @@ function ProjectDetail() {
           <div className="avatar-container">
             <AvatarGroup max={4} sx={{ alignItems: 'center' }}>
               {actualProject?.users.map((u) => (
-                <Avatar alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />
+                <Avatar key={u.email} alt={u.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 34, height: 34 }} />
               ))}
             </AvatarGroup>
             <IconButton onClick={() => handleAssignUser()}>
@@ -230,8 +230,7 @@ function ProjectDetail() {
         </div>
       </ProjectInfo>
 
-      <ListOptions>
-        {/* <Assigne /> */}
+      <ListOptions>        
         <ButtonInput
           labelText="List Name"
           buttonText="Add another List"

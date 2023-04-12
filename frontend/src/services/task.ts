@@ -23,7 +23,7 @@ const createTask = createAsyncThunk('createTask', async (request: CreateTaskRequ
 const getTaskById = createAsyncThunk('getTaskById', async (id: number, thunkApi) => {
   return await instance
     .get(`tasks/${id}`)
-    .then((result) => {
+    .then((result) => {      
       return result.data;
     })
     .catch((err) => {

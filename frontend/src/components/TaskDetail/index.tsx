@@ -53,7 +53,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
   const [task, setTask] = useState<Task>(initialTaskValue);
   const [isLoading, setIsLoading] = useState(false);
   const [taskTitle, setTaskTitle] = useState(task.title);
-  const [taskDescription, setTaskDescription] = useState(task.description);
+  const [taskDescription, setTaskDescription] = useState(task.description ?? "");
   const [editing, setEditing] = useState(false);
   const [showAddSubTask, setShowAddSubTask] = useState(false);
   const [value, setValue] = useState(0);
@@ -122,7 +122,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           id: task.id,
           title: taskTitle,
           description: task.description,
-          priority: task.priority.toString(),
+          priority: task.priorityTask.toString(),
           dueDate: task.dueDate.toString(),
         }),
       ).then((result) => {
@@ -141,7 +141,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           id: task.id,
           title: task.title,
           description: taskDescription,
-          priority: task.priority.toString(),
+          priority: task.priorityTask.toString(),
           dueDate: task.dueDate.toString(),
         }),
       );
@@ -149,7 +149,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
   }
 
   function handleUpdatePriority(priority: string) {
-    if (priority !== task.priority.toString()) {
+    if (priority !== task.priorityTask.toString()) {
       dispatch(
         updateTask({
           id: task.id,
@@ -215,11 +215,10 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     });
   }
 
-  function handleChangeDueDate(dueDate: string) {
-    console.log("handleChangeDueDate --> ", dueDate)
+  function handleChangeDueDate(dueDate: string) {    
     const newDueDate = new Date(new Date(dueDate).getTime());
 
-    dispatch(updateTask({ ...task, priority: task.priority.toString(), dueDate: newDueDate.toISOString() })).then(
+    dispatch(updateTask({ ...task, priority: task.priorityTask.toString(), dueDate: newDueDate.toISOString() })).then(
       (result) => {
         const { payload } = result;
         if (payload) {
@@ -229,10 +228,8 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
     );
   }
 
-  function formatDate(date: string) {
-    console.log("date --> ", date)
-    const fecha = new Date(date);
-    console.log("date --> ",  `${fecha.getFullYear()}-${fecha.getMonth() + 1}-${fecha.getDate() + 1}`)
+  function formatDate(date: string) {    
+    const fecha = new Date(date);    
    
     return `${fecha.getFullYear()}-${("0" + (fecha.getMonth() + 1)).slice(-2)}-${("0" + fecha.getDate()).slice(-2)}`;
   }
@@ -266,7 +263,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
           <Typography variant="caption" marginTop="4px" marginBottom="4px">
             Priority:
             <MenuPriorityTask
-              actualPriority={task?.priority}
+              actualPriority={task?.priorityTask}
               selectPriorityClick={(priority) => handleUpdatePriority(priority)}
             />
           </Typography>
@@ -296,7 +293,6 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
             </Typography>
             <input 
               type="date" 
- 
               value={formatDate(task?.dueDate.toString())}              
               onChange={(e) => handleChangeDueDate(e.target.value)}                           
             >
@@ -325,12 +321,13 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
             </Box>
             <TabPanel value={value} index={0}>
               <TextField
-                id="outlined-multiline-static"
+                id="outlined-multiline-flexible"
+                label="Desription"
                 multiline
-                value={taskDescription}
+                value={taskDescription ?? ""}
                 onChange={(e) => setTaskDescription(e.target.value)}
-                onBlur={handleUpdateDescription}
-                rows={2}
+                onBlur={handleUpdateDescription}                
+                maxRows={4}
                 sx={{
                   width: 600,
                   maxWidth: '100%',

@@ -26,6 +26,17 @@ const Layout = styled('div')(({ theme }) => ({
         color: '#9d9d9d',
       },
     },
+    '& .user-demo': {
+      marginTop: '1rem',
+      width: '100%',
+      height: '72px',
+      backgroundColor: '#dddddd',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-evenly',
+      padding: '0.5rem',
+      color: '#4c4c4c'
+    },
     [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
       width: '100%',
       padding: '50px 50px',
@@ -35,6 +46,11 @@ const Layout = styled('div')(({ theme }) => ({
       alignItems: 'normal',
       '.divider-area > hr': {
         width: '20%',
+      },
+      '& .user-demo': {
+        '& h3': {
+          fontSize: '14px'
+        }
       },
     },
     [`@media screen and (min-width: ${theme.breakpoints.values.xl}px)`]: {
@@ -62,6 +78,7 @@ const Layout = styled('div')(({ theme }) => ({
       display: 'none',
     },
   },
+ 
 }));
 
 export default Layout;

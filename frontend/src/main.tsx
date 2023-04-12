@@ -14,6 +14,6 @@ root.render(
   <Provider store={store}>
     <GoogleOAuthProvider clientId={clientId}>
       <App />
-    </GoogleOAuthProvider>;
-  </Provider>,
+    </GoogleOAuthProvider>
+  </Provider>
 );
