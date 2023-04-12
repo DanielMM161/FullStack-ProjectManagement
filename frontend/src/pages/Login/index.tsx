@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { useAppDispatch } from '../../hooks/redux.hook';
-import { getProfile, login } from '../../services/auth';
+import { getProfile, login, loginGoogle } from '../../services/auth';
 import loginSVG from '../../assets/login.svg';
 import login2SVG from '../../assets/login-2.svg';
 import Layout from '../../styled/LoginRegisterLayout';
+import { GoogleLogin } from '@react-oauth/google';
 
 function Login() {
   const dispatch = useAppDispatch();
@@ -45,16 +46,26 @@ function Login() {
     }
   };
 
+  const handleLoginGoogle = (token: string) => {
+    dispatch(loginGoogle({ token })).then((result) => {      
+      const { payload } = result;
+      if (payload) handleGetProfile();
+    });
+  };
+
   return (
     <Layout>
       <div className="left-side">
         <Typography variant="h3" sx={{ fontWeight: 'bold', mb: 2 }}>
           Welcome back!
         </Typography>
-        <Typography variant="body1">Log in to your account to continue.</Typography>
-        {/* <Button variant="contained" fullWidth onClick={() => handleSubmit()}>
-          Log In With Google
-        </Button> */}
+        <Typography variant="body1" sx={{ marginBottom: '1rem' }}>Log in to your account to continue.</Typography>
+        <GoogleLogin
+          onSuccess={response => handleLoginGoogle(response.credential ?? "")}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+        />
         <div className="divider-area">
           <hr />
           <Typography variant="subtitle1">Or Login With Email</Typography>

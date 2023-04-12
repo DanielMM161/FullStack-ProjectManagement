@@ -3,6 +3,10 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface LoginGoogleAuth {
+  token: string;  
+}
+
 export interface RegisterRequest {
   firstName: string;
   lastName: string;

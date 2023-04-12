@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import HttpError from './HttpError';
 
 const http = axios.create({
-  baseURL: 'https://backend-myprojectmanagement.azurewebsites.net/api/v1/',
+  baseURL: 'https://localhost:7255/api/v1/',
 });
 
 function responseHandler(response: AxiosResponse<any>): any {
@@ -26,7 +26,6 @@ http.interceptors.request.use(
     return config;
   },
   function (error) {
-    // Do something with request error
     return Promise.reject(error);
   },
 );

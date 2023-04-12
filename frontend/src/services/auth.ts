@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { LoginRequest, RegisterRequest } from './request/user';
+import { LoginGoogleAuth, LoginRequest, RegisterRequest } from './request/user';
 import { handleThunkApi, showNotification } from '../utils/common';
 import { AuthResponse } from './response/auth';
 import { UserResponse } from './response/user';
@@ -53,4 +53,21 @@ const register = createAsyncThunk('register', async (request: RegisterRequest, t
     });
 });
 
-export { getProfile, login, register };
+const loginGoogle = createAsyncThunk('loginGoogle', async (payload: LoginGoogleAuth, thunkApi) => {
+  handleThunkApi(thunkApi, 'Welcome');
+  return await http
+    .post<AuthResponse>('googleauths/login', payload)
+    .then((result) => {
+      const value = result.data as AuthResponse;
+      localStorage.setItem('token', JSON.stringify(value.token));
+      return !null;
+    })
+    .catch((err) => {
+      console.error('Error login -> ', err);
+      showNotification('Login', 'Error Login', 'danger');
+      thunkApi.dispatch(closeLoading());
+      return null;
+    });
+});
+
+export { getProfile, login, register, loginGoogle };
