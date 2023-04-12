@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using backend.src.Middleware;
 using backend.src.Helpers;
+using backend.src.Services.GoogleService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,25 +43,6 @@ builder.Services.AddAutoMapper(typeof(Program).Assembly);
 builder.Services
     .AddIdentity<User, IdentityRole<int>>()
     .AddEntityFrameworkStores<AppDbContext>();
-
-builder.Services
-    .AddAuthentication(option =>
-    {
-        option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
-    .AddJwtBearer(options =>
-    {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
-        };
-    });
 
 builder.Services.AddCors(options =>
 {
@@ -102,6 +84,31 @@ builder.Services.AddScoped<IProjectRepo, ProjectRepo>().AddScoped<IProjectServic
 builder.Services.AddScoped<IListRepo, ListRepo>().AddScoped<IListService, ListService>();
 builder.Services.AddScoped<ITaskRepo, TaskRepo>().AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ISubTaskRepo, SubTaskRepo>().AddScoped<ISubTaskService, SubTaskService>();
+builder.Services.AddScoped<IGoogleService, GoogleService>();
+
+builder.Services
+    .AddAuthentication(option =>
+    {
+        option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidIssuer =  builder.Configuration["Jwt:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( builder.Configuration["Jwt:Secret"]))
+        };
+    });
+    // .AddGoogleOpenIdConnect(googleOptions =>
+    // {
+    //     googleOptions.ClientId =  builder.Configuration["Authentication:Google:ClientId"];
+    //     googleOptions.ClientSecret =  builder.Configuration["Authentication:Google:ClientSecret"];
+    // });
 
 var app = builder.Build();
 

@@ -20,7 +20,7 @@ public static class ModelBuilderConfig
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.HasPostgresEnum<TaskList.PriorityTask>();
+        modelBuilder.HasPostgresEnum<TaskList.Priority>();
     }
 
     public static void UserConfig(ModelBuilder modelBuilder)
@@ -58,7 +58,7 @@ public static class ModelBuilderConfig
             .WithOne()
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.HasPostgresEnum<TaskList.PriorityTask>();
+        modelBuilder.HasPostgresEnum<TaskList.Priority>();
         
         modelBuilder.Entity<TaskList>()
             .Navigation(p => p.Users)

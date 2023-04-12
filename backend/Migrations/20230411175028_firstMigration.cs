@@ -12,7 +12,7 @@ namespace backend.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("Npgsql:Enum:priority_task", "low,medium,high");
+                .Annotation("Npgsql:Enum:priority", "low,medium,high");
 
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
@@ -52,7 +52,7 @@ namespace backend.Migrations
                     id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     first_name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
-                    last_name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
+                    last_name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -237,7 +237,7 @@ namespace backend.Migrations
                     done = table.Column<bool>(type: "boolean", nullable: true),
                     due_date = table.Column<DateTime>(type: "timestamp without time zone", nullable: true, defaultValueSql: "CURRENT_TIMESTAMP"),
                     list_id = table.Column<int>(type: "integer", nullable: false),
-                    priority = table.Column<TaskList.PriorityTask>(type: "priority_task", nullable: false),
+                    priority_task = table.Column<TaskList.Priority>(type: "priority", nullable: false),
                     created_by_id = table.Column<int>(type: "integer", nullable: false),
                     project_id = table.Column<int>(type: "integer", nullable: false),
                     created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),

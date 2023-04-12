@@ -13,7 +13,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 
     static AppDbContext()
     {   
-        NpgsqlConnection.GlobalTypeMapper.MapEnum<TaskList.PriorityTask>();
+        NpgsqlConnection.GlobalTypeMapper.MapEnum<TaskList.Priority>();
 
         // Not use time zone in EF.
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

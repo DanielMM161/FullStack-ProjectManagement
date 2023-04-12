@@ -26,6 +26,11 @@ public class UserRepo : IUserRepo
         return await _userManager.FindByIdAsync(id.ToString());
     }
 
+    public async Task<User?> GetByEmail(string email)
+    {
+        return await _userManager.FindByEmailAsync(email);
+    }
+
     public async Task<User?> Create(UserCreateDTO request)
     {
         var user = new User

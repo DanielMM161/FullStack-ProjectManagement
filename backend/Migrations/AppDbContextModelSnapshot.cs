@@ -21,7 +21,7 @@ namespace backend.Migrations
                 .HasAnnotation("ProductVersion", "6.0.14")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "priority_task", new[] { "low", "medium", "high" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "priority", new[] { "low", "medium", "high" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("backend.src.Models.List", b =>
@@ -136,9 +136,9 @@ namespace backend.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("parent_id");
 
-                    b.Property<TaskList.PriorityTask>("Priority")
-                        .HasColumnType("priority_task")
-                        .HasColumnName("priority");
+                    b.Property<TaskList.Priority>("PriorityTask")
+                        .HasColumnType("priority")
+                        .HasColumnName("priority_task");
 
                     b.Property<int>("ProjectId")
                         .HasColumnType("integer")
@@ -203,7 +203,6 @@ namespace backend.Migrations
                         .HasColumnName("first_name");
 
                     b.Property<string>("LastName")
-                        .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("character varying(60)")
                         .HasColumnName("last_name");

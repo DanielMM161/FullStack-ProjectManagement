@@ -6,6 +6,6 @@ public class TaskUpdateDTO : BaseDTO<TaskList>
 {
     public string? Title { get; set; }
     public string? Description { get; set; }
-    public TaskList.PriorityTask? Priority { get; set; }
+    public TaskList.Priority? PriorityTask { get; set; }
     public DateTime? DueDate { get; set; }
 }

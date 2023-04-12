@@ -14,13 +14,13 @@ public class TaskList : BaseModel
     public DateTime? DueDate { get; set; }
     public List List { get; set; } = null!;
     public int ListId { get; set; }
-    public PriorityTask Priority { get; set; } = PriorityTask.low;
+    public Priority PriorityTask { get; set; } = Priority.low;
     public ICollection<User>? Users { get; set; } = null!;
     public User CreatedBy { get; set; } = null!;
     public int CreatedById { get; set; }
     public int ProjectId { get; set; }
 
-    public enum PriorityTask
+    public enum Priority
     {
         low,
         medium,
