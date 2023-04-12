@@ -104,11 +104,6 @@ builder.Services
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes( builder.Configuration["Jwt:Secret"]))
         };
     });
-    // .AddGoogleOpenIdConnect(googleOptions =>
-    // {
-    //     googleOptions.ClientId =  builder.Configuration["Authentication:Google:ClientId"];
-    //     googleOptions.ClientSecret =  builder.Configuration["Authentication:Google:ClientSecret"];
-    // });
 
 var app = builder.Build();
 
