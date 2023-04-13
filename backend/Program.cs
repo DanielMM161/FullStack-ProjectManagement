@@ -49,7 +49,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("cors", 
         builder =>
     {
-        builder.WithOrigins("http://localhost:5173", "http://localhost:3000", "https://master--stellular-rabanadas-0d544f.netlify.app")
+        builder.WithOrigins("http://localhost:5173", "https://stellular-rabanadas-0d544f.netlify.app")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .SetIsOriginAllowedToAllowWildcardSubdomains();
