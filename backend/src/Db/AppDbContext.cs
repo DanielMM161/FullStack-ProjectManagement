@@ -25,9 +25,13 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         var configString = _config.GetConnectionString("DefaultConnection");
         optionsBuilder
-            .UseNpgsql(configString)
-            .AddInterceptors(new AppDbContextSaveChangesInterceptor())
-            .UseSnakeCaseNamingConvention();
+        .UseNpgsql(configString, builder =>
+            {
+                builder.EnableRetryOnFailure(10, TimeSpan.FromSeconds(15), null);
+            })
+        .AddInterceptors(new AppDbContextSaveChangesInterceptor())
+        .UseSnakeCaseNamingConvention();
+        base.OnConfiguring(optionsBuilder);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

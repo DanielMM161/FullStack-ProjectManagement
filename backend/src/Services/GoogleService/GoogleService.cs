@@ -39,14 +39,14 @@ public class GoogleService : IGoogleService
 
         var user = await _userRepo.GetByEmail(payload.Email);
         if (user is null)
-        {            
+        {
             var newUser = new UserCreateDTO
             {
                 Email = payload.Email,
                 FirstName = payload.Name,
                 LastName = payload.FamilyName,
                 Password = PasswordGenerator.Generate()
-            };            
+        };            
             user = await _userRepo.Create(newUser);
         }
         return await _tokenService.GenerateTokenAsync(user);
