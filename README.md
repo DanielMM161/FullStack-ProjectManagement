@@ -10,19 +10,16 @@ Hi, Welcome to my Fullstack Project Management Systme, I made this project using
     * Inside a Task you can Edit, change the priority, add description, assign User to that task and add Subtask
 
 ## Next Features
-* Loggin with 3rd parts (google, github)
 * Add Comments into a task
-* Improve the Design and UX
+* Drag and Drop in list and Task 
 * Dark Mode
 
-## Front End Project
+## Front-End Project
 A modern minimal Vite + React + TypeScript template with pre-configured ESLint (with Airbnb JS/React rules), Prettier
 
-## 📷 Previews
+## Take A Look
 
-<p align="center">
- <img src="images/projectManagement.gif" alt="drawing" width="600" height="200" />
-</p>
+- [Here](https://stellular-rabanadas-0d544f.netlify.app)
 
 ### Run Locally
 
@@ -58,7 +55,7 @@ Start the server
 
 
 ## Back End Project
-This projects has been made with  ASP .NET Core (6), Entity Framework Core, PostgreSQ
+This projects has been made with ASP .NET Core (6), Entity Framework Core, PostgreSQ
 
 ### Entity Relationship Diagram
 ![Database ERD](images/ERdiagram.png)
