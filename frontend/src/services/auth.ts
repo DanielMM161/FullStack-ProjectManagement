@@ -38,6 +38,23 @@ const login = createAsyncThunk('login', async (payload: LoginRequest, thunkApi) 
     });
 });
 
+const logout = createAsyncThunk('logout', async (_, thunkApi) => {
+  handleThunkApi(thunkApi, 'GoodBye');
+  return await http
+    .post<AuthResponse>('auths/logout')
+    .then((result) => {      
+      localStorage.removeItem('profile');
+      localStorage.removeItem('token');
+      return result.data;
+    })
+    .catch((err) => {
+      console.error('Error logout -> ', err);
+      showNotification('Logout', 'Error Logout', 'danger');
+      thunkApi.dispatch(closeLoading());
+      return null;
+    });
+});
+
 const register = createAsyncThunk('register', async (request: RegisterRequest, thunkApi) => {
   handleThunkApi(thunkApi, 'Registering');
   return await http
@@ -70,4 +87,4 @@ const loginGoogle = createAsyncThunk('loginGoogle', async (payload: LoginGoogleA
     });
 });
 
-export { getProfile, login, register, loginGoogle };
+export { getProfile, login, register, loginGoogle, logout };

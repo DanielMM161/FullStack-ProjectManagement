@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios';
 import HttpError from './HttpError';
 
 const http = axios.create({
-  baseURL: 'https://backend-myprojectmanagement.azurewebsites.net/api/v1/',
+  baseURL: 'http://localhost:5000/api/v1/',
 });
 
 function responseHandler(response: AxiosResponse<any>): any {

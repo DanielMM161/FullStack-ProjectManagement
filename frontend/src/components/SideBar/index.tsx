@@ -7,10 +7,11 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import StyledSideBar from './styled';
 import FolderIcon from '@mui/icons-material/Folder';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import { logOut } from '../../redux/slice/profile';
+import { closeSession } from '../../redux/slice/profile';
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import { useState } from 'react';
 import { toggleSideBar } from '../../redux/slice/actions';
+import { logout } from '../../services/auth';
 
 function SideBar() {
   const dispatch = useAppDispatch();
@@ -56,8 +57,7 @@ function SideBar() {
           <List>
             <ListButtonItem
               title="Dashboard"
-              onClick={() => handleDashboardClick()}
-              //selected={!projectItem || dashboardItem || projectSelectedId !== 0}
+              onClick={() => handleDashboardClick()}              
             >
               <DashboardIcon />
             </ListButtonItem>
@@ -68,8 +68,7 @@ function SideBar() {
                   handleProjectClick();
                 }
               }}
-              disabled={projectSelectedId == 0 ? true : false}
-              // selected={projectItem || projectSelectedId !== 0}
+              disabled={projectSelectedId == 0 ? true : false}              
             >
               <FolderIcon />
             </ListButtonItem>
@@ -81,7 +80,13 @@ function SideBar() {
           <ListButtonItem
             title="Log out"
             onClick={() => {
-              dispatch(logOut());
+              dispatch(logout())
+              .then((result) => {
+                const { payload } = result                
+                if (payload) {
+                  dispatch(closeSession())
+                }
+              });
             }}
             selected={false}
           >

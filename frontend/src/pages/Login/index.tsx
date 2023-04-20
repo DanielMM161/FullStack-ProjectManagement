@@ -11,8 +11,8 @@ import { GoogleLogin } from '@react-oauth/google';
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('userdemo@example.com');
+  const [password, setPassword] = useState('userDemo456*');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const checkFields = (): boolean => {

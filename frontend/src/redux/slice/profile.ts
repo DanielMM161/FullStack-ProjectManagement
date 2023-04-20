@@ -7,9 +7,7 @@ export const profileSlice = createSlice({
   name: 'profile',
   initialState: initialProfileState,
   reducers: {
-    logOut: (state) => {
-      localStorage.removeItem('profile');
-      localStorage.removeItem('token');
+    closeSession: (state) => {
       state.profile = emptyUser;
     },
   },
@@ -30,6 +28,6 @@ export const profileSlice = createSlice({
   },
 });
 
-export const { logOut } = profileSlice.actions;
+export const { closeSession } = profileSlice.actions;
 
 export default profileSlice.reducer;
