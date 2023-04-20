@@ -19,6 +19,12 @@ public class AuthController : ApiControllerBase
         return Ok(await _service.Login(request));
     }
         
+    [HttpPost("logout")]
+    public async Task<IActionResult> LogOut()
+    {
+        return Ok(await _service.CloseSession());
+    }
+        
     [HttpGet("profile")]
     public async Task<IActionResult> Profile()
     {

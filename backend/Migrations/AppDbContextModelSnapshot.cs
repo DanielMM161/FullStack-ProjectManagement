@@ -241,6 +241,10 @@ namespace backend.Migrations
                         .HasColumnType("text")
                         .HasColumnName("security_stamp");
 
+                    b.Property<bool>("SessionActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("session_active");
+
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean")
                         .HasColumnName("two_factor_enabled");

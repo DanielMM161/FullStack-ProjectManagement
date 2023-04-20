@@ -115,11 +115,11 @@ app.UseSwaggerUI(options =>
         options.RoutePrefix = string.Empty;
     });
 
-app.UseCors("cors");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseHttpsRedirection();
+   // app.UseHttpsRedirection();
+        app.UseCors("cors");
     app.UseSwagger();
     app.UseSwaggerUI();    
     app.UseSwaggerUI(options =>
@@ -141,7 +141,7 @@ if (app.Environment.IsDevelopment())
     }
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // This has to be before app.UseAuthorization()
 app.UseAuthentication();

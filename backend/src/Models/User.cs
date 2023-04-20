@@ -12,4 +12,5 @@ public class User : IdentityUser<int>
     public ICollection<Project>? Projects { get; set; }
     public ICollection<TaskList>? Tasks { get; set; } = null!;
     public ICollection<TaskList>? Creator { get; set; } = null!;
+    public bool SessionActive { get; set; } = false;
 }

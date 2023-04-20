@@ -7,4 +7,5 @@ public interface IAuthService
 {
     Task<AuthReadDTO?> Login(AuthLoginDTO request);
     Task<UserReadDTO> Profile();
+    Task<bool> CloseSession();
 }

@@ -35,8 +35,15 @@ public class AuthService : IAuthService
         if (!await _userManager.CheckPasswordAsync(user, request.Password))
         {
             throw ServiceException.BadRequest("Wrong Password");
+        }        
+
+        if (user.SessionActive)
+        {
+            throw ServiceException.BadRequest("There is another session active");
         }
 
+        user.SessionActive = true;
+        await _userManager.UpdateAsync(user);
         return await _tokenService.GenerateTokenAsync(user);
     }
 
@@ -48,5 +55,18 @@ public class AuthService : IAuthService
             throw ServiceException.NotFound("Profile is not found");
         }
         return _mapper.Map<User, UserReadDTO>(user);
+    }
+
+    public async Task<bool> CloseSession()
+    {
+        var user = await _userManager.FindByIdAsync(_claimService.GetUserId().ToString());
+        if (user is null)
+        {
+            throw ServiceException.NotFound("Profile is not found");
+        }
+        
+        user.SessionActive = false;
+        await _userManager.UpdateAsync(user);
+        return true;
     }
 }

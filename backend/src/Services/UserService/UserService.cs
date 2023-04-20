@@ -26,7 +26,7 @@ public class UserService : IUserService
         var user = await _repo.Create(request);
         if (user is null)
         {
-            throw new Exception("Cannot create");
+            throw new Exception("Password Must Contain 1 Upper Letter, 1 Lower Letter, Alphanumeric and Special Caracter");
         }
         return _mapper.Map<User, UserReadDTO>(user);
     }

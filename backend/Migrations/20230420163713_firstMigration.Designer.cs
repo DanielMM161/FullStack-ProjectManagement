@@ -13,7 +13,7 @@ using backend.src.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230417070905_firstMigration")]
+    [Migration("20230420163713_firstMigration")]
     partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,6 +242,10 @@ namespace backend.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")
                         .HasColumnName("security_stamp");
+
+                    b.Property<bool>("SessionActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("session_active");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean")
