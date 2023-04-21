@@ -13,7 +13,7 @@ using backend.src.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230420163713_firstMigration")]
+    [Migration("20230421073230_firstMigration")]
     partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,6 +25,49 @@ namespace backend.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "priority", new[] { "low", "medium", "high" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("backend.src.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("message");
+
+                    b.Property<int>("TaskId")
+                        .HasColumnType("integer")
+                        .HasColumnName("task_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_comments");
+
+                    b.HasIndex("TaskId")
+                        .HasDatabaseName("ix_comments_task_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_comments_user_id");
+
+                    b.ToTable("comments", (string)null);
+                });
 
             modelBuilder.Entity("backend.src.Models.List", b =>
                 {
@@ -471,6 +514,27 @@ namespace backend.Migrations
                     b.ToTable("task_list_user", (string)null);
                 });
 
+            modelBuilder.Entity("backend.src.Models.Comment", b =>
+                {
+                    b.HasOne("backend.src.Models.TaskList", "Task")
+                        .WithMany("Comments")
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_comments_tasks_task_id");
+
+                    b.HasOne("backend.src.Models.User", "user")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_comments_users_user_id");
+
+                    b.Navigation("Task");
+
+                    b.Navigation("user");
+                });
+
             modelBuilder.Entity("backend.src.Models.List", b =>
                 {
                     b.HasOne("backend.src.Models.Project", "Project")
@@ -613,8 +677,15 @@ namespace backend.Migrations
                     b.Navigation("Lists");
                 });
 
+            modelBuilder.Entity("backend.src.Models.TaskList", b =>
+                {
+                    b.Navigation("Comments");
+                });
+
             modelBuilder.Entity("backend.src.Models.User", b =>
                 {
+                    b.Navigation("Comments");
+
                     b.Navigation("Creator");
                 });
 #pragma warning restore 612, 618

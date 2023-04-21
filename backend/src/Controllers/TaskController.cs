@@ -1,5 +1,6 @@
 namespace backend.src.Controllers;
 
+using backend.src.DTOs.Comment;
 using backend.src.DTOs.Request.Tasks;
 using backend.src.DTOs.SubTask;
 using backend.src.DTOs.Task;
@@ -31,6 +32,12 @@ public class TaskController : BaseController<TaskList, TaskReadDTO, TaskCreateDT
     public async Task<bool> RemoveUser(int taskId, AssignTaskRequest request)
     {
         return await _service.RemoveUserTaskAsync(taskId, request.UserId);
+    }
+
+    [HttpPost("{taskId:int}/comment")]
+    public async Task<bool> RemoveUser(int taskId, CommentCreateDTO request)
+    {
+        return await _service.AddComment(taskId, request);
     }
 
     [HttpPost("{taskParentId:int}/subtask")]

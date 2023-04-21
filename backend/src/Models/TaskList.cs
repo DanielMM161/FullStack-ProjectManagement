@@ -19,6 +19,7 @@ public class TaskList : BaseModel
     public User CreatedBy { get; set; } = null!;
     public int CreatedById { get; set; }
     public int ProjectId { get; set; }
+    public ICollection<Comment>? Comments { get; set; } = null!;
 
     public enum Priority
     {

@@ -46,4 +46,5 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Project> Projects { get; set; } = null!;
     public DbSet<List> Lists { get; set; } = null!;
     public DbSet<TaskList> Tasks { get; set; } = null!;
+    public DbSet<Comment> Comments { get; set; } = null!;
 }

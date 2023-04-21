@@ -11,10 +11,14 @@ using backend.src.Repositories.UserRepo;
 using backend.src.Repositories.ListRepo;
 using backend.src.Services.BaseService;
 using backend.src.DTOs.SubTask;
+using backend.src.Repositories.CommentRepo;
+using backend.src.DTOs.Comment;
+using Microsoft.EntityFrameworkCore;
 
 public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, TaskUpdateDTO>, ITaskService
 {
     private readonly ITaskRepo _repo;
+    private readonly ICommentRepo _commentRepo;
     private readonly ISubTaskRepo _subTaskRepo;
     private readonly IUserRepo _userRepo;
     private readonly IProjectRepo _projectRepo;
@@ -26,7 +30,8 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
                         IClaimsPrincipalService claimsService,
                         IProjectRepo projectRepo,
                         IListRepo listRepo,
-                        ISubTaskRepo subTaskRepo) : base(mapper, repo)
+                        ISubTaskRepo subTaskRepo,
+                        ICommentRepo commentRepo) : base(mapper, repo)
     {
         _repo = repo;
         _userRepo = userRepo;
@@ -34,10 +39,11 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         _projectRepo = projectRepo;
         _listRepo = listRepo;
         _subTaskRepo = subTaskRepo;
+        _commentRepo = commentRepo;
         
     }
 
-    public virtual async Task<TaskReadDTO?> GetByIdAsync(int id)
+    public override async Task<TaskReadDTO> GetByIdAsync(int id)
     {
         var task = await _repo.GetByIdAsync(id);
         
@@ -53,6 +59,21 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         var subTasks = await _subTaskRepo.GetSubTaskByParent(id);
         taskRead.SubTasks = subTasks.Select(st => _mapper.Map<TaskList, SubTaskReadDTO>(st)).ToArray();
 
+        var comments = await _commentRepo.GetCommentByTask(id);
+        if (comments.Count != 0)
+        {            
+            var commentsRead = await Task.WhenAll(comments
+                .Select(async c => {
+                    var user = await _userRepo.GetById(c.UserId);
+                    return new CommentReadDTO
+                    {
+                        Message = c.Message,
+                        UserName = user is not null ? $"{user.FirstName} {user.LastName}" : ""
+                    };
+                })
+            );
+            taskRead.Comments = commentsRead;
+        }        
         return taskRead;
     }
 
@@ -143,5 +164,23 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         await _claimsService.CheckUserBelongProject(project);
 
         return await _repo.DeleteOneAsync(task);
+    }
+
+    public async Task<bool> AddComment(int id, CommentCreateDTO request)
+    {
+        var task = await _repo.GetByIdAsync(id);
+        if(task is null)
+        {
+            throw ServiceException.NotFound();
+        }
+
+        var project = await _claimsService.IsProjectExist(task.ProjectId, _projectRepo);
+        await _claimsService.CheckUserBelongProject(project);
+        
+        var comment = _mapper.Map<CommentCreateDTO, Comment>(request);
+        comment.TaskId = id;
+        comment.UserId = _claimsService.GetUserId();
+        await _commentRepo.CreateOneAsync(comment);    
+        return true;        
     }
 }

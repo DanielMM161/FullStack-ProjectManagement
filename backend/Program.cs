@@ -23,6 +23,7 @@ using System.Security.Claims;
 using backend.src.Middleware;
 using backend.src.Helpers;
 using backend.src.Services.GoogleService;
+using backend.src.Repositories.CommentRepo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,12 +80,23 @@ builder.Services.AddSingleton<IAuthorizationHandler, BelongProjectHandlerRequire
 builder.Services.AddScoped<IClaimsPrincipalService, ClaimsPrincipalService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUserRepo, UserRepo>().AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IProjectRepo, ProjectRepo>().AddScoped<IProjectService, ProjectService>();
-builder.Services.AddScoped<IListRepo, ListRepo>().AddScoped<IListService, ListService>();
-builder.Services.AddScoped<ITaskRepo, TaskRepo>().AddScoped<ITaskService, TaskService>();
-builder.Services.AddScoped<ISubTaskRepo, SubTaskRepo>().AddScoped<ISubTaskService, SubTaskService>();
+builder.Services
+    .AddScoped<IUserRepo, UserRepo>()
+    .AddScoped<IUserService, UserService>();
+builder.Services
+    .AddScoped<IProjectRepo, ProjectRepo>()
+    .AddScoped<IProjectService, ProjectService>();
+builder.Services
+    .AddScoped<IListRepo, ListRepo>()
+    .AddScoped<IListService, ListService>();
+builder.Services
+    .AddScoped<ITaskRepo, TaskRepo>()
+    .AddScoped<ITaskService, TaskService>();
+builder.Services
+    .AddScoped<ISubTaskRepo, SubTaskRepo>()
+    .AddScoped<ISubTaskService, SubTaskService>();
 builder.Services.AddScoped<IGoogleService, GoogleService>();
+builder.Services.AddScoped<ICommentRepo, CommentRepo>();
 
 builder.Services
     .AddAuthentication(option =>

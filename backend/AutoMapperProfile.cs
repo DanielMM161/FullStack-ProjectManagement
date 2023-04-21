@@ -1,6 +1,7 @@
 namespace backend;
 
 using AutoMapper;
+using backend.src.DTOs.Comment;
 using backend.src.DTOs.List;
 using backend.src.DTOs.Project;
 using backend.src.DTOs.SubTask;
@@ -32,6 +33,10 @@ public class AutoMapperProfile : Profile
         CreateMap<TaskList, ListTaskReadDTO>();
         CreateMap<TaskCreateDTO, TaskList>();
         CreateMap<TaskUpdateDTO, TaskList>();
+
+        // Comment
+        CreateMap<Comment, CommentReadDTO>();
+        CreateMap<CommentCreateDTO, Comment>();
 
         // SubTask
         CreateMap<TaskList, SubTaskReadDTO>();

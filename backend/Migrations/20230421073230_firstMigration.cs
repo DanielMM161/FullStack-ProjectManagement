@@ -268,6 +268,35 @@ namespace backend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "comments",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    message = table.Column<string>(type: "character varying(300)", maxLength: 300, nullable: false),
+                    user_id = table.Column<int>(type: "integer", nullable: false),
+                    task_id = table.Column<int>(type: "integer", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    updated_at = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_comments", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_comments_tasks_task_id",
+                        column: x => x.task_id,
+                        principalTable: "tasks",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_comments_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "task_list_user",
                 columns: table => new
                 {
@@ -306,6 +335,16 @@ namespace backend.Migrations
                 name: "ix_asp_net_user_roles_role_id",
                 table: "AspNetUserRoles",
                 column: "role_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_comments_task_id",
+                table: "comments",
+                column: "task_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_comments_user_id",
+                table: "comments",
+                column: "user_id");
 
             migrationBuilder.CreateIndex(
                 name: "ix_lists_project_id",
@@ -366,6 +405,9 @@ namespace backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "comments");
 
             migrationBuilder.DropTable(
                 name: "project_user");
