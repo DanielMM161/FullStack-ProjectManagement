@@ -135,8 +135,8 @@ if (app.Environment.IsDevelopment())
         
         if (dbContext is not null && config.GetValue<bool>("CreateDbAtStart", true))
         {
-            dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
+            // dbContext.Database.EnsureDeleted();
+            // dbContext.Database.EnsureCreated();
         }
     }
 }

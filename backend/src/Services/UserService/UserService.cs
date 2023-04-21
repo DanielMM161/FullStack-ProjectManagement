@@ -47,4 +47,31 @@ public class UserService : IUserService
         }
         return _mapper.Map<User, UserReadDTO>(user);
     }
+
+    public async Task<UserReadDTO> UpdateAsync(UserUpdateDTO request)
+    {
+        var user = await _repo.GetById(_claimsService.GetUserId());
+        if (user is null)
+        {
+            throw ServiceException.NotFound();
+        }
+        request.UpdateModel(user);
+        await _repo.UpdateAsync(user);
+        return _mapper.Map<User, UserReadDTO>(user);
+    }
+
+    public async Task<bool> ChangePassword(UserChangePasswordDTO request)
+    {
+        var user = await _repo.GetById(_claimsService.GetUserId());
+        if (user is null)
+        {
+            throw ServiceException.NotFound();
+        }
+        var result = await _repo.ChangePassword(user, request.CurrentPassword, request.NewPassword);
+        if (!result.Item1)
+        {
+            throw ServiceException.BadRequest(result.Item2);
+        }
+        return result.Item1;
+    }
 }

@@ -22,7 +22,7 @@ public class UserRepo : IUserRepo
     }
 
     public async Task<User?> GetById(int id)
-    {
+    {        
         return await _userManager.FindByIdAsync(id.ToString());
     }
 
@@ -51,5 +51,21 @@ public class UserRepo : IUserRepo
     public async Task<ICollection<User>> GetAll()
     {
         return await _context.Set<User>().AsNoTracking().ToListAsync();
+    }
+
+    public async Task<User> UpdateAsync(User user)
+    {
+        await _userManager.UpdateAsync(user);
+        return user;
+    }
+
+    public async Task<(bool, string)> ChangePassword(User user, string currentPassword, string newPassword)
+    {
+        var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);        
+        if (!result.Succeeded)
+        {                     
+            return (false, result.Errors.ToList()[0].Description);
+        }
+        return (true, "");
     }
 }

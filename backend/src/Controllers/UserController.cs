@@ -30,4 +30,16 @@ public class UserController : ApiControllerBase
     {
         return Ok(await _service.GetById(id));        
     }
+
+    [HttpPut]
+    public async Task<IActionResult> Update(UserUpdateDTO request)
+    {
+        return Ok(await _service.UpdateAsync(request));
+    }
+
+    [HttpPut("changepassword")]
+    public async Task<IActionResult> ChangePassword(UserChangePasswordDTO request)
+    {
+        return Ok(await _service.ChangePassword(request));
+    }
 }

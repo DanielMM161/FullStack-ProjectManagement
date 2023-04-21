@@ -6,5 +6,7 @@ public interface IUserService
 {
     Task<UserReadDTO> Create(UserCreateDTO request);
     Task<UserReadDTO> GetById(int id);
+    Task<UserReadDTO> UpdateAsync(UserUpdateDTO request);
     Task<ICollection<UserReadDTO>> GetAll();
+    Task<bool> ChangePassword(UserChangePasswordDTO request);
 }

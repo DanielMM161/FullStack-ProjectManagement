@@ -57,7 +57,7 @@ public class AuthService : IAuthService
         return _mapper.Map<User, UserReadDTO>(user);
     }
 
-    public async Task<bool> CloseSession()
+    public async Task<bool> Logout()
     {
         var user = await _userManager.FindByIdAsync(_claimService.GetUserId().ToString());
         if (user is null)
