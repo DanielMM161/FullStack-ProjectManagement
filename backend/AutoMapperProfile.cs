@@ -37,6 +37,7 @@ public class AutoMapperProfile : Profile
         // Comment
         CreateMap<Comment, CommentReadDTO>();
         CreateMap<CommentCreateDTO, Comment>();
+        CreateMap<CommentUpdateDTO, Comment>();
 
         // SubTask
         CreateMap<TaskList, SubTaskReadDTO>();

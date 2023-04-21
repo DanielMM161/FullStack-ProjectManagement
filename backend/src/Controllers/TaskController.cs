@@ -35,9 +35,21 @@ public class TaskController : BaseController<TaskList, TaskReadDTO, TaskCreateDT
     }
 
     [HttpPost("{taskId:int}/comment")]
-    public async Task<bool> RemoveUser(int taskId, CommentCreateDTO request)
+    public async Task<bool> AddComment(int taskId, CommentCreateDTO request)
     {
         return await _service.AddComment(taskId, request);
+    }
+
+    [HttpPut("{taskId:int}/comment/{commentId:int}")]
+    public async Task<bool> UpdateComment(int taskId, int commentId, CommentUpdateDTO request)
+    {
+        return await _service.UpdateComment(taskId, commentId, request);
+    }
+
+    [HttpDelete("{taskId:int}/comment/{commentId:int}")]
+    public async Task<bool> DeleteComment(int taskId, int commentId)
+    {
+        return await _service.DeleteComment(taskId, commentId);
     }
 
     [HttpPost("{taskParentId:int}/subtask")]

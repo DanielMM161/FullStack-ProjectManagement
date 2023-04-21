@@ -10,4 +10,6 @@ public interface ITaskService : IBaseService<TaskList, TaskReadDTO, TaskCreateDT
     Task<bool> AssignUserTaskAsync(int taskId, int userAssignedID);
     Task<bool> RemoveUserTaskAsync(int taskId, int userAssignedID);
     Task<bool> AddComment(int id, CommentCreateDTO request);
+    Task<bool> UpdateComment(int taskId, int commentId, CommentUpdateDTO request);
+    Task<bool> DeleteComment(int taskId, int commentId);
 }

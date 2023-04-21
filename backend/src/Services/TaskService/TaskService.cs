@@ -24,6 +24,7 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
     private readonly IProjectRepo _projectRepo;
     private readonly IListRepo _listRepo;
     private readonly IClaimsPrincipalService _claimsService;
+
     public TaskService(IMapper mapper, 
                         ITaskRepo repo, 
                         IUserRepo userRepo, 
@@ -93,7 +94,6 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
 
         return await base.CreateOneAsync(request);
     }
-
 
     public async Task<bool> AssignUserTaskAsync(int taskId, int userAssignedID)
     {        
@@ -182,5 +182,49 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         comment.UserId = _claimsService.GetUserId();
         await _commentRepo.CreateOneAsync(comment);    
         return true;        
+    }
+
+    public async Task<bool> UpdateComment(int taskId, int commentId, CommentUpdateDTO request)
+    {
+        var comment = await CheckComment(taskId, commentId);
+
+        var newComment = _mapper.Map<CommentUpdateDTO, Comment>(request, comment);
+        var result = await _commentRepo.UpdateOneAsync(newComment);
+        if (result.Message == request.Message)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public async Task<bool> DeleteComment(int taskId, int commentId)
+    {
+        var comment = await CheckComment(taskId, commentId);
+        return await _commentRepo.DeleteOneAsync(comment);
+    }
+
+    private async Task<Comment> CheckComment(int taskId, int commentId)
+    {
+        var task = await _repo.GetByIdAsync(taskId);
+        if(task is null)
+        {
+            throw ServiceException.NotFound("Task Id Not Found");
+        }
+
+        var comment = await _commentRepo.GetByIdAsync(commentId);
+        if (comment is null)
+        {
+            throw ServiceException.NotFound("Comment Id Not Found");
+        }
+
+        if (comment.TaskId != taskId)
+        {
+            throw ServiceException.BadRequest("The comment have belong to the Task");
+        }
+
+        var project = await _claimsService.IsProjectExist(task.ProjectId, _projectRepo);
+        await _claimsService.CheckUserBelongProject(project);
+
+        return comment;
     }
 }
