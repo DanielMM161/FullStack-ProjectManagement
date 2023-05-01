@@ -165,3 +165,5 @@ app.UseMiddleware<ErrorHandleMiddleware>();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

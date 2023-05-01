@@ -9,4 +9,5 @@ public interface IUserService
     Task<UserReadDTO> UpdateAsync(UserUpdateDTO request);
     Task<ICollection<UserReadDTO>> GetAll();
     Task<bool> ChangePassword(UserChangePasswordDTO request);
+    Task<string> SaveUserProfilePicture(UserProfilePictureDTO request);
 }

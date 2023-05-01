@@ -8,14 +8,12 @@ using backend.src.Models;
 
 [Authorize]
 public class ProjectController : BaseController<Project, ProjectReadDTO, ProjectCreateDTO, ProjectUpdateDTO>
-{
-    private readonly IAuthorizationService _authService;
+{ 
     private readonly IProjectService _service;        
 
-    public ProjectController(IProjectService service, IAuthorizationService authService) : base(service)
+    public ProjectController(IProjectService service) : base(service)
     {
-        _service = service;        
-        _authService = authService;
+        _service = service;                
     }
 
     [HttpGet("user")]

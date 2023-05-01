@@ -42,4 +42,11 @@ public class UserController : ApiControllerBase
     {
         return Ok(await _service.ChangePassword(request));
     }
+
+    [HttpPost("profile-picture")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> ProfilePicture([FromForm] UserProfilePictureDTO request)
+    {        
+        return Ok(await _service.SaveUserProfilePicture(request));
+    }
 }

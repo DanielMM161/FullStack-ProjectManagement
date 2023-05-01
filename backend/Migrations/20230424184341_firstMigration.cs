@@ -53,6 +53,7 @@ namespace backend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     first_name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: false),
                     last_name = table.Column<string>(type: "character varying(60)", maxLength: 60, nullable: true),
+                    picture_profile = table.Column<byte[]>(type: "bytea", nullable: true),
                     session_active = table.Column<bool>(type: "boolean", nullable: false),
                     user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),

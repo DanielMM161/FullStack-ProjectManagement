@@ -280,6 +280,10 @@ namespace backend.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
 
+                    b.Property<byte[]>("PictureProfile")
+                        .HasColumnType("bytea")
+                        .HasColumnName("picture_profile");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")
                         .HasColumnName("security_stamp");

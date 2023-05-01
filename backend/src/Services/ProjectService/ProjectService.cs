@@ -65,10 +65,15 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
     }
 
     public override async Task<ProjectReadDTO> UpdateOneAsync(int id, ProjectUpdateDTO update)
-    {
-        Console.WriteLine($"{update.UsersId == null}");
-        var project = await _claimsService.IsProjectExist(id, _repo);
+    {        
+        var project = await _repo.GetByIdAsync(id);
+        if (project is null)
+        {
+            throw ServiceException.NotFound();
+        }
+
         await _claimsService.CheckUserBelongProject(project);
+        
         if (update.UsersId is not null && update.UsersId.Count() > 0) {
             project.Users = new List<User>();            
             foreach(var userId in update.UsersId)

@@ -10,6 +10,7 @@ using NETCoreDemo.Db;
 public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     private readonly IConfiguration _config;
+    private readonly DbType _dbType;    
 
     static AppDbContext()
     {   
@@ -18,20 +19,47 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
         // Not use time zone in EF.
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
     }
-
-    public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration config) : base(options) => _config = config;
+    
+    public AppDbContext(IConfiguration config, DbType dbType = DbType.Development)
+    { 
+        _dbType = dbType;
+        _config = config;        
+    }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        var configString = _config.GetConnectionString("DefaultConnection");
+    {        
         optionsBuilder
-        .UseNpgsql(configString, builder =>
+        .UseNpgsql(ConnectionString(), builder =>
             {
                 builder.EnableRetryOnFailure(10, TimeSpan.FromSeconds(15), null);
             })
         .AddInterceptors(new AppDbContextSaveChangesInterceptor())
         .UseSnakeCaseNamingConvention();
         base.OnConfiguring(optionsBuilder);
+    }
+
+    private string ConnectionString()
+    {
+        switch (_dbType)
+        {
+            case DbType.Development:
+                {
+                    return _config.GetConnectionString("DevelopmentConnection");
+                }
+            case DbType.Production:
+                {
+                    return _config.GetConnectionString("ProductionConnection");
+                }
+            case DbType.Test:
+                {
+                    return _config.GetConnectionString("TestConnection");
+                }
+            case DbType.Transactional:
+                {
+                    return _config.GetConnectionString("TransactionalConnection");
+                }
+        }
+        throw new Exception("No database type was provided");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -47,4 +75,11 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<List> Lists { get; set; } = null!;
     public DbSet<TaskList> Tasks { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
+}
+public enum DbType
+{
+    Development,
+    Production,
+    Test,
+    Transactional
 }

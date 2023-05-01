@@ -28,10 +28,10 @@ public class BaseRepo<T> : IBaseRepo<T>
         return true;
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(QueryOptions options)
+    public async Task<IEnumerable<T>> GetAllAsync(QueryOptions? options)
     {
         var query = _context.Set<T>().AsNoTracking();
-        if (options.Sort.Trim().Length > 0)
+        if (options != null && options.Sort.Trim().Length > 0)
         {
             if (query.GetType().GetProperty(options.Sort) != null)
             {

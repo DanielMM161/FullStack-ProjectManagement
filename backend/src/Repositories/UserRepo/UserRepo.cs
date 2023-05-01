@@ -12,13 +12,11 @@ public class UserRepo : IUserRepo
 {
     protected readonly AppDbContext _context;
     private readonly UserManager<User> _userManager;
-    private readonly ITokenService _tokenService;
 
-    public UserRepo(UserManager<User> userManager, ITokenService tokenService, AppDbContext context)
+    public UserRepo(UserManager<User> userManager, AppDbContext context)
     {
         _context = context;
         _userManager = userManager;
-        _tokenService = tokenService;
     }
 
     public async Task<User?> GetById(int id)
@@ -32,7 +30,7 @@ public class UserRepo : IUserRepo
     }
 
     public async Task<User?> Create(UserCreateDTO request)
-    {
+    {        
         var user = new User
         {
             FirstName = request.FirstName,
@@ -40,7 +38,7 @@ public class UserRepo : IUserRepo
             UserName = request.Email,
             Email = request.Email,
         };        
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var result = await _userManager.CreateAsync(user, request.Password);        
         if (!result.Succeeded)
         {
             return null;

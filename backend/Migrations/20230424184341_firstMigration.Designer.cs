@@ -13,7 +13,7 @@ using backend.src.Models;
 namespace backend.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230421073230_firstMigration")]
+    [Migration("20230424184341_firstMigration")]
     partial class firstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -281,6 +281,10 @@ namespace backend.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("phone_number_confirmed");
+
+                    b.Property<byte[]>("PictureProfile")
+                        .HasColumnType("bytea")
+                        .HasColumnName("picture_profile");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text")
