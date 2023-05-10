@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
+import { BaseModel } from "./request/project";
 
 export function getAll<T>(url: string, name: string) {
     return createAsyncThunk(
@@ -21,9 +22,9 @@ export function getAll<T>(url: string, name: string) {
 export function get<T>(url: string, name: string) {
     return createAsyncThunk(
         name,
-        async (thunkAPI) => {
+        async (id: number, thunkAPI) => {
             return api
-                .get(url)
+                .get(`${url}/${id}`)
                 .then((result) => {
                     return result.data as T;
                 })
@@ -33,6 +34,11 @@ export function get<T>(url: string, name: string) {
                 })
         }
     )
+}
+
+export function handleGet<T>(url: string, name: string, id: number) {
+    return get<T>(url, name)(id);
+    
 }
 
 export function post<TCreate, TReturn>(url: string, name: string) {
@@ -46,18 +52,18 @@ export function post<TCreate, TReturn>(url: string, name: string) {
                 })
                 .catch((err) => {
                     console.error(`Error Create ${url} -> `, err);
-                    return null;
+                    return thunkAPI.rejectWithValue({error: err})                    
                 })
         }
     )
 }
 
-export function update<TUpdate, TReturn>(url: string, name: string) {
+export function update<TUpdate extends BaseModel, TReturn>(url: string, name: string) {
     return createAsyncThunk(
         name,
         async (item: TUpdate, thunkAPI) => {
             return api
-                .put(url, item)
+                .put(`${url}/${item.id}`, item)
                 .then((result) => {
                     return result.data as TReturn;
                 })
@@ -69,18 +75,18 @@ export function update<TUpdate, TReturn>(url: string, name: string) {
     )
 }
 
-export function remove<T>(url: string, name: string) {
+export function remove(url: string, name: string) {
     return createAsyncThunk(
         name,
-        async (thunkAPI) => {
+        async (id: number, thunkAPI) => {
             return api
-                .delete(url)
+                .delete(`${url}/${id}`)
                 .then((result) => {
                     return result.data;
                 })
                 .catch((err) => {
                     console.error(`Error remove ${url} -> `, err);
-                    return null;
+                    return thunkAPI.rejectWithValue({error: err})    
                 })
         }
     )

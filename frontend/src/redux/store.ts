@@ -8,10 +8,10 @@ import { testSlice } from './slice/testSlice';
 export const store = configureStore({
   reducer: {
     profile: profileSlice.reducer,
-    projects: projectSlice.reducer,
+    projects: projectSlice.slice.reducer,
     actions: actionsSlice.reducer,
     loading: loadingSlice.reducer,
-    test: testSlice.reducer
+
   },
 });
 

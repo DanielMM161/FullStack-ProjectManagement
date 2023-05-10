@@ -1,7 +1,8 @@
+import { GenericState } from '../redux/slice/genericSlice';
 import { User } from './user';
 
 export interface ProjectInitialState {
-  projects: Project[];
+  //projects: Project[];
   projectSelectedId: number;
   projectSelectedName: string;
   fetching: boolean;
@@ -16,8 +17,15 @@ export interface Project {
   updatedAt: string;
 }
 
-export const initialProjectState: ProjectInitialState = {
-  projects: [],
+export interface ProjectSliceState extends GenericState {
+  data: Project[],
+  projectSelectedId: number;
+  projectSelectedName: string;
+  fetching: boolean;
+}
+
+export const initialProjectState: ProjectSliceState = {
+  data: [],
   projectSelectedId: 0,
   projectSelectedName: 'Project',
   fetching: false,

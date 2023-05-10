@@ -1,32 +1,43 @@
-import { ActionReducerMapBuilder, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducers, createSlice } from "@reduxjs/toolkit"
+import { ActionReducerMapBuilder, AsyncThunk, PayloadAction, SliceCaseReducers, ValidateSliceCaseReducers, createSlice } from "@reduxjs/toolkit"
 
 
-export interface GenericState<T> {
-    data? : T | T[]    
+
+export interface GenericState {
+
 }
 
-export const genericSlice = <T, Reducers extends SliceCaseReducers<GenericState<T>>>({
+export interface GenericCallExtraReducers {
+    getAll: AsyncThunk<any[] | never[], void, {}>
+}
+
+export const genericSlice = <T, Reducers extends SliceCaseReducers<T>>({    
     name = '',
     initialState,
     reducers,
-    extraReducers
-} : {
+    extraReducers,
+    genericCalls
+} : {    
     name: string,
-    initialState: GenericState<T>,
-    reducers: ValidateSliceCaseReducers<GenericState<T>, Reducers>,
-    extraReducers?:  (builder: ActionReducerMapBuilder<GenericState<T>>) => void 
+    initialState: T,
+    reducers: ValidateSliceCaseReducers<T, Reducers>,
+    extraReducers?: (builder: ActionReducerMapBuilder<GenericState>) => void,
+    genericCalls: GenericCallExtraReducers
 }) => {
-    return createSlice({
-        name,
-        initialState,
-        reducers: {
-            start(state) {                
+    
+    return {
+        slice: createSlice({
+            name,
+            initialState,
+            reducers: {
+                ...reducers
             },
-            success(state: GenericState<T>, action: PayloadAction<T>) {
-                state.data = action.payload;                
-            },
-            ...reducers
-        },
-        extraReducers
-    }) 
+            extraReducers: build => {
+                build.addCase(genericCalls.getAll.fulfilled, (state, action) => {                    
+                    state['data'] = action.payload
+                }),
+                extraReducers
+            }
+        }),
+        genericCalls: genericCalls
+    }
 }

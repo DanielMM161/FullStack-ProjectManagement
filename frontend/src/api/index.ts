@@ -18,7 +18,7 @@ function responseHandler(response: AxiosResponse<any>): any {
       if (!data) throw new HttpError('API Error. No data!');
       return response;
     }
-    throw new HttpError('API Error! Invalid status code!');
+    //throw new HttpError('API Error! Invalid status code!');
 }
 
 function requestHandler(config: InternalAxiosRequestConfig<any>) {

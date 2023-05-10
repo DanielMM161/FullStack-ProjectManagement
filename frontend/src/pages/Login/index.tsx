@@ -7,21 +7,14 @@ import loginSVG from '../../assets/login.svg';
 import login2SVG from '../../assets/login-2.svg';
 import Layout from '../../styled/LoginRegisterLayout';
 import { GoogleLogin } from '@react-oauth/google';
-import { hello } from '../../redux/slice/testSlice';
 
 function Login() {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-  const actionState = useAppSelector((state) => state.test);
+  const navigate = useNavigate();  
   const [email, setEmail] = useState('userdemo@example.com');
   const [password, setPassword] = useState('userDemo456*');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  useEffect(() => {
-    dispatch(hello())
-    console.log("login",actionState.data);
-
-  }, [actionState.data])
 
   const checkFields = (): boolean => {
     let isError = false;
