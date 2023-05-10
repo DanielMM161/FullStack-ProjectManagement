@@ -1,6 +1,7 @@
 namespace backend.src.Services.UserService;
 
 using backend.src.DTOs.User;
+using Microsoft.AspNetCore.Mvc;
 
 public interface IUserService
 {
@@ -9,5 +10,5 @@ public interface IUserService
     Task<UserReadDTO> UpdateAsync(UserUpdateDTO request);
     Task<ICollection<UserReadDTO>> GetAll();
     Task<bool> ChangePassword(UserChangePasswordDTO request);
-    Task<string> SaveUserProfilePicture(UserProfilePictureDTO request);
+    Task<FileContentResult> SaveUserProfilePicture(UserProfilePictureDTO request);
 }

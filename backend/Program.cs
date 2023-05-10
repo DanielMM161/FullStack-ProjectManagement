@@ -50,10 +50,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("cors", 
         builder =>
     {
-        builder.WithOrigins("http://localhost:5173", "https://stellular-rabanadas-0d544f.netlify.app")
-        .AllowAnyMethod()
-        .AllowAnyHeader()
-        .SetIsOriginAllowedToAllowWildcardSubdomains();
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .SetIsOriginAllowedToAllowWildcardSubdomains();
     });
 });
 
@@ -131,7 +132,7 @@ app.UseSwaggerUI(options =>
 if (app.Environment.IsDevelopment())
 {
    // app.UseHttpsRedirection();
-        app.UseCors("cors");
+    app.UseCors("cors");
     app.UseSwagger();
     app.UseSwaggerUI();    
     app.UseSwaggerUI(options =>

@@ -1,14 +1,16 @@
 namespace backend.src.Services.UserService;
 
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using backend.src.DTOs.User;
 using backend.src.Helpers;
 using backend.src.Models;
 using backend.src.Repositories.UserRepo;
+using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Png;
 
 public class UserService : IUserService
 {
@@ -77,16 +79,42 @@ public class UserService : IUserService
         return result.Item1;
     }
 
-    public async Task<string> SaveUserProfilePicture(UserProfilePictureDTO request)
+    public async Task<FileContentResult> SaveUserProfilePicture(UserProfilePictureDTO request)
     {
-        byte[]? imageData = null;
+        byte[]? imgData = null;
         if (request.File.Length == 0 || request.File == null)
         {            
             throw ServiceException.BadRequest();
         }
 
-        Console.WriteLine($"name ---> {request.File.Name}");
-        Console.WriteLine($"name ---> {request.File.FileName}");
+        string extension = Path.GetExtension(request.File.FileName);
+
+        if (extension != ".jpg" && extension != ".jpeg" && extension != ".png" && extension != ".gif")
+        {
+            throw ServiceException.BadRequest("El archivo debe ser una imagen en formato JPG, JPEG, PNG o GIF");
+        }
+        
+        // using var reader = new BinaryReader(request.File.OpenReadStream());
+        // byte[] headerBytes = reader.ReadBytes(16);
+
+        // bool isImage = false;
+
+        // // Verifica si el archivo es una imagen JPEG
+        // if (headerBytes.Take(2).SequenceEqual(new byte[] { 0xFF, 0xD8 }))
+        // {
+        //     isImage = true;
+        // }
+
+        // // Verifica si el archivo es una imagen PNG
+        // if (headerBytes.Take(8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }))
+        // {
+        //     isImage = true;
+        // }
+
+        // if (!isImage)
+        // {
+        //     throw ServiceException.BadRequest("El archivo debe ser una imagen en formato JPG, JPEG, PNG o GIF");
+        // }
 
         var user = await _repo.GetById(_claimsService.GetUserId());
         if (user is null)
@@ -94,45 +122,67 @@ public class UserService : IUserService
             throw ServiceException.NotFound();
         }
 
+        // var configuration = new Configuration();
+        // configuration.ImageFormatsManager.SetEncoder(JpegFormat.Instance, new JpegEncoder
+        // {
+        //     Quality = 80 // especifica la calidad de compresión
+        // });
+
         try
         {
             using(var stream = new MemoryStream())
             {
                 await request.File.CopyToAsync(stream);
-
-                using(var image = Image.Load(stream))
+                stream.Position = 0;
+                string format = Image.DetectFormat(stream)?.Name;
+                if (format == null)
                 {
-                    image.Mutate(x => x.Resize(new ResizeOptions
-                    {
-                        Size = new Size(200, 0),
-                        Mode = ResizeMode.Max
-                    }));
+                    // formato desconocido
+                    throw ServiceException.BadRequest("Unkown Format");
+                }           
 
-                    var encoder = new JpegEncoder
-                    {
-                        Quality = 80
-                    };
+                var image = Image.Load(stream);
 
-                    using(var outputStream = new MemoryStream())
-                    {
-                        image.Save(outputStream, encoder);
-                        imageData = outputStream.ToArray();
-                        user.PictureProfile = imageData;
-                        await _repo.UpdateAsync(user);
-                    }
+                // redimensionar imagen
+                image.Mutate(x => x.Resize(new ResizeOptions
+                {
+                    Size = new Size(200, 0),
+                    Mode = ResizeMode.Max
+                }));
+                
+                // obtener el codificador adecuado según el formato
+                IImageEncoder encoder;
+                switch (format.ToLower())
+                {
+                    case "jpeg":
+                    case "jpg":
+                        encoder = new JpegEncoder { Quality = 80 };
+                        break;
+                    case "png":
+                        encoder = new PngEncoder();
+                        break;
+                    default:
+                        throw new NotSupportedException($"Formato de imagen no soportado: {format}");
+                }
+
+                using(var outputStream = new MemoryStream())
+                {
+                    image.Save(outputStream, encoder);
+                    byte[] imageData = outputStream.ToArray();
+                    user.PictureProfile = imageData;
+                    await _repo.UpdateAsync(user);
+                    imgData = imageData;
+                    //string base64Image = Convert.ToBase64String(imageData);  
+                    var result = new FileContentResult(imageData, "image/jpeg");                      
+                    return new FileContentResult(imageData, "image/jpg");    
+                    
                 }
             }
         }catch(Exception e)
         {
             Console.WriteLine($"ERROR ---> {e.Message}");
+            throw ServiceException.BadRequest(e.Message);
         }
 
-       
-
-        if(imageData != null)
-        {             
-            throw ServiceException.NotFound();
-        }
-        return Encoding.ASCII.GetString(imageData); ;
     }
 }
