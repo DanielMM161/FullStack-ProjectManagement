@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Typography, TextField, Button } from '@mui/material';
-import { useAppDispatch } from '../../hooks/redux.hook';
+import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import { getProfile, login, loginGoogle } from '../../services/auth';
 import loginSVG from '../../assets/login.svg';
 import login2SVG from '../../assets/login-2.svg';
 import Layout from '../../styled/LoginRegisterLayout';
 import { GoogleLogin } from '@react-oauth/google';
+import { hello } from '../../redux/slice/testSlice';
 
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const actionState = useAppSelector((state) => state.test);
   const [email, setEmail] = useState('userdemo@example.com');
   const [password, setPassword] = useState('userDemo456*');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    dispatch(hello())
+    console.log("login",actionState.data);
+
+  }, [actionState.data])
 
   const checkFields = (): boolean => {
     let isError = false;
@@ -71,7 +79,7 @@ function Login() {
           <Typography variant="subtitle1">Or Login With Email</Typography>
           <hr />
         </div>
-
+        
         <form style={{ width: '100%' }}>
           <Typography variant="h5" sx={{ fontWeight: 'bold', mb: 2 }}>
             Email

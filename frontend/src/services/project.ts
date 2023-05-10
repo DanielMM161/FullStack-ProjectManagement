@@ -4,6 +4,7 @@ import { CreateProjectRequest, UpdateProjectRequest } from './request/project';
 import { Project } from '../models/project';
 import { closeLoading } from '../redux/slice/actions';
 import http from '../utils/constants';
+import { getAll } from './generService';
 
 const getProjectId = createAsyncThunk('getProjectId', async (id: number, thunkApi) => {
   handleThunkApi(thunkApi, 'Loading');
@@ -20,19 +21,21 @@ const getProjectId = createAsyncThunk('getProjectId', async (id: number, thunkAp
     });
 });
 
-const getProjects = createAsyncThunk('getUserProjects', async (_, thunkApi) => {
-  return await http
-    .get(`projects/user?page=1&pageSize=20`)
-    .then((result) => {
-      return result.data;
-    })
-    .catch((err) => {
-      console.error('Error getProjects -> ', err);
-      showNotification('Get Projects', `Error Gettings Projects`, 'danger');
-      thunkApi.dispatch(closeLoading());
-      return [];
-    });
-});
+// const getProjects = createAsyncThunk('getUserProjects', async (_, thunkApi) => {
+//   return await http
+//     .get(`projects/user?page=1&pageSize=20`)
+//     .then((result) => {
+//       return result.data;
+//     })
+//     .catch((err) => {
+//       console.error('Error getProjects -> ', err);
+//       showNotification('Get Projects', `Error Gettings Projects`, 'danger');
+//       thunkApi.dispatch(closeLoading());
+//       return [];
+//     });
+// });
+
+const getProjects = getAll<Project>('projects/user?page=1&pageSize=20', 'getUserProjects')
 
 const createProject = createAsyncThunk('createProject', async (request: CreateProjectRequest, thunkApi) => {
   handleThunkApi(thunkApi, 'Creating Project');
