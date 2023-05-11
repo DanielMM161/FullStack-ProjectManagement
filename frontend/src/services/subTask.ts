@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { showNotification } from '../utils/common';
-import instance from '../utils/constants';
 import { CreateSubTaskRequest, UpdateDoneSubTaskRequest } from './request/subTask';
+import api from '../api';
 
 const createSubTask = createAsyncThunk('createSubTask', async (request: CreateSubTaskRequest) => {
-  return await instance
+  return await api
     .post(
       `tasks/${request.taskParentId}/subtask`,
       {
@@ -23,7 +23,7 @@ const createSubTask = createAsyncThunk('createSubTask', async (request: CreateSu
 });
 
 const updateDoneSubTask = createAsyncThunk('updateDone', async (request: UpdateDoneSubTaskRequest) => {  
-  return await instance
+  return await api
     .patch(`tasks/${request.taskParentId}/subtask/${request.subTaskId}`, { done: request.done })
     .then(result => {
       return result.data;

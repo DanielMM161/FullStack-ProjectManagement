@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { handleThunkApi, showNotification } from '../utils/common';
-import instance from '../utils/constants';
 import { CreateTaskRequest, TaskUserRequest, UpdateTaskRequest } from './request/task';
 import { closeLoading } from '../redux/slice/actions';
+import api from '../api';
 
 const createTask = createAsyncThunk('createTask', async (request: CreateTaskRequest, thunkApi) => {
   handleThunkApi(thunkApi, 'Creating Task');
-  return await instance
+  return await api
     .post('tasks', request)
     .then((result) => {
       thunkApi.dispatch(closeLoading());
@@ -21,7 +21,7 @@ const createTask = createAsyncThunk('createTask', async (request: CreateTaskRequ
 });
 
 const getTaskById = createAsyncThunk('getTaskById', async (id: number, thunkApi) => {
-  return await instance
+  return await api
     .get(`tasks/${id}`)
     .then((result) => {      
       return result.data;
@@ -34,7 +34,7 @@ const getTaskById = createAsyncThunk('getTaskById', async (id: number, thunkApi)
 });
 
 const removeUser = createAsyncThunk('removeUser', async (request: TaskUserRequest) => {
-  return await instance
+  return await api
     .patch(`tasks/${request.taskId}/remove-user`, { userId: request.userId })
     .then((result) => {
       return result.data;
@@ -47,7 +47,7 @@ const removeUser = createAsyncThunk('removeUser', async (request: TaskUserReques
 });
 
 const assignUser = createAsyncThunk('assignUser', async (request: TaskUserRequest) => {
-  return await instance
+  return await api
     .patch(`tasks/${request.taskId}/assign-user`, { userId: request.userId })
     .then((result) => {
       return result.data;
@@ -60,7 +60,7 @@ const assignUser = createAsyncThunk('assignUser', async (request: TaskUserReques
 });
 
 const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequest) => {
-  return await instance
+  return await api
     .put(`tasks/${request.id}`, {
       title: request.title,
       description: request.description,
@@ -78,7 +78,7 @@ const updateTask = createAsyncThunk('updateTask', async (request: UpdateTaskRequ
 });
 
 const deleteTask = createAsyncThunk('deleteTask', async (id: number, thunkApi) => {
-  return await instance
+  return await api
     .delete(`tasks/${id}`)
     .then((result) => {
       thunkApi.dispatch(closeLoading());

@@ -4,10 +4,11 @@ import { handleThunkApi, showNotification } from '../utils/common';
 import { AuthResponse } from './response/auth';
 import { UserResponse } from './response/user';
 import { closeLoading } from '../redux/slice/actions';
-import http from '../utils/constants';
+import api from '../api';
+
 
 const getProfile = createAsyncThunk('profile', async (_, thunkApi) => {
-  return await http
+  return await api
     .get<UserResponse>('auths/profile')
     .then((result) => {
       localStorage.setItem('profile', JSON.stringify(result.data));
@@ -23,7 +24,7 @@ const getProfile = createAsyncThunk('profile', async (_, thunkApi) => {
 
 const login = createAsyncThunk('login', async (payload: LoginRequest, thunkApi) => {
   handleThunkApi(thunkApi, 'Welcome');
-  return await http
+  return await api
     .post<AuthResponse>('auths/login', payload)
     .then((result) => {
       const value = result.data as AuthResponse;
@@ -40,7 +41,7 @@ const login = createAsyncThunk('login', async (payload: LoginRequest, thunkApi) 
 
 const logout = createAsyncThunk('logout', async (_, thunkApi) => {
   handleThunkApi(thunkApi, 'GoodBye');
-  return await http
+  return await api
     .post<AuthResponse>('auths/logout')
     .then((result) => {      
       localStorage.removeItem('profile');
@@ -57,7 +58,7 @@ const logout = createAsyncThunk('logout', async (_, thunkApi) => {
 
 const register = createAsyncThunk('register', async (request: RegisterRequest, thunkApi) => {
   handleThunkApi(thunkApi, 'Registering');
-  return await http
+  return await api
     .post<UserResponse>('users', request)
     .then((result) => {
       return result.data;
@@ -72,7 +73,7 @@ const register = createAsyncThunk('register', async (request: RegisterRequest, t
 
 const loginGoogle = createAsyncThunk('loginGoogle', async (payload: LoginGoogleAuth, thunkApi) => {
   handleThunkApi(thunkApi, 'Welcome');
-  return await http
+  return await api
     .post<AuthResponse>('googleauths/login', payload)
     .then((result) => {
       const value = result.data as AuthResponse;

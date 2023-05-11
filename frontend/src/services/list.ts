@@ -1,13 +1,13 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { Loading } from '../models/loading';
-import instance from '../utils/constants';
 import { CreateListRequest, UpdateListRequest } from './request/list';
 import { closeLoading, showLoading } from '../redux/slice/actions';
 import { handleThunkApi, showNotification } from '../utils/common';
+import api from '../api';
 
 const createList = createAsyncThunk('createList', async (request: CreateListRequest, thunkApi) => {
   handleThunkApi(thunkApi, 'Creating List');
-  return await instance
+  return await api
     .post('lists', request)
     .then((result) => {
       // thunkApi.dispatch(closeLoading())
@@ -22,7 +22,7 @@ const createList = createAsyncThunk('createList', async (request: CreateListRequ
 });
 
 const getListsByProject = createAsyncThunk('getListsByProject', async (projectId: number) => {
-  return await instance
+  return await api
     .get(`lists/project/${projectId}`)
     .then((result) => {
       return result.data;
@@ -35,7 +35,7 @@ const getListsByProject = createAsyncThunk('getListsByProject', async (projectId
 });
 
 const updateList = createAsyncThunk('updateList', async (request: UpdateListRequest) => {
-  return await instance
+  return await api
     .put(`lists/${request.id}`, { title: request.title })
     .then((result) => {
       return result.data;
@@ -49,7 +49,7 @@ const updateList = createAsyncThunk('updateList', async (request: UpdateListRequ
 
 const deleteList = createAsyncThunk('deleteList', async (id: number, thunkApi) => {
   handleThunkApi(thunkApi, 'Deleting List');
-  return await instance
+  return await api
     .delete(`lists/${id}`)
     .then((result) => {
       thunkApi.dispatch(closeLoading());

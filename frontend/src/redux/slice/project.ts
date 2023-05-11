@@ -3,16 +3,16 @@ import { Project, ProjectSliceState, initialProjectState } from '../../models/pr
 import { createProject, getProjects, updateProject } from '../../services/project';
 import { genericSlice, GenericState } from './genericSlice';
 
-interface ProjectReducers {
-  removeProject: CaseReducer<ProjectSliceState, PayloadAction<number>>  
+interface ProjectReducers<T> {
+  removeProject: CaseReducer<T, PayloadAction<number>>  
 }
 
-export const projectSlice= genericSlice<ProjectSliceState, ProjectReducers & SliceCaseReducers<ProjectSliceState>>({  
+export const projectSlice = genericSlice<Project, ProjectSliceState<Project>, ProjectReducers<ProjectSliceState<Project>> & SliceCaseReducers<ProjectSliceState<Project>>>({  
   name: 'projectSlice',
   initialState: initialProjectState,
   reducers: {
     removeProject: (state, action) => {        
-        state.data = state.data.filter((item) => item.id !== action.payload);
+        state.data = state.data.filter((item) => item.id !== action.payload);        
     },        
   },
   genericCalls: {
@@ -20,4 +20,4 @@ export const projectSlice= genericSlice<ProjectSliceState, ProjectReducers & Sli
   }
 })
 
-export const { removeProject, setProject } = projectSlice.slice.actions;
+export const { removeProject, setProject } = projectSlice.actions;

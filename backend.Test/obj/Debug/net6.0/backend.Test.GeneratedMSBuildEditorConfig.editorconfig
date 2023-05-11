@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = backend.Test
-build_property.ProjectDir = D:\Documents\Programacion\Integrify\fs13-FullStack\backend.Test\
+build_property.ProjectDir = d:\Documents\Programacion\Proyectos\fullstack\FullStack-ProjectManagement\backend.Test\
