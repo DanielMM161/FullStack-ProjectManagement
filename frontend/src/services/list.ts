@@ -1,31 +1,27 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { Loading } from '../models/loading';
-import instance from '../utils/constants';
 import { CreateListRequest, UpdateListRequest } from './request/list';
-import { closeLoading, showLoading } from '../redux/slice/actions';
-import { handleThunkApi, showNotification } from '../utils/common';
+import { showNotification } from '../utils/common';
+import { baseService } from './BaseCrudService';
+import { ListProject } from '../models/listProject';
 
-const createList = createAsyncThunk('createList', async (request: CreateListRequest, thunkApi) => {
-  handleThunkApi(thunkApi, 'Creating List');
-  return await instance
+const createList = createAsyncThunk('createList', async (request: CreateListRequest, thunkbaseService) => { 
+  return await baseService
     .post('lists', request)
-    .then((result) => {
-      // thunkApi.dispatch(closeLoading())
-      return result.data;
+    .then((result) => {      
+      return result;
     })
     .catch((err) => {
       console.error('Error createList -> ', err);
       showNotification('Create List', 'Error Creating List', 'danger');
-      thunkApi.dispatch(closeLoading());
       return null;
     });
 });
 
 const getListsByProject = createAsyncThunk('getListsByProject', async (projectId: number) => {
-  return await instance
+  return await baseService
     .get(`lists/project/${projectId}`)
     .then((result) => {
-      return result.data;
+      return result;
     })
     .catch((err) => {
       console.error('Error getListsByProject -> ', err);
@@ -35,10 +31,10 @@ const getListsByProject = createAsyncThunk('getListsByProject', async (projectId
 });
 
 const updateList = createAsyncThunk('updateList', async (request: UpdateListRequest) => {
-  return await instance
-    .put(`lists/${request.id}`, { title: request.title })
+  return await baseService
+    .update<UpdateListRequest, ListProject>(`lists/${request.id}`, request)
     .then((result) => {
-      return result.data;
+      return result;
     })
     .catch((err) => {
       console.error('Error updateList -> ', err);
@@ -47,18 +43,16 @@ const updateList = createAsyncThunk('updateList', async (request: UpdateListRequ
     });
 });
 
-const deleteList = createAsyncThunk('deleteList', async (id: number, thunkApi) => {
-  handleThunkApi(thunkApi, 'Deleting List');
-  return await instance
-    .delete(`lists/${id}`)
+const deleteList = createAsyncThunk('deleteList', async (id: number, thunkbaseService) => {
+  //handleThunkbaseService(thunkbaseService, 'Deleting List');
+  return await baseService
+    .remove('', id)
     .then((result) => {
-      thunkApi.dispatch(closeLoading());
-      return result.data;
+      return result;
     })
     .catch((err) => {
       console.error('Error getListsByProject -> ', err);
       showNotification('Delete List', 'Error Deleting Lists', 'danger');
-      thunkApi.dispatch(closeLoading());
       return false;
     });
 });

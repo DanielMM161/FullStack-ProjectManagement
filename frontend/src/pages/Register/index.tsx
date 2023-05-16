@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { useAppDispatch } from '../../hooks/redux.hook';
-import { login, register } from '../../services/auth';
 import Layout from '../../styled/LoginRegisterLayout';
 import RegisterSVG from '../../assets/register.svg';
 import Register2SVG from '../../assets/register-2.svg';
+import { login, register } from '../../redux/slice/ProfileSlice';
 
 function Register() {
   const dispatch = useAppDispatch();

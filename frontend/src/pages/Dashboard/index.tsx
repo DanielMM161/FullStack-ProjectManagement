@@ -6,8 +6,6 @@ import CardProject from '../../components/CardProject/CardProject';
 import CreateProject from '../../components/Forms/CreateProject';
 import { CreateProjectRequest } from '../../services/request/project';
 import Transition from '../../transitions';
-import { createProject, deleteProject, getProjects, updateProject } from '../../services/project';
-import { removeProject, setProject } from '../../redux/slice/project';
 import UpdateProject from '../../components/Forms/UpdateProject';
 import { Project } from '../../models/project';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
@@ -17,19 +15,19 @@ import { ProjectsContainer, ProjectSummaryContainer } from './styled';
 import EmtpyContent from '../../assets/empty.svg';
 import CardProjectSkeleton from '../../components/CardProjectSkeleton';
 import EmptyElement from '../../components/EmptyElement';
-import { closeLoading } from '../../redux/slice/actions';
+import { createProject, deleteProject, getAllProjects, updateProject } from '../../redux/slice/ProjectSlice';
+
 
 function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const projectState = useAppSelector((state) => state.projects);
-  const { projects, fetching } = projectState;
+  const { data, fetching } = projectState;
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
-  const [projectSelected, setProjectSelected] = useState<Project>(projects[0]);
+  const [projectSelected, setProjectSelected] = useState<Project>(data[0]);
 
   const getUserProjects = useCallback(() => {
-    dispatch(closeLoading());
-    dispatch(getProjects());
+    dispatch(getAllProjects({ action: 'user?page=1&pageSize=20' }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -63,18 +61,13 @@ function Dashboard() {
   }
 
   function handleCreateProject(request: CreateProjectRequest) {
-    toggleDialog();
-    const newProject: CreateProjectRequest = request;
-    dispatch(createProject(newProject));
+    toggleDialog();    
+    dispatch(createProject(request));
   }
 
   function handleDeleteProject() {
     toggleDialog();
-    dispatch(deleteProject(projectSelected.id)).then((result) => {
-      if (result) {
-        dispatch(removeProject(projectSelected.id));
-      }
-    });
+    dispatch(deleteProject(projectSelected.id))    
   }
 
   function handleUpdateProject(project: Project) {
@@ -110,15 +103,15 @@ function Dashboard() {
         </ProjectsContainer>
       ) : (
         <>
-          {projects.length > 0 ? (
+          {data.length > 0 ? (
             <ProjectsContainer>
-              {projects.length > 0 &&
-                projects.map((project) => (
+              {data.length > 0 &&
+                data.map((project) => (
                   <CardProject
                     key={project.name}
                     project={project}
                     onClick={(projectId) => {
-                      dispatch(setProject({id: projectId, name: project.name}));
+                     // dispatch(setProject({id: projectId, name: project.name}));
                       navigate(`project/${projectId}`);
                     }}
                     editProject={() => showEditProject(project)}
@@ -167,6 +160,7 @@ function Dashboard() {
           />
         ) : null}
       </Dialog>
+
     </Layout>
   );
 }

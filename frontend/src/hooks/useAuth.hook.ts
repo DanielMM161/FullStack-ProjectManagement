@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './redux.hook';
-import { getProfile } from '../services/auth';
+import { getProfile } from '../redux/slice/ProfileSlice';
 
 const useAuth = () => {
   const dispatch = useAppDispatch();
+  const profileState = useAppSelector((store) => store.profile);
 
   useEffect(() => {
     dispatch(getProfile());
   }, [dispatch]);
-
-  const profileState = useAppSelector((store) => store.profile);
+    
   return profileState.profile.firstName !== '';
 };
 

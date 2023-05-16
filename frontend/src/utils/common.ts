@@ -1,6 +1,6 @@
 import { NOTIFICATION_TYPE, Store } from 'react-notifications-component';
 import { Loading } from '../models/loading';
-import { showLoading } from '../redux/slice/actions';
+import { showLoading } from '../redux/slice/ActionsSlice';
 
 export function formatDate(dateStr: string) {
   try {
@@ -10,6 +10,14 @@ export function formatDate(dateStr: string) {
   } catch (error) {
     console.error('Error Format Date --> ', error);
     return '';
+  }
+}
+
+export function isInstanceOf<T>(object: any, parameter: string): object is T {
+  try {
+    return parameter in object    
+  } catch (error) {
+    return false
   }
 }
 

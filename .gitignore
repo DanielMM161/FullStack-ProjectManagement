@@ -4,10 +4,12 @@
 backend/appsettings.json
 backend/appsettings.*.json
 backend/obj
+backend/Migrations/
 backend/bin
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
+.vscode/
 
 # .NET
 project.lock.json
