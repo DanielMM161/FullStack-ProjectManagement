@@ -7,11 +7,10 @@ import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import StyledSideBar from './styled';
 import FolderIcon from '@mui/icons-material/Folder';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import { closeSession } from '../../redux/slice/profile';
+import { logout } from '../../redux/slice/ProfileSlice';
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
 import { useState } from 'react';
-import { toggleSideBar } from '../../redux/slice/actions';
-import { logout } from '../../services/auth';
+import { toggleSideBar } from '../../redux/slice/ActionsSlice';
 
 function SideBar() {
   const dispatch = useAppDispatch();
@@ -80,13 +79,7 @@ function SideBar() {
           <ListButtonItem
             title="Log out"
             onClick={() => {
-              dispatch(logout())
-              .then((result) => {
-                const { payload } = result                
-                if (payload) {
-                  dispatch(closeSession())
-                }
-              });
+              dispatch(logout())              
             }}
             selected={false}
           >

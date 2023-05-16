@@ -1,8 +1,8 @@
-import { GenericState } from '../redux/slice/genericSlice';
+import { GenericState } from '../redux/slice/BaseCrudSlice';
+import { BaseModel } from './baseModel';
 import { User } from './user';
 
-export interface Project {
-  id: number;
+export interface Project extends BaseModel {
   name: string;
   description: string;
   created: Date;
@@ -10,10 +10,9 @@ export interface Project {
   updatedAt: string;
 }
 
-export interface ProjectSliceState<T> extends GenericState<T> {  
+export interface ProjectSliceState<T extends BaseModel> extends GenericState<T> {  
   projectSelectedId: number;
-  projectSelectedName: string;
-  fetching: boolean;
+  projectSelectedName: string;  
 }
 
 export const initialProjectState: ProjectSliceState<Project> = {

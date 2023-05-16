@@ -39,6 +39,6 @@ function errorHandler(error: any) {
 api.interceptors.response.use(responseHandler);
 api.interceptors.request.use(requestHandler, errorHandler);
 
-export default api;
+//export default api;
 
   

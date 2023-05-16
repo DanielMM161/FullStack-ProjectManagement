@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../api';
+import { baseService } from './BaseCrudService';
 
 const getAllUsers = createAsyncThunk('fetchAllUsers', async () => {  
-  return await api.get('users')
+  return await baseService.get('users')
   .then(result => {
-    return result.data;
+    return result;
   })
   .catch(err => {
     console.error('Error getAllUsers -> ', err);    

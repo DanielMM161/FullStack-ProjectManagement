@@ -1,10 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { showNotification } from '../utils/common';
 import { CreateSubTaskRequest, UpdateDoneSubTaskRequest } from './request/subTask';
-import api from '../api';
+import { baseService } from './BaseCrudService';
+
 
 const createSubTask = createAsyncThunk('createSubTask', async (request: CreateSubTaskRequest) => {
-  return await api
+  return await baseService
     .post(
       `tasks/${request.taskParentId}/subtask`,
       {
@@ -13,7 +14,7 @@ const createSubTask = createAsyncThunk('createSubTask', async (request: CreateSu
       }
     )
     .then(result => {
-      return result.data;
+      return result;
     })
     .catch(err => {
       console.error('Error createSubTask -> ', err);
@@ -23,10 +24,10 @@ const createSubTask = createAsyncThunk('createSubTask', async (request: CreateSu
 });
 
 const updateDoneSubTask = createAsyncThunk('updateDone', async (request: UpdateDoneSubTaskRequest) => {  
-  return await api
-    .patch(`tasks/${request.taskParentId}/subtask/${request.subTaskId}`, { done: request.done })
+  return await baseService
+    .update<any, any>(`tasks/${request.taskParentId}/subtask/${request.subTaskId}`, { done: request.done })
     .then(result => {
-      return result.data;
+      return result;
     })
     .catch(err => {
       console.error('Error updateDoneSubTask -> ', err);
