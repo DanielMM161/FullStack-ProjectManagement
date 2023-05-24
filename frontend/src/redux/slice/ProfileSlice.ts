@@ -1,4 +1,4 @@
-import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Slice, ThunkDispatch, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ProfileInitialState, initialProfileState } from '../../models/profile';
 import { User, emptyUser } from '../../models/user';
 import { ErrorResponse, baseService } from '../../services/BaseCrudService';
@@ -45,7 +45,7 @@ class ProfileSlice {
     return thunkApi.rejectWithValue(response);        
   });
   
-  login = createAsyncThunk('login', async (payload: LoginRequest, thunkApi) => {
+  login = createAsyncThunk<any, LoginRequest, { rejectValue: ErrorResponse}>('login', async (payload: LoginRequest, thunkApi) => {
     const response = await baseService.post<LoginRequest, AuthResponse>('auths/login', payload);
 
     if (isInstanceOf<AuthResponse>(response, 'token')) {          

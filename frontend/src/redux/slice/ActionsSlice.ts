@@ -50,14 +50,11 @@ class ActionsSlice {
         })
         /** Rejected */
         build.addCase(login.rejected, (state, action) => {
-          const error = action.payload as ErrorResponse;
-          showNotification(`Login - ${error.statusCode}`, error.message, 'danger');
-          state.loading = initialLoadingState;
-        })
-        build.addCase(getProfile.rejected, (state, action) => {
-          const error = action.payload as ErrorResponse;
-          showNotification(`Login - ${error.statusCode}`, error.message, 'danger');
-          state.loading = initialLoadingState;      
+          const { payload } = action
+          if (payload) {
+            showNotification(`Login - ${payload.statusCode}`, payload.message , 'danger');
+            state.loading = initialLoadingState;
+          }
         })
         build.addCase(logout.rejected, (state, action) => {
           const error = action.payload as ErrorResponse;  

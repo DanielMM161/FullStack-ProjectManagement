@@ -83,8 +83,9 @@ function Dashboard() {
   }
 
   return (
-    <Layout>
-      <ProjectSummaryContainer>
+    <Layout>      
+     <div>
+     <ProjectSummaryContainer>
         <div className="textContainer">
           <Typography variant="h4">Project Summary</Typography>
           <Typography variant="subtitle2" sx={{ color: 'gray' }}>
@@ -160,6 +161,7 @@ function Dashboard() {
           />
         ) : null}
       </Dialog>
+     </div>
 
     </Layout>
   );

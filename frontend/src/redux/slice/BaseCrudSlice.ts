@@ -1,6 +1,8 @@
 import { Draft, Slice, createAsyncThunk, createSlice, current } from "@reduxjs/toolkit"
 import { BaseModel } from "../../models/baseModel";
-import { baseService } from "../../services/BaseCrudService";
+import { ErrorResponse, baseService } from "../../services/BaseCrudService";
+import { isInstanceOf } from "../../utils/common";
+import { AxiosError } from "axios";
 
 export interface GenericState<T extends BaseModel> {
     data: T[];
@@ -26,8 +28,11 @@ export class BaseCrudSlice<T extends BaseModel, TCreate, TUpdate extends BaseMod
                     return { data: state.data, fetching: true }
                 }),
                 /** fulfilled */
-                build.addCase(this.getAllAsync.fulfilled, (_, action) => {                                
-                    return { data: action.payload, fetching: false }
+                build.addCase(this.getAllAsync.fulfilled, (_, action) => { 
+                    const { payload } = action;
+                    if (payload) {
+                        return { data: payload, fetching: false }
+                    }                                
                 }),
                 build.addCase(this.createAsync.fulfilled, (state, action) => {                                             
                     const { payload } = action;
@@ -55,49 +60,70 @@ export class BaseCrudSlice<T extends BaseModel, TCreate, TUpdate extends BaseMod
     slice: Slice
     name: string
     url: string
+    
         
-    getAllAsync = createAsyncThunk(
+    getAllAsync = createAsyncThunk<T[], {}, { rejectValue: ErrorResponse }>(
         'Get All',
         async (actionUrl: ActionUrl, thunkAPI) => {                      
             const response = await baseService.get<T>(`${this.url}/${actionUrl.action ?? ''}`);
-            if (response == null) return thunkAPI.rejectWithValue('');
-            return response as T[];
+
+            if (!isInstanceOf<ErrorResponse>(response, 'message')) {
+                return thunkAPI.fulfillWithValue(response as T[]);
+            }
+
+            return thunkAPI.rejectWithValue(response);            
         }
     );
 
-    getById = createAsyncThunk(
+    getById = createAsyncThunk<T, number, { rejectValue: ErrorResponse }>(
         'Get By Id',
         async (id: number, thunkAPI) => {                      
-            const response = await baseService.getById<T>(this.url,id);
-            if (response == null) return thunkAPI.rejectWithValue('');
-            return response as T;
+            const response = await baseService.getById<T>(this.url, id);
+
+            if (!isInstanceOf<ErrorResponse>(response, 'message')) {
+                return thunkAPI.fulfillWithValue(response);
+            }
+
+            return thunkAPI.rejectWithValue(response);             
         }
     );
 
-    createAsync = createAsyncThunk(
+    createAsync = createAsyncThunk<T, TCreate, { rejectValue: ErrorResponse }>(
         'Create',
         async (item: TCreate, thunkAPI) => {
             const response = await baseService.post<TCreate, T>(this.url, item);
-            if (response == null) return thunkAPI.rejectWithValue(null);
-            return response as T;
+
+            if (!isInstanceOf<ErrorResponse>(response, 'message')) {
+                return thunkAPI.fulfillWithValue(response);
+            }
+
+            return thunkAPI.rejectWithValue(response);   
         }
     );
 
-    updateAsync = createAsyncThunk(
+    updateAsync = createAsyncThunk<T, TUpdate, { rejectValue: ErrorResponse }>(
         'Update',
         async (item: TUpdate, thunkAPI) => {
             const response = await baseService.update<TUpdate, T>(this.url, item);
-            if(response == null) return thunkAPI.rejectWithValue(null);
-            return response as T;
+
+            if (!isInstanceOf<ErrorResponse>(response, 'message')) {
+                return thunkAPI.fulfillWithValue(response);
+            }
+
+            return thunkAPI.rejectWithValue(response);               
         }
     );
 
-    removeAsync = createAsyncThunk(
+    removeAsync = createAsyncThunk<number, number, { rejectValue: ErrorResponse }>(
         'Remove',
         async (id: number, thunkAPI) => {
             const response = await baseService.remove(this.url, id);
-            if(!response) return thunkAPI.rejectWithValue(false)
-            return id;    
+
+            if (!isInstanceOf<ErrorResponse>(response, 'message')) {
+                return thunkAPI.fulfillWithValue(id);
+            }
+
+            return thunkAPI.rejectWithValue(response);                            
         }
     );
 }
