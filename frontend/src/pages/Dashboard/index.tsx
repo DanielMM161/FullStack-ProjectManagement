@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Button, Dialog, Typography } from '@mui/material';
+
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import CardProject from '../../components/CardProject/CardProject';
 import CreateProject from '../../components/Forms/CreateProject';
@@ -84,7 +85,6 @@ function Dashboard() {
 
   return (
     <Layout>      
-     <div>
      <ProjectSummaryContainer>
         <div className="textContainer">
           <Typography variant="h4">Project Summary</Typography>
@@ -98,7 +98,7 @@ function Dashboard() {
       </ProjectSummaryContainer>
 
       {fetching ? (
-        <ProjectsContainer>
+        <ProjectsContainer>          
           <CardProjectSkeleton />
           <CardProjectSkeleton />
         </ProjectsContainer>
@@ -129,6 +129,7 @@ function Dashboard() {
       <Dialog
         open={showDialog}
         TransitionComponent={Transition}
+        disableScrollLock={true}
         keepMounted
         onClose={() => {
           toggleDialog();
@@ -161,8 +162,6 @@ function Dashboard() {
           />
         ) : null}
       </Dialog>
-     </div>
-
     </Layout>
   );
 }

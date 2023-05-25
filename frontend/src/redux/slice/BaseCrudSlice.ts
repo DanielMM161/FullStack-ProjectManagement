@@ -104,7 +104,7 @@ export class BaseCrudSlice<T extends BaseModel, TCreate, TUpdate extends BaseMod
     updateAsync = createAsyncThunk<T, TUpdate, { rejectValue: ErrorResponse }>(
         'Update',
         async (item: TUpdate, thunkAPI) => {
-            const response = await baseService.update<TUpdate, T>(this.url, item);
+            const response = await baseService.update<TUpdate, T>(this.url, item, item.id);
 
             if (!isInstanceOf<ErrorResponse>(response, 'message')) {
                 return thunkAPI.fulfillWithValue(response);

@@ -3,7 +3,7 @@ import { ProfileInitialState, initialProfileState } from '../../models/profile';
 import { User, emptyUser } from '../../models/user';
 import { ErrorResponse, baseService } from '../../services/BaseCrudService';
 import { isInstanceOf } from '../../utils/common';
-import { LoginGoogleAuth, LoginRequest, RegisterRequest } from '../../services/request/user';
+import { LoginGoogleAuth, LoginRequest, RegisterRequest, UpdateProfile } from '../../services/request/user';
 import { AuthResponse } from '../../services/response/auth';
 
 class ProfileSlice {
@@ -23,6 +23,9 @@ class ProfileSlice {
         })
         build.addCase(this.logout.fulfilled, () => {                   
           return { profile: emptyUser }
+        })
+        build.addCase(this.updateProfile.fulfilled, (_, action) => {                   
+          return { profile: action.payload }
         })
         /** rejected */
         build.addCase(this.getProfile.rejected, () => {                    
@@ -86,9 +89,17 @@ class ProfileSlice {
 
     return thunkApi.rejectWithValue(response);
   });
+
+  updateProfile = createAsyncThunk('updateProfile', async (request: UpdateProfile, thunkApi) => {
+    const response = await baseService.update<UpdateProfile, User>('users', request);
+
+    if (isInstanceOf<User>(response, 'firstName')) return thunkApi.fulfillWithValue(response);
+      
+    return thunkApi.rejectWithValue(response);
+  });
 }
 
 export const profileSlice = new ProfileSlice();
-export const { getProfile, register, login, logout, loginGoogle } = profileSlice
+export const { getProfile, register, login, logout, loginGoogle, updateProfile } = profileSlice
 
 

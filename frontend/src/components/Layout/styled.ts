@@ -7,6 +7,8 @@ export const StyledLayout = styled('div')(({ theme }) => ({
     '& > div:first-child': {
         paddingTop: '80px',
         //paddingBottom: '165px'
+        margin: '0 auto',
+        maxWidth: '1176px'
     },
     '& > div:first-child > div:first-child': {
         margin: '0 auto',

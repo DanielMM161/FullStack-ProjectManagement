@@ -64,9 +64,9 @@ class BaseService {
             })
     }
 
-    update<TUpdate extends BaseModel, T>(url: string, item: TUpdate): Promise<T | ErrorResponse> {    
+    update<TUpdate, T>(url: string, item: TUpdate, id?: number): Promise<T | ErrorResponse> {    
         return this.api
-            .put(`${url}/${item.id}`, item)
+            .put(`${url}/${id ?? ''}`, item)
             .then((response) => {
                 return response.data as T
             })
