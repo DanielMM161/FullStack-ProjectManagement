@@ -1,7 +1,7 @@
 import { Slice, createSlice } from '@reduxjs/toolkit';
 import { ActionsSliceState, initialActionsState, initialLoadingState } from '../../models/actions';
 import { createProject } from './ProjectSlice';
-import { getProfile, login, loginGoogle, logout, register } from './ProfileSlice';
+import { getProfile, login, loginGoogle, logout, register, updateProfile, uploadImageProfile } from './ProfileSlice';
 import { ErrorResponse } from '../../services/BaseCrudService';
 import { showNotification } from '../../utils/common';
 
@@ -38,6 +38,13 @@ class ActionsSlice {
             show: true
           }
         }),
+        build.addCase(uploadImageProfile.pending || updateProfile.pending, (state, action) => {      
+          state.loading = {
+            title: 'Updating Profile',
+            show: true
+          }
+        })
+        
         /** Fulfilled */
         build.addCase(createProject.fulfilled, (state, action) => {      
           state.loading = initialLoadingState;
@@ -48,6 +55,11 @@ class ActionsSlice {
         build.addCase(logout.fulfilled, (state, action) => {      
           state.loading = initialLoadingState;
         })
+        build.addCase(uploadImageProfile.fulfilled || updateProfile.fulfilled, (state, action) => {      
+          state.loading = initialLoadingState;
+          showNotification(`Profile Updated`, 'Your Profile Has Been Updated', 'success');  
+        })
+
         /** Rejected */
         build.addCase(login.rejected, (state, action) => {
           const { payload } = action
@@ -68,6 +80,11 @@ class ActionsSlice {
         build.addCase(loginGoogle.rejected, (state, action) => {
           const error = action.payload as ErrorResponse;  
           showNotification(`Login Google - ${error.statusCode}`, `${error.message}`, 'danger');                 
+        })
+        build.addCase(uploadImageProfile.rejected || updateProfile.rejected, (state, action) => {
+          const error = action.payload as ErrorResponse;  
+          showNotification(`Profile Updated - ${error.statusCode}`, `${error.message}`, 'danger');
+          state.loading = initialLoadingState;       
         })
       },
     });

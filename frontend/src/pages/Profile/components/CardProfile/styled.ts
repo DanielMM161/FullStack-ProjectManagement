@@ -6,6 +6,8 @@ export const CardProfileLayout = styled(Paper)(({ theme }) => ({
     width: '100%',
     maxWidth: '800px',    
     borderRadius: '8px',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
     '& > div:first-child ': {
         display: 'flex',
         justifyContent: 'space-between',
@@ -42,6 +44,18 @@ export const CardProfileLayout = styled(Paper)(({ theme }) => ({
                 display: 'flex',
                 gap: '5px'
             }
+        },
+        '& .file': {
+            opacity: 0,
+            width: '0.1px',
+            height: '0.1px',
+            position: 'absolute'
+        },
+        '& label': {              
+            alignItems: 'center',
+            justifyContent: 'center',                
+            fontWeight: 'bold',
+            cursor: 'pointer',                
         }
     },
     /** Edit Form  */

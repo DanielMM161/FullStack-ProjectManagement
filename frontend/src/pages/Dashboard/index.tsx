@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { Button, Dialog, Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import CardProject from '../../components/CardProject/CardProject';
@@ -12,7 +12,7 @@ import { Project } from '../../models/project';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import Layout from '../../components/Layout';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
-import { ProjectsContainer, ProjectSummaryContainer } from './styled';
+import { MyDialog, ProjectsContainer, ProjectSummaryContainer } from './styled';
 import EmtpyContent from '../../assets/empty.svg';
 import CardProjectSkeleton from '../../components/CardProjectSkeleton';
 import EmptyElement from '../../components/EmptyElement';
@@ -28,6 +28,7 @@ function Dashboard() {
   const [projectSelected, setProjectSelected] = useState<Project>(data[0]);
 
   const getUserProjects = useCallback(() => {
+    console.log("token ---> ", localStorage.getItem('token'))
     dispatch(getAllProjects({ action: 'user?page=1&pageSize=20' }));
   }, [dispatch]);
 
@@ -126,15 +127,14 @@ function Dashboard() {
         </>
       )}
 
-      <Dialog
+      <MyDialog
         open={showDialog}
         TransitionComponent={Transition}
         disableScrollLock={true}
         keepMounted
         onClose={() => {
           toggleDialog();
-        }}
-        aria-describedby="alert-dialog-slide-description"
+        }}        
       >
         {showDialog && typeForm.form === FORMS.create ? (
           <CreateProject
@@ -161,7 +161,7 @@ function Dashboard() {
             onClickCancel={() => toggleDialog()}
           />
         ) : null}
-      </Dialog>
+      </MyDialog>
     </Layout>
   );
 }

@@ -1,5 +1,6 @@
 namespace backend.src.Services.AuthService;
 
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using backend.src.DTOs.Auth;
@@ -8,6 +9,7 @@ using backend.src.Helpers;
 using backend.src.Models;
 using backend.src.Services.TokenService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 public class AuthService : IAuthService
 {
@@ -53,7 +55,7 @@ public class AuthService : IAuthService
         if (user is null)
         {
             throw ServiceException.NotFound("Profile is not found");
-        }
+        }        
         return _mapper.Map<User, UserReadDTO>(user);
     }
 

@@ -7,6 +7,12 @@ export interface ErrorResponse {
     message: string
 }
 
+
+export const defaultHeader = {
+    default: 'application/json',
+    multiPart: 'multipart/form-data'
+}
+
 class BaseService {
 
     api: AxiosInstance
@@ -40,21 +46,24 @@ class BaseService {
             })
     }
 
-    getById<T>(url: string, id: number): Promise<T | ErrorResponse> {    
-        return this.api
-            .get(`${url}/${id}`)
-            .then((response) => {
-                return response.data as T
-            })
-            .catch((err: AxiosError) => {
-                console.error("error Get By Id--> ", err)
-                return this.getAxiosErrorMessage(err)
-            })
+    async getById<T>(url: string, id: number): Promise<T | ErrorResponse> {    
+        try {
+            const response = await this.api
+                .get(`${url}/${id}`);
+            return response.data as T;
+        } catch (err: any) {
+            console.error("error Get By Id--> ", err);
+            return this.getAxiosErrorMessage(err);
+        }
     }
 
-    post<TCreate, T>(url: string, item?: TCreate): Promise<T | ErrorResponse> {    
+    post<D, T>(url: string, data?: D, header = defaultHeader.default): Promise<T | ErrorResponse> {    
         return this.api
-            .post(url, item)
+            .post(url, data, {
+                headers: {
+                    'Content-Type': header
+                }
+            })
             .then((response) => {
                 return response.data as T
             })

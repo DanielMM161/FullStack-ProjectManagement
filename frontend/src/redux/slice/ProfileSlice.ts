@@ -1,7 +1,7 @@
-import { Slice, ThunkDispatch, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ProfileInitialState, initialProfileState } from '../../models/profile';
 import { User, emptyUser } from '../../models/user';
-import { ErrorResponse, baseService } from '../../services/BaseCrudService';
+import { ErrorResponse, baseService, defaultHeader } from '../../services/BaseCrudService';
 import { isInstanceOf } from '../../utils/common';
 import { LoginGoogleAuth, LoginRequest, RegisterRequest, UpdateProfile } from '../../services/request/user';
 import { AuthResponse } from '../../services/response/auth';
@@ -26,6 +26,9 @@ class ProfileSlice {
         })
         build.addCase(this.updateProfile.fulfilled, (_, action) => {                   
           return { profile: action.payload }
+        })
+        build.addCase(this.uploadImageProfile.fulfilled, (state, action) => {
+          return { profile:  {...state.profile, imageProfile: action.payload}  }
         })
         /** rejected */
         build.addCase(this.getProfile.rejected, () => {                    
@@ -97,9 +100,17 @@ class ProfileSlice {
       
     return thunkApi.rejectWithValue(response);
   });
+
+  uploadImageProfile = createAsyncThunk('updateImageProfile', async (request: FormData, thunkApi) => {
+    const response = await baseService.post<FormData, string>('users/profile-picture', request, defaultHeader.multiPart);
+
+    if (!isInstanceOf<ErrorResponse>(response, 'message')) return thunkApi.fulfillWithValue(response);
+      
+    return thunkApi.rejectWithValue(response);
+  });
 }
 
 export const profileSlice = new ProfileSlice();
-export const { getProfile, register, login, logout, loginGoogle, updateProfile } = profileSlice
+export const { getProfile, register, login, logout, loginGoogle, updateProfile, uploadImageProfile } = profileSlice
 
 

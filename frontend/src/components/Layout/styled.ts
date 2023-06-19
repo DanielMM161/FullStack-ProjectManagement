@@ -16,5 +16,6 @@ export const StyledLayout = styled('div')(({ theme }) => ({
     },
     [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
       marginLeft: 0,
+      padding: '0px 30px',
     },
 }));

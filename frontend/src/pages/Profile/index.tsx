@@ -1,5 +1,6 @@
-import Layout from "../../components/Layout";
 import { Typography } from "@mui/material";
+
+import Layout from "../../components/Layout";
 import CardProfile from "./components/CardProfile/indext";
 import { useAppDispatch, useAppSelector } from "../../hooks/redux.hook";
 import { updateProfile } from "../../redux/slice/ProfileSlice";
@@ -22,6 +23,7 @@ function Profile() {
             userEmail={profile.email}
             userName={profile.firstName}
             userLastName={profile.lastName}
+            imageProfile={profile.imageProfile}
             onSaveChanges={(value) => {
                 dispatch(updateProfile({
                     email: profile.email,

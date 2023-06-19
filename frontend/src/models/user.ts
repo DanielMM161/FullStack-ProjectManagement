@@ -7,6 +7,7 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  imageProfile: string;
   avatar: string;
   created?: Date;
 }
@@ -16,6 +17,7 @@ export const emptyUser: User = {
   firstName: '',
   lastName: '',
   email: '',
+  imageProfile: '',
   avatar: '',
 };
 

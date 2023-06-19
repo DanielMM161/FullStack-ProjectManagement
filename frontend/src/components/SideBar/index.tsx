@@ -58,8 +58,17 @@ function SideBar() {
       <div className="top-side">
         <div className="avatar-info">
           <div className="info-name">
-            <Avatar alt={profile.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 56, height: 56 }} />
-            <KeyboardArrowLeftIcon className="arrow-icon" onClick={() => dispatch(toggleSideBar({}))} />
+            <Avatar 
+              alt={profile.firstName} 
+              src={`data:image/jpeg;base64,${profile.imageProfile}`} 
+              sx={{ width: 56, height: 56 }} 
+            />
+
+            <KeyboardArrowLeftIcon 
+              className="arrow-icon" 
+              onClick={() => dispatch(toggleSideBar({}))} 
+            />
+
             {showSideBar ? (
               <ExpandCircleDownIcon className="expand-icon" onClick={() => dispatch(toggleSideBar({}))} />
             ) : null}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { LegacyRef, useRef, useState } from 'react';
 
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { Avatar, IconButton } from '@mui/material';
@@ -8,11 +8,15 @@ import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 
 import FormEditProfile, { infoUserProps } from '../FormEditProfile';
 import { CardProfileLayout } from "./styled"
+import { Visibility } from '@mui/icons-material';
+import { useAppDispatch } from '../../../../hooks/redux.hook';
+import { uploadImageProfile } from '../../../../redux/slice/ProfileSlice';
 
 interface Props {
     userName: string;
     userLastName: string;
     userEmail: string;
+    imageProfile: String;
     onSaveChanges: (prop: infoUserProps) => void;
 }
 
@@ -20,10 +24,29 @@ function CardProfile({
     userName,
     userLastName,
     userEmail,
+    imageProfile,
     onSaveChanges
 }: Props) {
-
+    
+    const dispatch = useAppDispatch();
     const [edit, setEdit] = useState(false)
+    const hiddenFileInput = useRef<HTMLInputElement>(null)
+
+    function handleUpdatePhoto() {
+        const myInput = hiddenFileInput.current
+        if (myInput) {
+            myInput.click()
+        }        
+    }
+
+    function handleChangeImage(event: React.ChangeEvent<HTMLInputElement>) {
+        const file = event.target.files
+        if (file !== null && file[0].type === 'image/jpeg') {
+            const formData = new FormData();
+            formData.append('File', file[0]);
+            dispatch(uploadImageProfile(formData))            
+        }
+    }
 
     return (
         <CardProfileLayout>
@@ -36,13 +59,22 @@ function CardProfile({
 
             <div className='profile_container'>
                 <div className='avatar_container'>
-                    <Avatar sx={{ width: 88, height: 88 }}/>
+                    <Avatar sx={{ width: 88, height: 88 }} src={`data:image/jpeg;base64,${imageProfile}`} />
                     
                     <div>
                         <DeleteOutlineOutlinedIcon sx={{ width: 16, height: 16 }} />
                     </div>
-                    
-                    <h4>Update</h4>                    
+
+                    <input 
+                        id="myFile" 
+                        type="file" 
+                        name="filename" 
+                        className='file' 
+                        accept="image/png, image/jpeg"
+                        ref={hiddenFileInput}
+                        onChange={e => handleChangeImage(e)}
+                    />
+                    <label onClick={handleUpdatePhoto}>Update</label>                                  
                 </div>
                 <div className='info_container'>
                     <h2>{userName} {userLastName}</h2>
