@@ -1,80 +1,56 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios"
-import { BaseModel } from "../models/baseModel";
 import { isInstanceOf, showNotification } from "../utils/common";
 
 export interface ErrorResponse {
     statusCode: number
     message: string
-}
-
+};
 
 export const defaultHeader = {
     default: 'application/json',
     multiPart: 'multipart/form-data'
-}
+};
 
-export interface IHttpHeaders {
-    headers: { [key: string]: string}
-}
-
-class BaseService {
-
-    static instance: BaseService
-    api: AxiosInstance
-    public readonly DEFAULT_HTTP_HEADER: { [key: string]: string} = {
-        'Content-Type': 'application/json',
-		Accept: 'application/json',
-    }
-
-    protected constructor() {
+export class HttpService {
+    
+    constructor(controllerName: string) {
         this.api = axios.create({
             baseURL: 'https://localhost:5001/api/v1/',
         });
+        
         this.api.interceptors.response.use(this.responseHandler);
         this.api.interceptors.request.use(this.requestHandler, this.errorHandler);
-    }
-    
-    public static getInstance() {
-        if (!BaseService.instance) {
-            this.instance = new BaseService()
-        }    
-        return BaseService.instance;
+        this.controllerName = controllerName;
     }
 
-    async getTest<T>(url: string): Promise<T[]> {    
+    private api: AxiosInstance;
+    private controllerName: string;
+    
+    async get<T>(url: string): Promise<T[]> {    
         return this.api.get(url)
             .then(response => {
                 return response.data as T[]
             })
             .catch(err => {
                 const error = this.getAxiosErrorMessage(err);
-                showNotification('Error Fetching', `${error.message} -- ${error.statusCode}`, 'danger');
-                return []
+                showNotification(`Error Fetching ${this.controllerName}`, `${error.message} -- ${error.statusCode}`, 'danger');
+                return [];
+            });
+    }
+
+    async getById<T>(url: string, id: number): Promise<T | null> {
+        return this.api.get(`${url}/${id}`)
+            .then(response => {
+                return response.data as T
             })
+            .catch(err => {
+                const error = this.getAxiosErrorMessage(err);
+                showNotification('Error Fetching By Id', `${error.message} -- ${error.statusCode}`, 'danger');
+                return null
+            }); 
     }
 
-    async get<T>(url: string): Promise<T[] | ErrorResponse> {    
-        try {
-            const response = await this.api.get(url);
-            return response.data as T[];
-          } catch (err: any) {
-            console.error("error Get --> ", err);
-            return this.getAxiosErrorMessage(err);
-          }
-    }
-
-    async getById<T>(url: string, id: number): Promise<T | ErrorResponse> {    
-        try {
-            const response = await this.api
-                .get(`${url}/${id}`);
-            return response.data as T;
-        } catch (err: any) {
-            console.error("error Get By Id--> ", err);
-            return this.getAxiosErrorMessage(err);
-        }
-    }
-
-    async post<D, T>(url: string, data?: D, header = defaultHeader.default): Promise<T | ErrorResponse> {    
+    async post<TCreate, T>(url: string, data?: TCreate, header = defaultHeader.default): Promise<T | null> {    
         return this.api
             .post(url, data, {
                 headers: {
@@ -84,34 +60,37 @@ class BaseService {
             .then((response) => {
                 return response.data as T
             })
-            .catch((err: AxiosError) => {
-                console.error("error en Post --> ", err)                
-                return this.getAxiosErrorMessage(err)
-            })
+            .catch(err => {
+                const error = this.getAxiosErrorMessage(err);
+                showNotification(`Error Creating ${this.controllerName}`, `${error.message} -- ${error.statusCode}`, 'danger');
+                return null
+            });    
     }
 
-    async update<TUpdate, T>(url: string, item: TUpdate, id?: number): Promise<T | ErrorResponse> {    
+    async update<TUpdate, T>(url: string, item: TUpdate, id?: number): Promise<T | null> {    
         return this.api
             .put(`${url}/${id ?? ''}`, item)
             .then((response) => {
                 return response.data as T
             })
-            .catch((err: AxiosError) => {
-                console.error("error Update --> ", err)
-                return this.getAxiosErrorMessage(err)
-            })
+            .catch(err => {
+                const error = this.getAxiosErrorMessage(err);
+                showNotification(`Error Updating ${this.controllerName}`, `${error.message} -- ${error.statusCode}`, 'danger');
+                return null;
+            });
     }
 
-    async remove(url: string, id: number): Promise<boolean | ErrorResponse> {    
+    async remove(url: string, id: number): Promise<boolean> {    
         return this.api
             .delete(`${url}/${id}`)
             .then((response) => {
                 return response.data;
             })
-            .catch((err: AxiosError) => {
-                console.error("error Remove --> ", err)
-                return this.getAxiosErrorMessage(err)
-            })
+            .catch(err => {
+                const error = this.getAxiosErrorMessage(err);
+                showNotification(`Error Deleting ${this.controllerName}`, `${error.message} -- ${error.statusCode}`, 'danger');
+                return false;
+            });
     }
 
     private responseHandler<T>(response): AxiosResponse<T | null> {    
@@ -160,5 +139,3 @@ class BaseService {
         } as ErrorResponse
     }
 }
-
-export const baseService = BaseService.getInstance();

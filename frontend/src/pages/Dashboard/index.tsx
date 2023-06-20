@@ -111,8 +111,7 @@ function Dashboard() {
                   <CardProject
                     key={project.name}
                     project={project}
-                    onClick={(projectId) => {
-                     // dispatch(setProject({id: projectId, name: project.name}));
+                    onClick={(projectId) => {                     
                       navigate(`project/${projectId}`);
                     }}
                     editProject={() => showEditProject(project)}

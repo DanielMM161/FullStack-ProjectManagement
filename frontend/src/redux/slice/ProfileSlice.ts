@@ -1,13 +1,13 @@
 import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ProfileInitialState, initialProfileState } from '../../models/profile';
 import { User, emptyUser } from '../../models/user';
-import { ErrorResponse, baseService, defaultHeader } from '../../services/BaseCrudService';
-import { isInstanceOf } from '../../utils/common';
+import { defaultHeader } from '../../services/BaseCrudService';
 import { LoginGoogleAuth, LoginRequest, RegisterRequest, UpdateProfile } from '../../services/request/user';
-import { AuthResponse } from '../../services/response/auth';
+import { HttpService } from '../../services/HttpService';
 
 class ProfileSlice {
   constructor() {
+    this.httpService = new HttpService("Profile");
     this.slice = createSlice({
       name: 'profile',
       initialState: initialProfileState,
@@ -30,31 +30,17 @@ class ProfileSlice {
         build.addCase(this.uploadImageProfile.fulfilled, (state, action) => {
           return { profile:  {...state.profile, pictureProfile: action.payload}  }
         })
-        /** rejected */
-        build.addCase(this.getProfile.rejected, () => {                    
-          return { profile: emptyUser }                                    
-        })
       },
     });
   }
 
   slice: Slice<ProfileInitialState>
-
-  getProfile = createAsyncThunk('profile', async (_, thunkApi) => {
-    const response = await baseService.get<User>('auths/profile');
-
-    if (!Array.isArray(response) && isInstanceOf<User>(response, 'email')) {
-      localStorage.setItem('profile', JSON.stringify(response));
-      return thunkApi.fulfillWithValue(response);
-    }
-
-    return thunkApi.rejectWithValue(response);        
-  });
+  httpService: HttpService
   
-  login = createAsyncThunk<any, LoginRequest, { rejectValue: ErrorResponse}>('login', async (payload: LoginRequest, thunkApi) => {
-    const response = await baseService.post<LoginRequest, User>('auths/login', payload);
+  login = createAsyncThunk<any, LoginRequest, { rejectValue: null}>('login', async (payload: LoginRequest, thunkApi) => {
+    const response = await this.httpService.post<LoginRequest, User>('auths/login', payload);
 
-    if (isInstanceOf<User>(response, 'token')) {
+    if (response) {
       localStorage.setItem('profile', JSON.stringify(response));
       localStorage.setItem('token', JSON.stringify(response.token));
       return thunkApi.fulfillWithValue(response)
@@ -64,9 +50,9 @@ class ProfileSlice {
   });
   
   logout = createAsyncThunk('logout', async (_, thunkApi) => {
-    const response = await baseService.post<unknown, boolean>('auths/logout');
+    const response = await this.httpService.post<unknown, boolean>('auths/logout');
 
-    if (!isInstanceOf<ErrorResponse>(response, 'message')) {
+    if (response) {
       localStorage.removeItem('profile');
       localStorage.removeItem('token');
       return thunkApi.fulfillWithValue(response);
@@ -76,9 +62,9 @@ class ProfileSlice {
   });
   
   register = createAsyncThunk('register', async (request: RegisterRequest, thunkApi) => {
-    const response = await baseService.post<RegisterRequest, User>('users', request);
+    const response = await this.httpService.post<RegisterRequest, User>('users', request);
 
-    if (isInstanceOf<User>(response, 'token')) {
+    if (response) {
       localStorage.setItem('profile', JSON.stringify(response));
       localStorage.setItem('token', JSON.stringify(response.token));
       return thunkApi.fulfillWithValue(response);
@@ -88,34 +74,31 @@ class ProfileSlice {
   });
   
   loginGoogle = createAsyncThunk('loginGoogle', async (payload: LoginGoogleAuth, thunkApi) => {
-    const response = await baseService.post<LoginGoogleAuth, AuthResponse>('login/google', payload);
+    const response = await this.httpService.post<LoginGoogleAuth, User>('auths/login/google', payload);
 
-    if(isInstanceOf<AuthResponse>(response, 'token')) {
+    if (response) {
+      localStorage.setItem('profile', JSON.stringify(response));
       localStorage.setItem('token', JSON.stringify(response.token));
-      return thunkApi.dispatch(this.getProfile());
+      return thunkApi.fulfillWithValue(response);
     }
-
+      
     return thunkApi.rejectWithValue(response);
   });
 
   updateProfile = createAsyncThunk('updateProfile', async (request: UpdateProfile, thunkApi) => {
-    const response = await baseService.update<UpdateProfile, User>('users', request);
-
-    if (isInstanceOf<User>(response, 'firstName')) return thunkApi.fulfillWithValue(response);
-      
+    const response = await this.httpService.update<UpdateProfile, User>('users', request);
+    if (response) return thunkApi.fulfillWithValue(response);
     return thunkApi.rejectWithValue(response);
   });
 
   uploadImageProfile = createAsyncThunk('updateImageProfile', async (request: FormData, thunkApi) => {
-    const response = await baseService.post<FormData, string>('users/profile-picture', request, defaultHeader.multiPart);
-
-    if (!isInstanceOf<ErrorResponse>(response, 'message')) return thunkApi.fulfillWithValue(response);
-      
+    const response = await this.httpService.post<FormData, string>('users/profile-picture', request, defaultHeader.multiPart);
+    if (response) return thunkApi.fulfillWithValue(response);
     return thunkApi.rejectWithValue(response);
   });
 }
 
 export const profileSlice = new ProfileSlice();
-export const { getProfile, register, login, logout, loginGoogle, updateProfile, uploadImageProfile } = profileSlice
+export const { register, login, logout, loginGoogle, updateProfile, uploadImageProfile } = profileSlice
 
 

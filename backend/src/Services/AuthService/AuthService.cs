@@ -80,7 +80,7 @@ public class AuthService : IAuthService
         return true;
     }
 
-       public async Task<UserReadDTO> LoginGoogleAsync(GoogleLoginDTO request)
+    public async Task<UserReadDTO> LoginGoogleAsync(GoogleLoginDTO request)
     {
         var settings = new GoogleJsonWebSignature.ValidationSettings
         {

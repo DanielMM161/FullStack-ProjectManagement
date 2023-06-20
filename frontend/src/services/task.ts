@@ -1,7 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { handleThunkApi, showNotification } from '../utils/common';
 import { CreateTaskRequest, TaskUserRequest, UpdateTaskRequest } from './request/task';
-import { closeLoading } from '../redux/slice/ActionsSlice';
 import { baseService } from './BaseCrudService';
 
 
@@ -11,13 +10,13 @@ const createTask = createAsyncThunk('createTask', async (request: CreateTaskRequ
   return await baseService
     .post('tasks', request)
     .then((result) => {
-      thunkApi.dispatch(closeLoading());
+      
       return result;
     })
     .catch((err) => {
       console.error('Error createTask -> ', err);
       showNotification('Create Task', 'Error Creating task', 'danger');
-      thunkApi.dispatch(closeLoading());
+      
       return null;
     });
 });
@@ -83,13 +82,13 @@ const deleteTask = createAsyncThunk('deleteTask', async (id: number, thunkApi) =
   return await baseService
     .remove('task/', id)
     .then((result) => {
-      thunkApi.dispatch(closeLoading());
+      
       return result;
     })
     .catch((err) => {
       console.error('Error deleteTask -> ', err);
       showNotification('Delete Task', 'Error Deleting Task', 'danger');
-      thunkApi.dispatch(closeLoading());
+      
       return null;
     });
 });

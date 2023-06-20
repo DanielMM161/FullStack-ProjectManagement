@@ -1,12 +1,14 @@
 import { Slice, createSlice } from '@reduxjs/toolkit';
+
 import { ActionsSliceState, initialActionsState, initialLoadingState } from '../../models/actions';
 import { createProject } from './ProjectSlice';
-import { getProfile, login, loginGoogle, logout, register, updateProfile, uploadImageProfile } from './ProfileSlice';
-import { ErrorResponse } from '../../services/BaseCrudService';
+import { login, loginGoogle, logout, register, updateProfile, uploadImageProfile } from './ProfileSlice';
 import { showNotification } from '../../utils/common';
 
 class ActionsSlice {
+
   constructor() {
+
     this.slice = createSlice({
       name: 'actions',
       initialState: initialActionsState,
@@ -20,25 +22,25 @@ class ActionsSlice {
       },
       extraReducers: (build) => {
         /** Pending */
-        build.addCase(createProject.pending, (state, action) => {      
+        build.addCase(createProject.pending, (state, _) => {      
           state.loading = {
             title: 'Creating Project',
             show: true
           }
         }),
-        build.addCase(login.pending || register.pending || loginGoogle.pending, (state, action) => {      
+        build.addCase(login.pending || register.pending || loginGoogle.pending, (state, _) => {      
           state.loading = {
             title: 'Welcome',
             show: true
           }
         }),
-        build.addCase(logout.pending, (state, action) => {      
+        build.addCase(logout.pending, (state, _) => {      
           state.loading = {
             title: 'Goodbye',
             show: true
           }
         }),
-        build.addCase(uploadImageProfile.pending || updateProfile.pending, (state, action) => {      
+        build.addCase(uploadImageProfile.pending || updateProfile.pending, (state, _) => {      
           state.loading = {
             title: 'Updating Profile',
             show: true
@@ -46,13 +48,13 @@ class ActionsSlice {
         })
         
         /** Fulfilled */
-        build.addCase(createProject.fulfilled, (state, action) => {      
+        build.addCase(createProject.fulfilled, (state, _) => {      
           state.loading = initialLoadingState;
         })
         build.addCase(login.fulfilled || register.fulfilled || loginGoogle.fulfilled, (state, action) => {      
           state.loading = initialLoadingState;
         })
-        build.addCase(logout.fulfilled, (state, action) => {      
+        build.addCase(logout.fulfilled, (state, _) => {      
           state.loading = initialLoadingState;
         })
         build.addCase(uploadImageProfile.fulfilled || updateProfile.fulfilled, (state, action) => {      
@@ -61,29 +63,16 @@ class ActionsSlice {
         })
 
         /** Rejected */
-        build.addCase(login.rejected, (state, action) => {
-          const { payload } = action
-          if (payload) {
-            showNotification(`Login - ${payload.statusCode}`, payload.message , 'danger');
-            state.loading = initialLoadingState;
-          }
+        build.addCase(login.rejected, (state, _) => {          
+          state.loading = initialLoadingState;
         })
-        build.addCase(logout.rejected, (state, action) => {
-          const error = action.payload as ErrorResponse;  
-          showNotification(`Logout - ${error.statusCode}`, `${error.message}`, 'danger');         
+        build.addCase(logout.rejected, (state, _) => {
+          state.loading = initialLoadingState;
         })
-        build.addCase(register.rejected, (state, action) => {
-          const error = action.payload as ErrorResponse;  
-          showNotification(`Register - ${error.statusCode}`, `${error.message}`, 'danger');
+        build.addCase(register.rejected, (state, _) => {
           state.loading = initialLoadingState;            
-        })
-        build.addCase(loginGoogle.rejected, (state, action) => {
-          const error = action.payload as ErrorResponse;  
-          showNotification(`Login Google - ${error.statusCode}`, `${error.message}`, 'danger');                 
-        })
-        build.addCase(uploadImageProfile.rejected || updateProfile.rejected, (state, action) => {
-          const error = action.payload as ErrorResponse;  
-          showNotification(`Profile Updated - ${error.statusCode}`, `${error.message}`, 'danger');
+        })    
+        build.addCase(uploadImageProfile.rejected || updateProfile.rejected, (state, _) => {
           state.loading = initialLoadingState;       
         })
       },
@@ -92,5 +81,6 @@ class ActionsSlice {
 
   slice: Slice<ActionsSliceState>
 }
+
 export const actionsSlice = new ActionsSlice();
 export const { showLoading, toggleSideBar } = actionsSlice.slice.actions;
