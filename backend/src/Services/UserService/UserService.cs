@@ -7,6 +7,7 @@ using backend.src.DTOs.User;
 using backend.src.Helpers;
 using backend.src.Models;
 using backend.src.Repositories.UserRepo;
+using backend.src.Services.TokenService;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
@@ -17,12 +18,14 @@ public class UserService : IUserService
     private readonly IUserRepo _repo;
     protected readonly IMapper _mapper;
     private readonly IClaimsPrincipalService _claimsService;
+    private readonly ITokenService _tokenService;
     
-    public UserService(IUserRepo repo, IMapper mapper, IClaimsPrincipalService claimsService)
+    public UserService(IUserRepo repo, IMapper mapper, IClaimsPrincipalService claimsService, ITokenService tokenService)
     {
         _repo = repo;
         _mapper = mapper;
         _claimsService = claimsService;
+        _tokenService = tokenService;
     }
 
     public async Task<UserReadDTO> Create(UserCreateDTO request)
@@ -30,9 +33,15 @@ public class UserService : IUserService
         var user = await _repo.Create(request);
         if (user is null)
         {
-            throw new Exception("Password Must Contain 1 Upper Letter, 1 Lower Letter, Alphanumeric and Special Caracter");
+            throw ServiceException.BadRequest("Password Must Contain 1 Upper Letter, 1 Lower Letter, Alphanumeric and Special Caracter");
         }
-        return _mapper.Map<User, UserReadDTO>(user);
+        
+        var token = await _tokenService.GenerateTokenAsync(user);
+        var profile = _mapper.Map<User, UserReadDTO>(user);
+        profile.Token = token.Token;
+        profile.TokenExpiration = token.Expiration;
+        
+        return profile;
     }
 
     public async Task<ICollection<UserReadDTO>> GetAll()
@@ -79,9 +88,8 @@ public class UserService : IUserService
         return result.Item1;
     }
 
-    public async Task<FileContentResult> SaveUserProfilePicture(UserProfilePictureDTO request)
-    {
-        byte[]? imgData = null;
+    public async Task<String> SaveUserProfilePicture(UserProfilePictureDTO request)
+    {        
         if (request.File.Length == 0 || request.File == null)
         {            
             throw ServiceException.BadRequest();
@@ -94,39 +102,11 @@ public class UserService : IUserService
             throw ServiceException.BadRequest("El archivo debe ser una imagen en formato JPG, JPEG, PNG o GIF");
         }
         
-        // using var reader = new BinaryReader(request.File.OpenReadStream());
-        // byte[] headerBytes = reader.ReadBytes(16);
-
-        // bool isImage = false;
-
-        // // Verifica si el archivo es una imagen JPEG
-        // if (headerBytes.Take(2).SequenceEqual(new byte[] { 0xFF, 0xD8 }))
-        // {
-        //     isImage = true;
-        // }
-
-        // // Verifica si el archivo es una imagen PNG
-        // if (headerBytes.Take(8).SequenceEqual(new byte[] { 137, 80, 78, 71, 13, 10, 26, 10 }))
-        // {
-        //     isImage = true;
-        // }
-
-        // if (!isImage)
-        // {
-        //     throw ServiceException.BadRequest("El archivo debe ser una imagen en formato JPG, JPEG, PNG o GIF");
-        // }
-
         var user = await _repo.GetById(_claimsService.GetUserId());
         if (user is null)
         {            
             throw ServiceException.NotFound();
         }
-
-        // var configuration = new Configuration();
-        // configuration.ImageFormatsManager.SetEncoder(JpegFormat.Instance, new JpegEncoder
-        // {
-        //     Quality = 80 // especifica la calidad de compresión
-        // });
 
         try
         {
@@ -134,23 +114,17 @@ public class UserService : IUserService
             {
                 await request.File.CopyToAsync(stream);
                 stream.Position = 0;
-                string format = Image.DetectFormat(stream)?.Name;
-                if (format == null)
-                {
-                    // formato desconocido
-                    throw ServiceException.BadRequest("Unkown Format");
-                }           
+                string? format = Image.DetectFormat(stream)?.Name;
 
-                var image = Image.Load(stream);
-
-                // redimensionar imagen
+                if (format == null)  throw ServiceException.BadRequest("Unkown Format");
+                           
+                var image = Image.Load(stream);                
                 image.Mutate(x => x.Resize(new ResizeOptions
                 {
                     Size = new Size(200, 0),
                     Mode = ResizeMode.Max
                 }));
-                
-                // obtener el codificador adecuado según el formato
+                                
                 IImageEncoder encoder;
                 switch (format.ToLower())
                 {
@@ -168,14 +142,18 @@ public class UserService : IUserService
                 using(var outputStream = new MemoryStream())
                 {
                     image.Save(outputStream, encoder);
+
                     byte[] imageData = outputStream.ToArray();
                     user.PictureProfile = imageData;
                     await _repo.UpdateAsync(user);
-                    imgData = imageData;
-                    //string base64Image = Convert.ToBase64String(imageData);  
-                    var result = new FileContentResult(imageData, "image/jpeg");                      
-                    return new FileContentResult(imageData, "image/jpg");    
+
+                    var userProfile = new FileContentResult(imageData, "image/jpg").FileContents;
+                    if (userProfile is not null && userProfile.Length > 0) 
+                    {
+                        return Convert.ToBase64String(userProfile);
+                    }                          
                     
+                    return "";
                 }
             }
         }catch(Exception e)
@@ -183,6 +161,5 @@ public class UserService : IUserService
             Console.WriteLine($"ERROR ---> {e.Message}");
             throw ServiceException.BadRequest(e.Message);
         }
-
     }
 }

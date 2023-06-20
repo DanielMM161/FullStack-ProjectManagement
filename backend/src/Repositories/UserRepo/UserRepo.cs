@@ -5,7 +5,6 @@ using backend.src.DTOs.User;
 using backend.src.Models;
 using Microsoft.AspNetCore.Identity;
 using backend.src.Db;
-using backend.src.Services.TokenService;
 using Microsoft.EntityFrameworkCore;
 
 public class UserRepo : IUserRepo
@@ -19,13 +18,18 @@ public class UserRepo : IUserRepo
         _userManager = userManager;
     }
 
+    public async Task<bool> CheckPassword(User user, string password)
+    {
+        return await _userManager.CheckPasswordAsync(user, password);
+    }
+
     public async Task<User?> GetById(int id)
     {        
         return await _userManager.FindByIdAsync(id.ToString());
     }
 
     public async Task<User?> GetByEmail(string email)
-    {
+    {        
         return await _userManager.FindByEmailAsync(email);
     }
 

@@ -13,6 +13,14 @@ export function formatDate(dateStr: string) {
   }
 }
 
+export function CompareDates(dateString: string) {  
+  const date = new Date(dateString);
+  
+  const currentDate = new Date();
+
+  return currentDate > date
+}
+
 export function isInstanceOf<T>(object: any, parameter: string): object is T {
   try {
     return parameter in object    

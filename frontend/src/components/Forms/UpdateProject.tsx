@@ -16,10 +16,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import TransferList from '../TransferList/TransferList';
 import { User } from '../../models/user';
-
-import './style.css';
 import { Project } from '../../models/project';
 import useUsers from '../../hooks/useUsers.hook';
+import './style.css';
 
 interface IUpdateProjectProps {
   dialogTitle: string;

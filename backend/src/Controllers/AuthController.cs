@@ -1,6 +1,7 @@
 namespace backend.src.Controllers;
 
 using backend.src.DTOs.Auth;
+using backend.src.DTOs.Google;
 using backend.src.Services.AuthService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,5 +30,11 @@ public class AuthController : ApiControllerBase
     public async Task<IActionResult> Profile()
     {
         return Ok(await _service.Profile());
+    }
+
+    [HttpPost("login/google")]
+    public async Task<IActionResult> LoginGoogleAuth(GoogleLoginDTO request)
+    {
+        return Ok(await _service.LoginGoogleAsync(request));
     }
 }

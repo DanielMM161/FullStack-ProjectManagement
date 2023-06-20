@@ -1,9 +1,9 @@
 import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ProfileInitialState, initialProfileState } from '../../models/profile';
 import { User, emptyUser } from '../../models/user';
-import { ErrorResponse, baseService } from '../../services/BaseCrudService';
+import { ErrorResponse, baseService, defaultHeader } from '../../services/BaseCrudService';
 import { isInstanceOf } from '../../utils/common';
-import { LoginGoogleAuth, LoginRequest, RegisterRequest } from '../../services/request/user';
+import { LoginGoogleAuth, LoginRequest, RegisterRequest, UpdateProfile } from '../../services/request/user';
 import { AuthResponse } from '../../services/response/auth';
 
 class ProfileSlice {
@@ -15,7 +15,7 @@ class ProfileSlice {
       },
       extraReducers: (build) => {
         /** fulfilled */
-        build.addCase(this.getProfile.fulfilled, (_, action) => {                    
+        build.addCase(this.login.fulfilled, (_, action) => {                    
           return { profile: action.payload }                                    
         })
         build.addCase(this.register.fulfilled, (_, action) => {          
@@ -23,6 +23,12 @@ class ProfileSlice {
         })
         build.addCase(this.logout.fulfilled, () => {                   
           return { profile: emptyUser }
+        })
+        build.addCase(this.updateProfile.fulfilled, (_, action) => {                   
+          return { profile: action.payload }
+        })
+        build.addCase(this.uploadImageProfile.fulfilled, (state, action) => {
+          return { profile:  {...state.profile, pictureProfile: action.payload}  }
         })
         /** rejected */
         build.addCase(this.getProfile.rejected, () => {                    
@@ -45,12 +51,13 @@ class ProfileSlice {
     return thunkApi.rejectWithValue(response);        
   });
   
-  login = createAsyncThunk('login', async (payload: LoginRequest, thunkApi) => {
-    const response = await baseService.post<LoginRequest, AuthResponse>('auths/login', payload);
+  login = createAsyncThunk<any, LoginRequest, { rejectValue: ErrorResponse}>('login', async (payload: LoginRequest, thunkApi) => {
+    const response = await baseService.post<LoginRequest, User>('auths/login', payload);
 
-    if (isInstanceOf<AuthResponse>(response, 'token')) {          
+    if (isInstanceOf<User>(response, 'token')) {
+      localStorage.setItem('profile', JSON.stringify(response));
       localStorage.setItem('token', JSON.stringify(response.token));
-      return thunkApi.dispatch(this.getProfile());
+      return thunkApi.fulfillWithValue(response)
     }
 
     return thunkApi.rejectWithValue(response);
@@ -71,13 +78,17 @@ class ProfileSlice {
   register = createAsyncThunk('register', async (request: RegisterRequest, thunkApi) => {
     const response = await baseService.post<RegisterRequest, User>('users', request);
 
-    if (isInstanceOf<User>(response, 'firstName')) return thunkApi.fulfillWithValue(response);
+    if (isInstanceOf<User>(response, 'token')) {
+      localStorage.setItem('profile', JSON.stringify(response));
+      localStorage.setItem('token', JSON.stringify(response.token));
+      return thunkApi.fulfillWithValue(response);
+    }
       
     return thunkApi.rejectWithValue(response);
   });
   
   loginGoogle = createAsyncThunk('loginGoogle', async (payload: LoginGoogleAuth, thunkApi) => {
-    const response = await baseService.post<LoginGoogleAuth, AuthResponse>('googleauths/login', payload);
+    const response = await baseService.post<LoginGoogleAuth, AuthResponse>('login/google', payload);
 
     if(isInstanceOf<AuthResponse>(response, 'token')) {
       localStorage.setItem('token', JSON.stringify(response.token));
@@ -86,9 +97,25 @@ class ProfileSlice {
 
     return thunkApi.rejectWithValue(response);
   });
+
+  updateProfile = createAsyncThunk('updateProfile', async (request: UpdateProfile, thunkApi) => {
+    const response = await baseService.update<UpdateProfile, User>('users', request);
+
+    if (isInstanceOf<User>(response, 'firstName')) return thunkApi.fulfillWithValue(response);
+      
+    return thunkApi.rejectWithValue(response);
+  });
+
+  uploadImageProfile = createAsyncThunk('updateImageProfile', async (request: FormData, thunkApi) => {
+    const response = await baseService.post<FormData, string>('users/profile-picture', request, defaultHeader.multiPart);
+
+    if (!isInstanceOf<ErrorResponse>(response, 'message')) return thunkApi.fulfillWithValue(response);
+      
+    return thunkApi.rejectWithValue(response);
+  });
 }
 
 export const profileSlice = new ProfileSlice();
-export const { getProfile, register, login, logout, loginGoogle } = profileSlice
+export const { getProfile, register, login, logout, loginGoogle, updateProfile, uploadImageProfile } = profileSlice
 
 

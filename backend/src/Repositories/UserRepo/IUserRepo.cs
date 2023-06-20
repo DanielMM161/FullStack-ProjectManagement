@@ -11,5 +11,6 @@ public interface IUserRepo
     Task<ICollection<User>> GetAll();
     Task<User> UpdateAsync(User user);
     Task<(bool, string)> ChangePassword(User user, string currentPassword, string newPassword);
+    Task<bool> CheckPassword(User user, string password);
 
 }
