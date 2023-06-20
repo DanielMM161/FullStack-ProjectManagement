@@ -2,7 +2,6 @@ import { Draft, Slice, createAsyncThunk, createSlice, current } from "@reduxjs/t
 import { BaseModel } from "../../models/baseModel";
 import { ErrorResponse, baseService } from "../../services/BaseCrudService";
 import { isInstanceOf } from "../../utils/common";
-import { AxiosError } from "axios";
 
 export interface GenericState<T extends BaseModel> {
     data: T[];

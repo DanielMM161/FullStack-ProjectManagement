@@ -15,7 +15,7 @@ class ProfileSlice {
       },
       extraReducers: (build) => {
         /** fulfilled */
-        build.addCase(this.getProfile.fulfilled, (_, action) => {                    
+        build.addCase(this.login.fulfilled, (_, action) => {                    
           return { profile: action.payload }                                    
         })
         build.addCase(this.register.fulfilled, (_, action) => {          
@@ -28,7 +28,7 @@ class ProfileSlice {
           return { profile: action.payload }
         })
         build.addCase(this.uploadImageProfile.fulfilled, (state, action) => {
-          return { profile:  {...state.profile, imageProfile: action.payload}  }
+          return { profile:  {...state.profile, pictureProfile: action.payload}  }
         })
         /** rejected */
         build.addCase(this.getProfile.rejected, () => {                    
@@ -52,11 +52,12 @@ class ProfileSlice {
   });
   
   login = createAsyncThunk<any, LoginRequest, { rejectValue: ErrorResponse}>('login', async (payload: LoginRequest, thunkApi) => {
-    const response = await baseService.post<LoginRequest, AuthResponse>('auths/login', payload);
+    const response = await baseService.post<LoginRequest, User>('auths/login', payload);
 
-    if (isInstanceOf<AuthResponse>(response, 'token')) {          
+    if (isInstanceOf<User>(response, 'token')) {
+      localStorage.setItem('profile', JSON.stringify(response));
       localStorage.setItem('token', JSON.stringify(response.token));
-      return thunkApi.dispatch(this.getProfile());
+      return thunkApi.fulfillWithValue(response)
     }
 
     return thunkApi.rejectWithValue(response);
@@ -77,13 +78,17 @@ class ProfileSlice {
   register = createAsyncThunk('register', async (request: RegisterRequest, thunkApi) => {
     const response = await baseService.post<RegisterRequest, User>('users', request);
 
-    if (isInstanceOf<User>(response, 'firstName')) return thunkApi.fulfillWithValue(response);
+    if (isInstanceOf<User>(response, 'token')) {
+      localStorage.setItem('profile', JSON.stringify(response));
+      localStorage.setItem('token', JSON.stringify(response.token));
+      return thunkApi.fulfillWithValue(response);
+    }
       
     return thunkApi.rejectWithValue(response);
   });
   
   loginGoogle = createAsyncThunk('loginGoogle', async (payload: LoginGoogleAuth, thunkApi) => {
-    const response = await baseService.post<LoginGoogleAuth, AuthResponse>('googleauths/login', payload);
+    const response = await baseService.post<LoginGoogleAuth, AuthResponse>('login/google', payload);
 
     if(isInstanceOf<AuthResponse>(response, 'token')) {
       localStorage.setItem('token', JSON.stringify(response.token));

@@ -1,16 +1,19 @@
-import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from './redux.hook';
-import { getProfile } from '../redux/slice/ProfileSlice';
+import { useAppSelector } from './redux.hook';
+import { CompareDates } from '../utils/common';
 
-const useAuth = () => {
-  const dispatch = useAppDispatch();
+const useAuth = () => {  
   const profileState = useAppSelector((store) => store.profile);
+  const { profile } = profileState;
 
-  useEffect(() => {
-    dispatch(getProfile());
-  }, [dispatch]);
-    
-  return profileState.profile.firstName !== '';
+  /**
+   * Return true if the current date is higher than the token expiration
+   * @returns 
+   */
+  function checkTokenExpiration(): boolean {
+    return CompareDates(profile.tokenExpiration)
+  }
+  
+  return profile.firstName !== '' && !checkTokenExpiration();
 };
 
 export default useAuth;

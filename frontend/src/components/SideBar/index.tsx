@@ -11,7 +11,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { logout } from '../../redux/slice/ProfileSlice';
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toggleSideBar } from '../../redux/slice/ActionsSlice';
 
 interface ItemListOption {
@@ -47,7 +47,6 @@ function SideBar() {
   const { profile } = profileState;
   const [activeItem, setActiveItem] = useState(itemListOptions[0]);
 
-
   function handleItemClick(item: ItemListOption) {
     setActiveItem(item)
     navigate(item.navigateTo)
@@ -60,7 +59,7 @@ function SideBar() {
           <div className="info-name">
             <Avatar 
               alt={profile.firstName} 
-              src={`data:image/jpeg;base64,${profile.imageProfile}`} 
+              src={`data:image/jpeg;base64,${profile.pictureProfile}`} 
               sx={{ width: 56, height: 56 }} 
             />
 

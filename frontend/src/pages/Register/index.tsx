@@ -1,20 +1,29 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+
 import { Box, Typography, TextField, Button } from '@mui/material';
-import { useAppDispatch } from '../../hooks/redux.hook';
-import Layout from '../../styled/LoginRegisterLayout';
+
+import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import RegisterSVG from '../../assets/register.svg';
 import Register2SVG from '../../assets/register-2.svg';
-import { login, register } from '../../redux/slice/ProfileSlice';
+import { register } from '../../redux/slice/ProfileSlice';
+import Layout from '../../styled/LoginRegisterLayout';
+import { RegisterRequest } from '../../services/request/user';
 
 function Register() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const profileState = useAppSelector((state) => state.profile);
+  const { profile } = profileState;
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    if (profile.email !== '') navigate('/dashboard');
+  }, [profile]) 
 
   const checkFields = (): boolean => {
     let isError = false;
@@ -37,31 +46,17 @@ function Register() {
     }
     setErrors(newErrors);
     return isError;
-  };
-
-  const handleLogin = () => {
-    dispatch(login({ email, password })).then((result) => {
-      if (result) {
-        navigate('/dashboard');
-      }
-    });
-  };
+  };  
 
   const handleRegister = () => {
     if (!checkFields()) {
-      dispatch(
-        register({
-          firstName,
-          lastName,
-          email,
-          password,
-        }),
-      ).then((result) => {
-        const { payload } = result;
-        if (payload) {
-          handleLogin();
-        }
-      });
+      const request: RegisterRequest = {
+        firstName,
+        lastName,
+        email,
+        password
+      };
+      dispatch(register(request));
     }
   };
 

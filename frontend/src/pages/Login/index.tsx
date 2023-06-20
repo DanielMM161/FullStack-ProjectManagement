@@ -12,14 +12,15 @@ function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const profileState = useAppSelector((state) => state.profile);
+  const { profile } = profileState;
   
   const [email, setEmail] = useState('userdemo@example.com');
   const [password, setPassword] = useState('userDemo456*');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    if (profileState.profile.email !== '') navigate('/dashboard');
-  }, [profileState.profile]) 
+    if (profile.email !== '') navigate('/dashboard');
+  }, [profile]) 
 
   function checkFields(): boolean {
     let isError = false;

@@ -23,7 +23,7 @@ function Profile() {
             userEmail={profile.email}
             userName={profile.firstName}
             userLastName={profile.lastName}
-            imageProfile={profile.imageProfile}
+            imageProfile={profile.pictureProfile}
             onSaveChanges={(value) => {
                 dispatch(updateProfile({
                     email: profile.email,

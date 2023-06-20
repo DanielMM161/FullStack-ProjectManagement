@@ -22,13 +22,12 @@ import { createProject, deleteProject, getAllProjects, updateProject } from '../
 function Dashboard() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const projectState = useAppSelector((state) => state.projects);
+  const projectState = useAppSelector((state) => state.projects);  
   const { data, fetching } = projectState;
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
   const [projectSelected, setProjectSelected] = useState<Project>(data[0]);
 
-  const getUserProjects = useCallback(() => {
-    console.log("token ---> ", localStorage.getItem('token'))
+  const getUserProjects = useCallback(() => {    
     dispatch(getAllProjects({ action: 'user?page=1&pageSize=20' }));
   }, [dispatch]);
 

@@ -7,6 +7,7 @@ using backend.src.DTOs.User;
 using backend.src.Helpers;
 using backend.src.Models;
 using backend.src.Repositories.UserRepo;
+using backend.src.Services.TokenService;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.Formats.Jpeg;
@@ -17,12 +18,14 @@ public class UserService : IUserService
     private readonly IUserRepo _repo;
     protected readonly IMapper _mapper;
     private readonly IClaimsPrincipalService _claimsService;
+    private readonly ITokenService _tokenService;
     
-    public UserService(IUserRepo repo, IMapper mapper, IClaimsPrincipalService claimsService)
+    public UserService(IUserRepo repo, IMapper mapper, IClaimsPrincipalService claimsService, ITokenService tokenService)
     {
         _repo = repo;
         _mapper = mapper;
         _claimsService = claimsService;
+        _tokenService = tokenService;
     }
 
     public async Task<UserReadDTO> Create(UserCreateDTO request)
@@ -30,9 +33,15 @@ public class UserService : IUserService
         var user = await _repo.Create(request);
         if (user is null)
         {
-            throw new Exception("Password Must Contain 1 Upper Letter, 1 Lower Letter, Alphanumeric and Special Caracter");
+            throw ServiceException.BadRequest("Password Must Contain 1 Upper Letter, 1 Lower Letter, Alphanumeric and Special Caracter");
         }
-        return _mapper.Map<User, UserReadDTO>(user);
+        
+        var token = await _tokenService.GenerateTokenAsync(user);
+        var profile = _mapper.Map<User, UserReadDTO>(user);
+        profile.Token = token.Token;
+        profile.TokenExpiration = token.Expiration;
+        
+        return profile;
     }
 
     public async Task<ICollection<UserReadDTO>> GetAll()
