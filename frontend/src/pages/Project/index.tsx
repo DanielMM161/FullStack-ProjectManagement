@@ -1,41 +1,53 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
+
 import { Typography, AvatarGroup, Avatar, Dialog, Chip, IconButton } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
-import { createList, deleteList, getListsByProject, updateList } from '../../services/list';
 import { ListProject } from '../../models/listProject';
 import ListInfo from '../../components/ListInfo';
-import { getProjectId, updateProject } from '../../services/project';
 import { Project } from '../../models/project';
 import Transition from '../../transitions';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
-import { createTask, deleteTask } from '../../services/task';
 import TaskDetail from '../../components/TaskDetail';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
-import { formatDate } from '../../utils/common';
+import { formatDate, isInstanceOf, showNotification } from '../../utils/common';
 import AssignUser from '../../components/AssignUser';
-import { ListContainer, ListOptions, ProjectInfo } from './styled';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ListEmpty from '../../assets/listEmpty.svg';
 import EmptyElement from '../../components/EmptyElement';
-import { closeLoading, showLoading } from '../../redux/slice/actions';
-import { Loading } from '../../models/loading';
-import { setProject } from '../../redux/slice/project';
+import { CreateListRequest, UpdateListRequest } from '../../services/request/list';
+import ListEmpty from '../../assets/listEmpty.svg';
+import { HttpService } from '../../services/HttpService';
+import { ListContainer, ListOptions, ProjectInfo } from './styled';
+import { CreateTaskRequest } from '../../services/request/task';
+import { Task } from '../../models/task';
+import { UpdateProjectRequest } from '../../services/request/project';
 
 function ProjectDetail() {
+
+  /** Project selected by the user in Dashboard */
   const { projectId } = useParams();
-  const dispatch = useAppDispatch();
+
+  /** Hook to navigate to others pages */
+  const navigate = useNavigate();  
+
+  /** Service class to manage http calls */
+  const httpService = new HttpService("");
+
+  /** Global State to manage loads UI */
   const actionState = useAppSelector((state) => state.actions);
   const { loading } = actionState;
-  const [listProject, setListProject] = useState<ListProject[]>([]);
-  const [actualProject, setActualProject] = useState<Project>();
-  const [listSelectedId, setListSelectedId] = useState(0);
-  const [taskSelectedId, setTaskSelectedId] = useState(0);
+
+  /** States to manage the selections from the elements belongs to the project */
+  const [ listProject, setListProject ] = useState<ListProject[]>([]);
+  const [ actualProject, setActualProject ] = useState<Project>();
+  const [ listSelectedId, setListSelectedId ] = useState(0);
+  const [ taskSelectedId, setTaskSelectedId ] = useState(0);
+  const [ showDeleteTask, setShowDeleteTask ] = useState(false);
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
-  const [showDeleteTask, setShowDeleteTask] = useState(false);
 
   useEffect(() => {
     const id = Number.parseInt(projectId ?? '0', 10);
@@ -43,39 +55,40 @@ function ProjectDetail() {
     fetchListByProject(id);
   }, [projectId]);
 
-  function fetchProjectById(id: number) {
-    dispatch(getProjectId(id)).then((result) => {
-      const { payload } = result;
-      dispatch(setProject({id: projectId, name: payload.name ?? 'Project'}));
-      if (payload) setActualProject(payload);
-    });
+  async function fetchProjectById(id: number) {
+    const result = await httpService.getById<Project>('projects', id);
+
+    if (result) {
+      setActualProject(result)      
+      return;
+    }
+
+    navigate("/dashboard")
   }
 
-  function fetchListByProject(id: number) {
-    dispatch(getListsByProject(id)).then((result) => {
-      dispatch(closeLoading());
-      const { payload } = result;
-      const value = payload ?? [];
-      setListProject(value);
-    });
+  async function fetchListByProject(id: number) {
+    const result = await httpService.get<ListProject>(`lists/project/${id}`);
+    setListProject(result);
   }
 
-  function handleAddList(nameList: string) {
-    dispatch(
-      createList({
-        title: nameList,
-        projectId: parseInt(projectId ?? '0', 10),
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload)
-        setListProject(() => {
-          dispatch(closeLoading());
-          return [...listProject, payload];
-        });
-    });
+  async function createList(nameList: string) {
+    const request: CreateListRequest = {
+      title: nameList,
+      projectId: parseInt(projectId ?? '0', 10)      
+    }
+    const result = await httpService.post<CreateListRequest, ListProject>('lists', request)
+    if (result) {
+      setListProject((prevState) => {          
+        return [...prevState, result];
+      });
+    }
   }
 
+  /**
+   * Show the Modal for delete the list and save the 
+   * listId in a state to use it when the user click in accept
+   * @param listId 
+   */
   function handleDeleteListClick(listId: number) {
     setShowDeleteTask(false);
     setTypeForm({
@@ -86,36 +99,31 @@ function ProjectDetail() {
     setListSelectedId(listId);
   }
 
-  function handleDeleteList() {
+  async function deleteList() {
     toggleDialog();
-    dispatch(deleteList(listSelectedId)).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const newList = listProject.filter((l) => l.id !== listSelectedId);
-        setListProject(newList);
-      }
-    });
+    const result = await httpService.remove('lists', listSelectedId);
+    if (result) {
+      const newList = listProject.filter((l) => l.id !== listSelectedId);
+      setListProject(newList);
+    }
   }
 
-  function handleCreateTask(taskTitle: string, listId: number) {
-    dispatch(
-      createTask({
-        title: taskTitle,
-        listId,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const index = listProject.findIndex((l) => l.id === listId);
-        const list = [...listProject];
-        const item = {
-          ...list[index],
-          tasks: [...list[index].tasks, result.payload],
-        };
-        list[index] = item;
-        setListProject(list);
-      }
-    });
+  async function createTask(taskTitle: string, listId: number) {
+    const request: CreateTaskRequest = {
+      title: taskTitle,
+      listId,
+    }
+    const result = await httpService.post<CreateTaskRequest, Task>("tasks", request);
+    if (result) {
+      const index = listProject.findIndex((l) => l.id === listId);
+      const list = [...listProject];
+      const item = {
+        ...list[index],
+        tasks: [...list[index].tasks, result],
+      };
+      list[index] = item;
+      setListProject(list);
+    }
   }
 
   function handleTaskClick(taskId: number) {
@@ -138,24 +146,15 @@ function ProjectDetail() {
     toggleDialog();
   }
 
-  function handleDeleteTask() {
-    dispatch(
-      showLoading({
-        title: 'Deleting Task',
-        show: true,
-      } as Loading),
-    );
-    dispatch(deleteTask(taskSelectedId)).then((result) => {
-      dispatch(closeLoading());
-      const { payload } = result;
-      if (payload) {
-        const items = [...listProject];
-        const item = items.filter((i) => i.id === listSelectedId);
-        const index = items.indexOf(item[0]);
-        items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
-        setListProject(items);
-      }
-    });
+  async function deleteTask() {
+    const result = await httpService.remove("tasks", taskSelectedId);
+    if (result) {
+      const items = [...listProject];
+      const item = items.filter((i) => i.id === listSelectedId);
+      const index = items.indexOf(item[0]);
+      items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
+      setListProject(items);
+    }
     toggleDialog();
   }
 
@@ -167,39 +166,31 @@ function ProjectDetail() {
     toggleDialog();
   }
 
-  function handleAssignedUser(usersId: number[]) {
+  async function assignUserToProject(usersId: number[]) {
     toggleDialog();
-    dispatch(
-      updateProject({
-        id: actualProject?.id ?? 0,
-        name: actualProject?.name ?? '',
-        description: actualProject?.description ?? '',
-        usersId,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        setActualProject(result.payload);
-      }
-    });
+    const request: UpdateProjectRequest = {
+      id: actualProject?.id ?? 0,
+      name: actualProject?.name ?? '',
+      description: actualProject?.description ?? '',
+      usersId,
+    }
+    const result = await httpService.update<UpdateProjectRequest, Project>("projects", request, request.id)
+    if (result) setActualProject(result)
   }
 
-  function handleUpdateList(listId: number, newTitle: string) {
-    dispatch(
-      updateList({
-        id: listId,
-        title: newTitle,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const items = [...listProject];
-        const item = items.filter((i) => i.id === listId);
-        const index = items.indexOf(item[0]);
-        items[index].title = newTitle;
-        setListProject(items);
-      }
-    });
+  async function handleUpdateList(listId: number, newTitle: string) {
+    const request: UpdateListRequest = {
+      id: listId,
+      title: newTitle,
+    }
+    const result = await httpService.update<UpdateListRequest, ListProject>('lists', request, listId);
+    if (result) {
+      const items = [...listProject];
+      const item = items.filter((i) => i.id === listId);
+      const index = items.indexOf(item[0]);
+      items[index].title = newTitle;
+      setListProject(items);
+    }
   }
 
   return (
@@ -234,7 +225,7 @@ function ProjectDetail() {
         <ButtonInput
           labelText="List Name"
           buttonText="Add another List"
-          addClick={(nameList) => handleAddList(nameList)}
+          addClick={(nameList) => createList(nameList)}
         />
       </ListOptions>
 
@@ -248,7 +239,7 @@ function ProjectDetail() {
                   title={list.title}
                   tasks={list.tasks}
                   taskClick={(id) => handleTaskClick(id)}
-                  addTaskClick={(taskTitle) => handleCreateTask(taskTitle, list.id)}
+                  addTaskClick={(taskTitle) => createTask(taskTitle, list.id)}
                   deleteListClick={() => handleDeleteListClick(list.id)}
                   deleteTaskClick={(id) => handleShowDeleteTask(id, list.id)}
                   updateTitleList={(title) => handleUpdateList(list.id, title)}
@@ -268,7 +259,7 @@ function ProjectDetail() {
         onClose={() => toggleDialog()}
         aria-describedby="alert-dialog-slide-description"
       >
-        {showDialog && typeForm.form === FORMS.detail ? (
+        {showDialog && typeForm.form === FORMS.detail ? (          
           <TaskDetail members={actualProject?.users ?? []} taskId={taskSelectedId} />
         ) : null}
 
@@ -276,7 +267,7 @@ function ProjectDetail() {
           <DialogInfoAction
             dialogTitle={typeForm.title}
             contentText="Are you sure that you want to delete this List ? all the tasks will be delete"
-            onClickAccept={() => handleDeleteList()}
+            onClickAccept={() => deleteList()}
             onClickCancel={() => toggleDialog()}
           />
         ) : null}
@@ -285,7 +276,7 @@ function ProjectDetail() {
           <DialogInfoAction
             dialogTitle={typeForm.title}
             contentText="Are you sure that you want to delete this Task ?"
-            onClickAccept={() => handleDeleteTask()}
+            onClickAccept={() => deleteTask()}
             onClickCancel={() => toggleDialog()}
           />
         ) : null}
@@ -294,12 +285,12 @@ function ProjectDetail() {
           <AssignUser
             users={actualProject?.users ?? []}
             cancelClick={toggleDialog}
-            acceptClick={(usersId) => handleAssignedUser(usersId)}
+            acceptClick={(usersId) => assignUserToProject(usersId)}
           />
         ) : null}
       </Dialog>
     </Layout>
-  );
+  );  
 }
 
 export default ProjectDetail;

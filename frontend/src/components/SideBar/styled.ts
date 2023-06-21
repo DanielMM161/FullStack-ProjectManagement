@@ -3,13 +3,12 @@ import { styled } from '@mui/material';
 const StyledSideBar = styled('div')(({ theme }) => ({
   zIndex: 4,
   position: 'fixed',
-  width: '300px',
+  width: '240px',
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'space-between',
   backgroundColor: 'white',
-  padding: '30px 40px',
   transition: 'transform .3s ease-in-out',
   '&.close-side-bar': {
     transform: 'translateX(-95%)',

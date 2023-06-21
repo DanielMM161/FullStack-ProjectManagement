@@ -1,14 +1,18 @@
-import { styled } from '@mui/material';
+import { StyledLayout } from './styled';
 
-const Layout = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  marginLeft: '300px',
-  padding: '1.5rem 2rem 1.5rem;',
-  height: '100%',
-  [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
-    marginLeft: 0,
-  },
-}));
+interface Props {
+  children: React.ReactNode
+}
+
+function Layout({children}: Props) {
+
+  return (
+    <StyledLayout>
+      <div>
+        {children}
+      </div>      
+    </StyledLayout>
+  )
+}
 
 export default Layout;

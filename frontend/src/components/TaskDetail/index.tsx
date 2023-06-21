@@ -1,15 +1,18 @@
 import { useEffect, useState } from 'react';
+
 import { Avatar, Chip, Divider, Tab, Tabs, TextField, Typography, Box } from '@mui/material';
+
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
-import { initialTaskValue, Task } from '../../models/task';
-import { assignUser, deleteTask, getTaskById, removeUser, updateTask } from '../../services/task';
+import { initialTaskValue, SubTask, Task } from '../../models/task';
 import { User } from '../../models/user';
 import SelectUser from '../SelectUser';
 import InputControlButton from '../InputControlButton';
-import { createSubTask, updateDoneSubTask } from '../../services/subTask';
 import SubTaskItem from '../SubTaskItem';
 import MenuPriorityTask from '../MenuPriorityTask';
 import { InfoContainer, StyledTaskDetail } from './styled';
+import { HttpService } from '../../services/HttpService';
+import { TaskUserRequest, UpdateTaskRequest } from '../../services/request/task';
+import { CreateSubTaskRequest, UpdateDoneSubTaskRequest } from '../../services/request/subTask';
 
 interface TabPanelProps {
   children: React.ReactNode;
@@ -47,185 +50,168 @@ interface TaskDetailProps {
 }
 
 function TaskDetail({ members, taskId }: TaskDetailProps) {
+
   const dispatch = useAppDispatch();
+
+  /** Profile Global State */
   const profileState = useAppSelector((state) => state.profile);
   const { profile } = profileState;
-  const [task, setTask] = useState<Task>(initialTaskValue);
-  const [isLoading, setIsLoading] = useState(false);
-  const [taskTitle, setTaskTitle] = useState(task.title);
-  const [taskDescription, setTaskDescription] = useState(task.description ?? "");
-  const [editing, setEditing] = useState(false);
-  const [showAddSubTask, setShowAddSubTask] = useState(false);
-  const [value, setValue] = useState(0);
+
+  const httpService = new HttpService("");
   
-  useEffect(() => {
-    function fetchTask() {
-      setIsLoading(true);
-      dispatch(getTaskById(taskId)).then((result) => {
-        const { payload } = result;
-        if (payload) {
-          const item = result.payload as Task;
-          setTask(item);
-          setTaskDescription(item.description);          
-        }
-        setIsLoading(false);
-      });
-    }
+  /** State to manage the UI to show the task detail and the differents interacion with that task */
+  const [ task, setTask ] = useState<Task>(initialTaskValue);
+  const [ isLoading, setIsLoading ] = useState(false);
+  const [ taskTitle, setTaskTitle ] = useState(task.title);
+  const [ taskDescription, setTaskDescription ] = useState(task.description ?? "");
+  const [ editing, setEditing ] = useState(false);
+  const [ showAddSubTask, setShowAddSubTask ] = useState(false);
+  const [ value, setValue ] = useState(0);
+  
+  useEffect(() => {   
     fetchTask();
   }, [dispatch]);
+
+  async function fetchTask() {
+    setIsLoading(true);
+    const result = await httpService.getById<Task>("tasks", taskId);
+    if (result) {        
+      setTask(result);
+      setTaskDescription(result.description);
+    }
+    setIsLoading(false);
+  }
 
   function handleClick() {
     setTaskTitle(task?.title);
     setEditing(true);
   }
 
-  function handleChange(event: React.SyntheticEvent, newValue: number) {
+  function handleTabChange(event: React.SyntheticEvent, newValue: number) {
     setValue(newValue);
   }
 
-  function handleRemoveUser(userId: number) {
-    dispatch(
-      removeUser({
-        taskId: task.id,
-        userId,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const copyTask = { ...task };
-        copyTask.users = copyTask.users.filter((u) => u.id !== userId);
-        setTask(copyTask);
-      }
-    });
+  async function handleRemoveUser(userId: number) {
+    const request: TaskUserRequest = {      
+      userId
+    };
+
+    const result = await httpService.update<TaskUserRequest, Task>(`tasks/${task.id}/remove-user`, request);
+    if (result) {
+      const copyTask = { ...task };
+      copyTask.users = copyTask.users.filter((u) => u.id !== userId);
+      setTask(copyTask);
+    }    
   }
 
-  function handleAssignUser(user: User) {
-    dispatch(
-      assignUser({
-        taskId: task.id,
-        userId: user.id,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const copyTask = { ...task };
-        copyTask.users.push(user);
-        setTask(copyTask);
-      }
-    });
+  async function handleAssignUser(user: User) {
+    const request: TaskUserRequest = {      
+      userId: user.id,
+    };
+
+    const result = await httpService.update<TaskUserRequest, Task>(`tasks/${task.id}/assign-user`, request);
+    if (result) {
+      const copyTask = { ...task };
+      copyTask.users.push(user);
+      setTask(copyTask);
+    }
   }
 
-  function handleUpdateTitle() {
+  async function handleUpdateTitle() {
     if (taskTitle.trim() !== '' && taskTitle.trim() !== task.title) {
-      dispatch(
-        updateTask({
-          id: task.id,
-          title: taskTitle,
-          description: task.description,
-          priority: task.priorityTask.toString(),
-          dueDate: task.dueDate.toString(),
-        }),
-      ).then((result) => {
-        if (result && result.payload) {
-          setTask(result.payload);
-        }
-      });
+      const request: UpdateTaskRequest = {
+        id: task.id,
+        title: taskTitle,
+        description: task.description,
+        priorityTask: task.priorityTask.toString(),
+        dueDate: task.dueDate.toString(),
+      }
+      const result = await httpService.update<UpdateTaskRequest, Task>('tasks', request, request.id);
+      if (result) setTask(result);     
       setEditing(!editing);
     }
   }
 
-  function handleUpdateDescription() {
+  async function handleUpdateDescription() {
     if (taskDescription.trim() !== '' && taskDescription.trim() !== task.description) {
-      dispatch(
-        updateTask({
-          id: task.id,
-          title: task.title,
-          description: taskDescription,
-          priority: task.priorityTask.toString(),
-          dueDate: task.dueDate.toString(),
-        }),
-      );
-    }
-  }
-
-  function handleUpdatePriority(priority: string) {
-    if (priority !== task.priorityTask.toString()) {
-      dispatch(
-        updateTask({
-          id: task.id,
-          title: task.title,
-          description: task.description,
-          priority,
-          dueDate: task.dueDate.toString(),
-        }),
-      ).then((result) => {
-        const { payload } = result;
-        if (payload) {
-          setTask(payload);
-        }
-      });
-    }
-  }
-
-  function handleAddSubTask(subTaskName: string) {
-    dispatch(
-      createSubTask({
-        taskParentId: task.id,
-        title: subTaskName,
-        createdById: profile.id,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const item = { ...task };
-        item.subTasks?.push(result.payload);
-        setTask(item);
+      const request: UpdateTaskRequest = {
+        id: task.id,
+        title: task.title,
+        description: taskDescription,
+        priorityTask: task.priorityTask.toString(),
+        dueDate: task.dueDate.toString(),
       }
-    });
+      const result = await httpService.update<UpdateTaskRequest, Task>('tasks', request, request.id);
+      if (result) setTask(result);
+    }
+  }
+
+  async function handleUpdatePriority(priorityTask: string) {
+    if (priorityTask !== task.priorityTask.toString()) {
+      const request: UpdateTaskRequest = {
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        priorityTask,
+        dueDate: task.dueDate.toString(),
+      }
+      
+      const result = await httpService.update<UpdateTaskRequest, Task>('tasks', request, request.id);
+      if (result) setTask(result);
+    }
+  }
+
+  async function handleAddSubTask(subTaskName: string) {
+    const request: CreateSubTaskRequest = {      
+      title: subTaskName,
+      createdById: profile.id
+    };
+
+    const result = await httpService.post<CreateSubTaskRequest, SubTask>(`tasks/${task.id}/subtask`, request)
+    if (result) {
+      const item = { ...task };
+      item.subTasks?.push(result);
+      setTask(item);
+    }
+
     setShowAddSubTask(!showAddSubTask);
   }
 
-  function handleDeleteSubTask(subTaskId: number) {
-    dispatch(deleteTask(subTaskId)).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const item = { ...task };
-        item.subTasks = item.subTasks?.filter((i) => i.id !== subTaskId);
-        setTask(item);
-      }
-    });
+  async function handleDeleteSubTask(subTaskId: number) {
+    const result = await httpService.remove("tasks", subTaskId);
+    if (result) {
+      const item = { ...task };
+      item.subTasks = item.subTasks?.filter((i) => i.id !== subTaskId);
+      setTask(item);
+    }
   }
 
-  function handleUpdateDoneSubTask(done: boolean, subTaskId: number) {
-    dispatch(
-      updateDoneSubTask({
-        taskParentId: task.id,
-        subTaskId,
-        done,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const item = { ...task };
-        const subTask = item.subTasks?.filter((st) => st.id !== subTaskId);
-        subTask?.push(result.payload);
-        item.subTasks = subTask;
-        setTask(item);
-      }
-    });
+  async function handleUpdateDoneSubTask(done: boolean, subTaskId: number) {
+    const request: UpdateDoneSubTaskRequest = {      
+      done
+    };
+
+    const url = `tasks/${task.id}/subtask/${subTaskId}`;
+    const result = await httpService.update<UpdateDoneSubTaskRequest, SubTask>(url, request)
+    if (result) {
+      const item = { ...task };
+      const subTask = item.subTasks?.filter((st) => st.id !== subTaskId);
+      subTask?.push(result);
+      item.subTasks = subTask;
+      setTask(item);
+    }
   }
 
-  function handleChangeDueDate(dueDate: string) {    
+  async function handleChangeDueDate(dueDate: string) {    
     const newDueDate = new Date(new Date(dueDate).getTime());
+    const request: UpdateTaskRequest = { 
+      ...task, 
+      priorityTask: task.priorityTask.toString(), 
+      dueDate: newDueDate.toISOString() 
+    }
 
-    dispatch(updateTask({ ...task, priority: task.priorityTask.toString(), dueDate: newDueDate.toISOString() })).then(
-      (result) => {
-        const { payload } = result;
-        if (payload) {
-          setTask({ ...task, dueDate: payload.dueDate });
-        }
-      },
-    );
+    const result = await httpService.update<UpdateTaskRequest, Task>('tasks', request, task.id);
+    if (result) setTask({ ...task, dueDate: result.dueDate });
   }
 
   function formatDate(date: string) {    
@@ -314,7 +300,7 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
 
           <Box sx={{ width: '100%' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-              <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+              <Tabs value={value} onChange={handleTabChange} aria-label="basic tabs example">
                 <Tab label="Description" {...a11yProps(0)} />
                 <Tab label="Comments" {...a11yProps(1)} />
               </Tabs>

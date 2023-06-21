@@ -1,6 +1,6 @@
 import { NOTIFICATION_TYPE, Store } from 'react-notifications-component';
 import { Loading } from '../models/loading';
-import { showLoading } from '../redux/slice/actions';
+import { showLoading } from '../redux/slice/ActionsSlice';
 
 export function formatDate(dateStr: string) {
   try {
@@ -10,6 +10,22 @@ export function formatDate(dateStr: string) {
   } catch (error) {
     console.error('Error Format Date --> ', error);
     return '';
+  }
+}
+
+export function CompareDates(dateString: string) {  
+  const date = new Date(dateString);
+  
+  const currentDate = new Date();
+
+  return currentDate > date
+}
+
+export function isInstanceOf<T>(object: any, parameter: string): object is T {
+  try {
+    return parameter in object    
+  } catch (error) {
+    return false
   }
 }
 
@@ -23,7 +39,7 @@ export function showNotification(title: string, message: string, type: NOTIFICAT
     animationIn: ['animate__animated', 'animate__fadeIn'],
     animationOut: ['animate__animated', 'animate__fadeOut'],
     dismiss: {
-      duration: 2000,
+      duration: 5000,
       onScreen: true,
     },
   });

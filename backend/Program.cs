@@ -22,7 +22,6 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using backend.src.Middleware;
 using backend.src.Helpers;
-using backend.src.Services.GoogleService;
 using backend.src.Repositories.CommentRepo;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -96,7 +95,7 @@ builder.Services
 builder.Services
     .AddScoped<ISubTaskRepo, SubTaskRepo>()
     .AddScoped<ISubTaskService, SubTaskService>();
-builder.Services.AddScoped<IGoogleService, GoogleService>();
+
 builder.Services.AddScoped<ICommentRepo, CommentRepo>();
 
 builder.Services

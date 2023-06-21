@@ -1,40 +1,55 @@
 import { useNavigate } from 'react-router';
 import { Avatar, List, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import ListButtonItem from '../ListButtonItem/ListButtonItem';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import StyledSideBar from './styled';
 import FolderIcon from '@mui/icons-material/Folder';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
-import { closeSession } from '../../redux/slice/profile';
+import { logout } from '../../redux/slice/ProfileSlice';
 import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
-import { useState } from 'react';
-import { toggleSideBar } from '../../redux/slice/actions';
-import { logout } from '../../services/auth';
+import { useEffect, useState } from 'react';
+import { toggleSideBar } from '../../redux/slice/ActionsSlice';
+
+interface ItemListOption {
+  title: string;
+  icon: JSX.Element;
+  navigateTo: string;
+}
+
+const itemListOptions: ItemListOption[] = [
+  {
+    title: 'Dashboard',
+    icon: <DashboardIcon />,
+    navigateTo: '/dashboard'    
+  },
+  {
+    title: 'Profile',
+    icon: <PersonIcon />,
+    navigateTo: '/profile' 
+  },
+  {
+    title: 'Settings',
+    icon: <SettingsIcon />,
+    navigateTo: '/profile'     
+  }
+]
 
 function SideBar() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const profileState = useAppSelector((state) => state.profile);
-  const projectState = useAppSelector((state) => state.projects);
-  const { projectSelectedId, projectSelectedName } = projectState;
+  const profileState = useAppSelector((state) => state.profile);  
   const actionsState = useAppSelector((state) => state.actions);
   const { showSideBar } = actionsState;
-  const [dashboardItem, setDashboardItem] = useState(false);
-  const [projectItem, setProjectItem] = useState(false);
   const { profile } = profileState;
+  const [activeItem, setActiveItem] = useState(itemListOptions[0]);
 
-  function handleDashboardClick() {
-    setDashboardItem(!dashboardItem);
-    setProjectItem(false);
-    navigate('/dashboard');
-  }
-
-  function handleProjectClick() {
-    setDashboardItem(false);
-    setProjectItem(!projectItem);
-    navigate(`dashboard/project/${projectSelectedId}`);
+  function handleItemClick(item: ItemListOption) {
+    setActiveItem(item)
+    navigate(item.navigateTo)
   }
 
   return (
@@ -42,10 +57,19 @@ function SideBar() {
       <div className="top-side">
         <div className="avatar-info">
           <div className="info-name">
-            <Avatar alt={profile.firstName} src="/static/images/avatar/1.jpg" sx={{ width: 56, height: 56 }} />
-            <KeyboardArrowLeftIcon className="arrow-icon" onClick={() => dispatch(toggleSideBar())} />
+            <Avatar 
+              alt={profile.firstName} 
+              src={`data:image/jpeg;base64,${profile.pictureProfile}`} 
+              sx={{ width: 56, height: 56 }} 
+            />
+
+            <KeyboardArrowLeftIcon 
+              className="arrow-icon" 
+              onClick={() => dispatch(toggleSideBar({}))} 
+            />
+
             {showSideBar ? (
-              <ExpandCircleDownIcon className="expand-icon" onClick={() => dispatch(toggleSideBar())} />
+              <ExpandCircleDownIcon className="expand-icon" onClick={() => dispatch(toggleSideBar({}))} />
             ) : null}
           </div>
           <Typography variant="h6">
@@ -53,47 +77,29 @@ function SideBar() {
           </Typography>
           <Typography variant="subtitle1">{profile.email}</Typography>
         </div>
-        <div className="list-container">
+        
           <List>
-            <ListButtonItem
-              title="Dashboard"
-              onClick={() => handleDashboardClick()}              
-            >
-              <DashboardIcon />
-            </ListButtonItem>
-            <ListButtonItem
-              title={projectSelectedName}
-              onClick={() => {
-                if (projectSelectedId !== 0) {
-                  handleProjectClick();
-                }
-              }}
-              disabled={projectSelectedId == 0 ? true : false}              
-            >
-              <FolderIcon />
-            </ListButtonItem>
+            {itemListOptions.map((item, index) => 
+               <ListButtonItem
+                key={index}
+                selected={activeItem.title == item.title}
+                title={item.title}
+                onClick={() => handleItemClick(item)}              
+              >
+               {item.icon}
+              </ListButtonItem>
+            )}            
           </List>
-        </div>
+        
       </div>
-      <div className="bottom-side">
-        <List>
-          <ListButtonItem
-            title="Log out"
-            onClick={() => {
-              dispatch(logout())
-              .then((result) => {
-                const { payload } = result                
-                if (payload) {
-                  dispatch(closeSession())
-                }
-              });
-            }}
-            selected={false}
-          >
-            <LogoutIcon />
-          </ListButtonItem>
-        </List>
-      </div>
+      <ListButtonItem
+        title="Log out"
+        selected={false}
+        onClick={() => dispatch(logout())}
+      >
+        <LogoutIcon />
+      </ListButtonItem>
+      
     </StyledSideBar>
   );
 }

@@ -10,18 +10,21 @@ import UserValidation from './components/UserValidation/UserValidation';
 import LoadingPulsating from './components/LoadingPulsating';
 import { ThemeProvider } from '@mui/material';
 import theme from './theme';
+import Profile from './pages/Profile';
 import 'react-notifications-component/dist/theme.css';
 import './App.css';
+
 
 function App() {
   return (
     <BrowserRouter>
       <LoadingPulsating />
       <ReactNotifications />
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>      
         <Routes>
           <Route element={<UserValidation />}>
             <Route element={<AppContent />}>
+              <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/dashboard/project/:projectId" element={<ProjectDetail />} />
             </Route>

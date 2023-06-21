@@ -10,7 +10,7 @@ export enum Priority {
   high,
 }
 
-interface SubTask {
+export interface SubTask {
   id: number;
   title: string;
   done: boolean;

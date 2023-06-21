@@ -1,29 +1,28 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
-import { getProfile, login, loginGoogle } from '../../services/auth';
 import loginSVG from '../../assets/login.svg';
 import login2SVG from '../../assets/login-2.svg';
 import Layout from '../../styled/LoginRegisterLayout';
 import { GoogleLogin } from '@react-oauth/google';
-import { hello } from '../../redux/slice/testSlice';
+import { login, loginGoogle } from '../../redux/slice/ProfileSlice';
 
 function Login() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const actionState = useAppSelector((state) => state.test);
+  const profileState = useAppSelector((state) => state.profile);
+  const { profile } = profileState;
+  
   const [email, setEmail] = useState('userdemo@example.com');
   const [password, setPassword] = useState('userDemo456*');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    dispatch(hello())
-    console.log("login",actionState.data);
+    if (profile.email !== '') navigate('/dashboard');
+  }, [profile]) 
 
-  }, [actionState.data])
-
-  const checkFields = (): boolean => {
+  function checkFields(): boolean {
     let isError = false;
     const newErrors: { [key: string]: string } = {};
     if (!email) {
@@ -38,27 +37,14 @@ function Login() {
     return isError;
   };
 
-  const handleGetProfile = () => {
-    dispatch(getProfile()).then((result) => {
-      const { payload } = result;
-      if (payload) navigate('/dashboard');
-    });
-  };
-
-  const handleSubmit = () => {
+  function handleSubmit() {
     if (!checkFields()) {
-      dispatch(login({ email, password })).then((result) => {
-        const { payload } = result;
-        if (payload) handleGetProfile();
-      });
+      dispatch(login({ email, password }))
     }
   };
 
-  const handleLoginGoogle = (token: string) => {
-    dispatch(loginGoogle({ token })).then((result) => {      
-      const { payload } = result;
-      if (payload) handleGetProfile();
-    });
+  function handleLoginGoogle(token: string) {
+    dispatch(loginGoogle({ token }))
   };
 
   return (

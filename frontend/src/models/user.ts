@@ -7,8 +7,11 @@ export interface User {
   firstName: string;
   lastName: string;
   email: string;
+  pictureProfile: string;
   avatar: string;
   created?: Date;
+  token: string;
+  tokenExpiration: string;
 }
 
 export const emptyUser: User = {
@@ -16,7 +19,10 @@ export const emptyUser: User = {
   firstName: '',
   lastName: '',
   email: '',
+  pictureProfile: '',
   avatar: '',
+  token: '',
+  tokenExpiration: ''
 };
 
 export const initialUserState: SliceStateUser = {

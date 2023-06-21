@@ -1,4 +1,4 @@
-import styled from '@emotion/styled';
+import {Dialog, styled } from '@mui/material';
 
 export const ProjectSummaryContainer = styled('div')({
   display: 'flex',
@@ -38,3 +38,7 @@ export const EmptyList = styled('div')({
     bottom: '100px',
   },
 });
+
+export const MyDialog = styled(Dialog)(({ theme }) => ({
+  maxWidth: 'none'
+}));

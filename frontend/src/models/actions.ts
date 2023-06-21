@@ -1,6 +1,6 @@
 import { Loading } from './loading';
 
-interface Actions {
+export interface ActionsSliceState {
   loading: Loading;
   showSideBar: boolean;
 }
@@ -10,7 +10,7 @@ export const initialLoadingState: Loading = {
   show: false,
 };
 
-export const initialActionsState: Actions = {
+export const initialActionsState: ActionsSliceState = {
   loading: initialLoadingState,
   showSideBar: false,
 };
