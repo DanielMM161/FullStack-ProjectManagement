@@ -40,7 +40,7 @@ function CreateProject({ dialogTitle, acceptOnClick, cancelClick }: CreateProjec
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>();
-  const [usersIn, setUsersIn] = useState<User[]>([profileState.profile]);
+  const [ usersIn, setUsersIn ] = useState<User[]>([profileState.profile]);
   const { allUsers } = useUsers();
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {

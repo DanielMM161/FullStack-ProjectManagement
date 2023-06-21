@@ -1,23 +1,21 @@
 import { useEffect, useState } from 'react';
 
 import { User } from '../models/user';
-import getAllUsers from '../services/user';
 
-import { useAppDispatch } from './redux.hook';
+import { HttpService } from '../services/HttpService';
 
-function useUsers() {
-  const dispatch = useAppDispatch();
+function useUsers() {  
+  const service = new HttpService("");
   const [allUsers, setAllUsers] = useState<User[]>([]);
 
-  useEffect(() => {
-    const fetchUsers = () => {
-      dispatch(getAllUsers()).then((response) => {
-        const result = response.payload as User[];
-        setAllUsers(result);
-      });
-    };
+  useEffect(() => {  
     fetchUsers();
-  }, [dispatch]);
+  }, []);
+
+  async function fetchUsers() {
+    const result = await service.get<User>('users');
+    if (result)  setAllUsers(result);
+  }
 
   return { allUsers };
 }

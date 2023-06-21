@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
+
 import { Typography, AvatarGroup, Avatar, Dialog, Chip, IconButton } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
@@ -10,29 +12,29 @@ import ListInfo from '../../components/ListInfo';
 import { Project } from '../../models/project';
 import Transition from '../../transitions';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
-import { createTask, deleteTask } from '../../services/task';
 import TaskDetail from '../../components/TaskDetail';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
 import { formatDate, isInstanceOf, showNotification } from '../../utils/common';
 import AssignUser from '../../components/AssignUser';
-import { ListContainer, ListOptions, ProjectInfo } from './styled';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ListEmpty from '../../assets/listEmpty.svg';
 import EmptyElement from '../../components/EmptyElement';
-import { showLoading } from '../../redux/slice/ActionsSlice';
-import { Loading } from '../../models/loading';
-import { getProjectId } from '../../services/projectService';
 import { CreateListRequest, UpdateListRequest } from '../../services/request/list';
+import ListEmpty from '../../assets/listEmpty.svg';
 import { HttpService } from '../../services/HttpService';
+import { ListContainer, ListOptions, ProjectInfo } from './styled';
+import { CreateTaskRequest } from '../../services/request/task';
+import { Task } from '../../models/task';
+import { UpdateProjectRequest } from '../../services/request/project';
 
 function ProjectDetail() {
 
   /** Project selected by the user in Dashboard */
   const { projectId } = useParams();
 
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  /** Hook to navigate to others pages */
+  const navigate = useNavigate();  
 
+  /** Service class to manage http calls */
   const httpService = new HttpService("");
 
   /** Global State to manage loads UI */
@@ -54,14 +56,13 @@ function ProjectDetail() {
   }, [projectId]);
 
   async function fetchProjectById(id: number) {
-    const result = await getProjectId('projects',id);
+    const result = await httpService.getById<Project>('projects', id);
 
-    if (isInstanceOf<Project>(result, 'description')) {
+    if (result) {
       setActualProject(result)      
       return;
     }
-    
-    showNotification(`Fetchin Project - ${result.statusCode}`, `${result.message}`, 'danger'); 
+
     navigate("/dashboard")
   }
 
@@ -70,7 +71,7 @@ function ProjectDetail() {
     setListProject(result);
   }
 
-  async function handleAddList(nameList: string) {
+  async function createList(nameList: string) {
     const request: CreateListRequest = {
       title: nameList,
       projectId: parseInt(projectId ?? '0', 10)      
@@ -98,7 +99,7 @@ function ProjectDetail() {
     setListSelectedId(listId);
   }
 
-  async function handleDeleteList() {
+  async function deleteList() {
     toggleDialog();
     const result = await httpService.remove('lists', listSelectedId);
     if (result) {
@@ -107,25 +108,22 @@ function ProjectDetail() {
     }
   }
 
-  function handleCreateTask(taskTitle: string, listId: number) {
-    dispatch(
-      createTask({
-        title: taskTitle,
-        listId,
-      }),
-    ).then((result) => {
-      const { payload } = result;
-      if (payload) {
-        const index = listProject.findIndex((l) => l.id === listId);
-        const list = [...listProject];
-        const item = {
-          ...list[index],
-          tasks: [...list[index].tasks, result.payload],
-        };
-        //list[index] = item;
-        setListProject(list);
-      }
-    });
+  async function createTask(taskTitle: string, listId: number) {
+    const request: CreateTaskRequest = {
+      title: taskTitle,
+      listId,
+    }
+    const result = await httpService.post<CreateTaskRequest, Task>("tasks", request);
+    if (result) {
+      const index = listProject.findIndex((l) => l.id === listId);
+      const list = [...listProject];
+      const item = {
+        ...list[index],
+        tasks: [...list[index].tasks, result],
+      };
+      list[index] = item;
+      setListProject(list);
+    }
   }
 
   function handleTaskClick(taskId: number) {
@@ -148,23 +146,15 @@ function ProjectDetail() {
     toggleDialog();
   }
 
-  function handleDeleteTask() {
-    dispatch(
-      showLoading({
-        title: 'Deleting Task',
-        show: true,
-      } as Loading),
-    );
-    dispatch(deleteTask(taskSelectedId)).then((result) => {      
-      const { payload } = result;
-      if (payload) {
-        const items = [...listProject];
-        const item = items.filter((i) => i.id === listSelectedId);
-        const index = items.indexOf(item[0]);
-        items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
-        setListProject(items);
-      }
-    });
+  async function deleteTask() {
+    const result = await httpService.remove("tasks", taskSelectedId);
+    if (result) {
+      const items = [...listProject];
+      const item = items.filter((i) => i.id === listSelectedId);
+      const index = items.indexOf(item[0]);
+      items[index].tasks = item[0].tasks.filter((t) => t.id !== taskSelectedId);
+      setListProject(items);
+    }
     toggleDialog();
   }
 
@@ -176,21 +166,16 @@ function ProjectDetail() {
     toggleDialog();
   }
 
-  function handleAssignedUser(usersId: number[]) {
+  async function assignUserToProject(usersId: number[]) {
     toggleDialog();
-    // dispatch(
-    //   updateProject({
-    //     id: actualProject?.id ?? 0,
-    //     name: actualProject?.name ?? '',
-    //     description: actualProject?.description ?? '',
-    //     usersId,
-    //   }),
-    // ).then((result) => {
-    //   const { payload } = result;
-    //   if (payload) {
-    //     setActualProject(result.payload);
-    //   }
-    // });
+    const request: UpdateProjectRequest = {
+      id: actualProject?.id ?? 0,
+      name: actualProject?.name ?? '',
+      description: actualProject?.description ?? '',
+      usersId,
+    }
+    const result = await httpService.update<UpdateProjectRequest, Project>("projects", request, request.id)
+    if (result) setActualProject(result)
   }
 
   async function handleUpdateList(listId: number, newTitle: string) {
@@ -240,7 +225,7 @@ function ProjectDetail() {
         <ButtonInput
           labelText="List Name"
           buttonText="Add another List"
-          addClick={(nameList) => handleAddList(nameList)}
+          addClick={(nameList) => createList(nameList)}
         />
       </ListOptions>
 
@@ -254,7 +239,7 @@ function ProjectDetail() {
                   title={list.title}
                   tasks={list.tasks}
                   taskClick={(id) => handleTaskClick(id)}
-                  addTaskClick={(taskTitle) => handleCreateTask(taskTitle, list.id)}
+                  addTaskClick={(taskTitle) => createTask(taskTitle, list.id)}
                   deleteListClick={() => handleDeleteListClick(list.id)}
                   deleteTaskClick={(id) => handleShowDeleteTask(id, list.id)}
                   updateTitleList={(title) => handleUpdateList(list.id, title)}
@@ -274,7 +259,7 @@ function ProjectDetail() {
         onClose={() => toggleDialog()}
         aria-describedby="alert-dialog-slide-description"
       >
-        {showDialog && typeForm.form === FORMS.detail ? (
+        {showDialog && typeForm.form === FORMS.detail ? (          
           <TaskDetail members={actualProject?.users ?? []} taskId={taskSelectedId} />
         ) : null}
 
@@ -282,7 +267,7 @@ function ProjectDetail() {
           <DialogInfoAction
             dialogTitle={typeForm.title}
             contentText="Are you sure that you want to delete this List ? all the tasks will be delete"
-            onClickAccept={() => handleDeleteList()}
+            onClickAccept={() => deleteList()}
             onClickCancel={() => toggleDialog()}
           />
         ) : null}
@@ -291,7 +276,7 @@ function ProjectDetail() {
           <DialogInfoAction
             dialogTitle={typeForm.title}
             contentText="Are you sure that you want to delete this Task ?"
-            onClickAccept={() => handleDeleteTask()}
+            onClickAccept={() => deleteTask()}
             onClickCancel={() => toggleDialog()}
           />
         ) : null}
@@ -300,13 +285,12 @@ function ProjectDetail() {
           <AssignUser
             users={actualProject?.users ?? []}
             cancelClick={toggleDialog}
-            acceptClick={(usersId) => handleAssignedUser(usersId)}
+            acceptClick={(usersId) => assignUserToProject(usersId)}
           />
         ) : null}
       </Dialog>
     </Layout>
-  );
-  return <div>Project Detail</div>
+  );  
 }
 
 export default ProjectDetail;

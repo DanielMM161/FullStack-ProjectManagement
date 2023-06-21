@@ -1,8 +1,8 @@
 import { Slice, createSlice } from '@reduxjs/toolkit';
 
 import { ActionsSliceState, initialActionsState, initialLoadingState } from '../../models/actions';
-import { createProject } from './ProjectSlice';
 import { login, loginGoogle, logout, register, updateProfile, uploadImageProfile } from './ProfileSlice';
+import { createProject } from './ProjectSlice';
 import { showNotification } from '../../utils/common';
 
 class ActionsSlice {
@@ -22,12 +22,12 @@ class ActionsSlice {
       },
       extraReducers: (build) => {
         /** Pending */
-        build.addCase(createProject.pending, (state, _) => {      
-          state.loading = {
-            title: 'Creating Project',
-            show: true
-          }
-        }),
+        // build.addCase(createProject.pending, (state, _) => {      
+        //   state.loading = {
+        //     title: 'Creating Project',
+        //     show: true
+        //   }
+        // }),
         build.addCase(login.pending || register.pending || loginGoogle.pending, (state, _) => {      
           state.loading = {
             title: 'Welcome',
@@ -48,9 +48,9 @@ class ActionsSlice {
         })
         
         /** Fulfilled */
-        build.addCase(createProject.fulfilled, (state, _) => {      
-          state.loading = initialLoadingState;
-        })
+        // build.addCase(createProject.fulfilled, (state, _) => {      
+        //   state.loading = initialLoadingState;
+        // })
         build.addCase(login.fulfilled || register.fulfilled || loginGoogle.fulfilled, (state, action) => {      
           state.loading = initialLoadingState;
         })

@@ -27,7 +27,13 @@ interface IUpdateProjectProps {
   cancelClick: () => void;
 }
 
-function UpdateProject({ dialogTitle, project, acceptOnClick, cancelClick }: IUpdateProjectProps) {
+function UpdateProject({ 
+  dialogTitle, 
+  project, 
+  acceptOnClick, 
+  cancelClick 
+}: IUpdateProjectProps) {
+
   const { name, description, users } = project;
   const [nameProject, setNameProject] = useState<string>(name);
   const [descriptionProject, setDescriptionProject] = useState<string>(description);

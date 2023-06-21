@@ -1,8 +1,7 @@
 import { Draft, Slice, createAsyncThunk, createSlice, current } from "@reduxjs/toolkit"
 import { BaseModel } from "../../models/baseModel";
-import { ErrorResponse, baseService } from "../../services/BaseCrudService";
-import { isInstanceOf } from "../../utils/common";
 import { HttpService } from "../../services/HttpService";
+
 
 export interface GenericState<T extends BaseModel> {
     data: T[];
@@ -16,9 +15,9 @@ export interface ActionUrl {
 export class BaseCrudSlice<T extends BaseModel, TCreate, TUpdate extends BaseModel> {
 
     constructor(name: string, url: string, state: GenericState<T>) {
+        this.httpService = new HttpService(url);
         this.name = name;
         this.url = url;
-        this.httpService = new HttpService(this.url);
         this.slice = createSlice({
             name: this.name,
             initialState: state,

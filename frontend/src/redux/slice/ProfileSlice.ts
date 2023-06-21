@@ -1,11 +1,11 @@
 import { Slice, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ProfileInitialState, initialProfileState } from '../../models/profile';
 import { User, emptyUser } from '../../models/user';
-import { defaultHeader } from '../../services/BaseCrudService';
 import { LoginGoogleAuth, LoginRequest, RegisterRequest, UpdateProfile } from '../../services/request/user';
-import { HttpService } from '../../services/HttpService';
+import { HttpService, defaultHeader } from '../../services/HttpService';
 
 class ProfileSlice {
+  
   constructor() {
     this.httpService = new HttpService("Profile");
     this.slice = createSlice({

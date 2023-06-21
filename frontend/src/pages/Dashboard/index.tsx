@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+
 import { Button, Typography } from '@mui/material';
 
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
@@ -20,20 +21,26 @@ import { createProject, deleteProject, getAllProjects, updateProject } from '../
 
 
 function Dashboard() {
+
+  /** Hooks for call the methos in the slice */
   const dispatch = useAppDispatch();
+
+  /** Hooks to navigate to others pages */
   const navigate = useNavigate();
+
+  /** Global State about all the projects */
   const projectState = useAppSelector((state) => state.projects);  
   const { data, fetching } = projectState;
+
+  /** Hook to manage the interaction with the Dialog */
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
+
+  /** State to interact with the project that the user selected */
   const [projectSelected, setProjectSelected] = useState<Project>(data[0]);
 
-  const getUserProjects = useCallback(() => {    
+  useEffect(() => {
     dispatch(getAllProjects({ action: 'user?page=1&pageSize=20' }));
   }, [dispatch]);
-
-  useEffect(() => {
-    getUserProjects();
-  }, [getUserProjects]);
 
   function showCreateProject() {
     setTypeForm({

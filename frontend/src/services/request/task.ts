@@ -3,8 +3,7 @@ export interface CreateTaskRequest {
   listId: number;
 }
 
-export interface TaskUserRequest {
-  taskId: number;
+export interface TaskUserRequest {  
   userId: number;
 }
 
@@ -12,6 +11,6 @@ export interface UpdateTaskRequest {
   id: number;
   title: string;
   description: string;
-  priority: string;
+  priorityTask: string;
   dueDate: string;
 }

@@ -5,9 +5,9 @@ import { actionsSlice } from './slice/ActionsSlice';
 
 export const store = configureStore({
   reducer: {
-    profile: profileSlice.slice.reducer,
-    projects: projectSlice.slice.reducer,
     actions: actionsSlice.slice.reducer,
+    profile: profileSlice.slice.reducer,    
+    projects: projectSlice.slice.reducer,
   },
 });
 
