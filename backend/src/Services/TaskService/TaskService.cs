@@ -148,8 +148,13 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         var project = await _claimsService.IsProjectExist(task.ProjectId, _projectRepo);
         await _claimsService.CheckUserBelongProject(project);
         
-        var result = await _repo.UpdateOneAsync(_mapper.Map<TaskUpdateDTO, TaskList>(update, task));
-        return _mapper.Map<TaskList, TaskReadDTO>(result);
+        task = await _repo.UpdateOneAsync(_mapper.Map<TaskUpdateDTO, TaskList>(update, task));
+        var subTasks = await _subTaskRepo.GetSubTaskByParent(taskId);
+
+        var taskRead = _mapper.Map<TaskList, TaskReadDTO>(task);
+        taskRead.SubTasks = subTasks.Select(st => _mapper.Map<TaskList, SubTaskReadDTO>(st)).ToArray();
+
+        return taskRead;
     }
 
     public override async Task<bool> DeleteOneAsync(int id)
@@ -166,9 +171,9 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         return await _repo.DeleteOneAsync(task);
     }
 
-    public async Task<bool> AddComment(int id, CommentCreateDTO request)
+    public async Task<CommentReadDTO> AddComment(CommentCreateDTO request)
     {
-        var task = await _repo.GetByIdAsync(id);
+        var task = await _repo.GetByIdAsync(request.TaskId);
         if(task is null)
         {
             throw ServiceException.NotFound();
@@ -177,16 +182,24 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         var project = await _claimsService.IsProjectExist(task.ProjectId, _projectRepo);
         await _claimsService.CheckUserBelongProject(project);
         
-        var comment = _mapper.Map<CommentCreateDTO, Comment>(request);
-        comment.TaskId = id;
-        comment.UserId = _claimsService.GetUserId();
-        await _commentRepo.CreateOneAsync(comment);    
-        return true;        
+        var comment = _mapper.Map<CommentCreateDTO, Comment>(request);        
+        await _commentRepo.CreateOneAsync(comment);
+
+        var user = await _userRepo.GetById(comment.UserId);
+        var commentRead = _mapper.Map<Comment, CommentReadDTO>(comment);
+        commentRead.UserName = $"{user.FirstName} {user.LastName}";
+        commentRead.PictureProfile = user.PictureProfile;
+
+           
+        return commentRead;
     }
 
-    public async Task<bool> UpdateComment(int taskId, int commentId, CommentUpdateDTO request)
+    public async Task<bool> UpdateComment(int commentId, CommentUpdateDTO request)
     {
-        var comment = await CheckComment(taskId, commentId);
+        var comment = await _commentRepo.GetByIdAsync(commentId);
+        if (comment is null) {
+            throw ServiceException.NotFound("Comment Id Not Found");
+        }
 
         var newComment = _mapper.Map<CommentUpdateDTO, Comment>(request, comment);
         var result = await _commentRepo.UpdateOneAsync(newComment);
@@ -194,12 +207,16 @@ public class TaskService : BaseService<TaskList, TaskReadDTO, TaskCreateDTO, Tas
         {
             return true;
         }
+        
         return false;
     }
 
-    public async Task<bool> DeleteComment(int taskId, int commentId)
+    public async Task<bool> DeleteComment(int commentId)
     {
-        var comment = await CheckComment(taskId, commentId);
+        var comment = await _commentRepo.GetByIdAsync(commentId);
+        if (comment is null) {
+            throw ServiceException.NotFound("Comment Id Not Found");
+        }
         return await _commentRepo.DeleteOneAsync(comment);
     }
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import { IconButton, Menu } from '@mui/material';
 
@@ -35,6 +36,7 @@ function MenuOptions({ children }: MenuOptionsProps) {
         open={open}
         onClose={handleClose}
         onBlur={handleClose}
+        disableScrollLock={true}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}

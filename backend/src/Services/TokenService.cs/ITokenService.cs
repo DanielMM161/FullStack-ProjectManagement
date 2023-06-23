@@ -5,5 +5,5 @@ using backend.src.Models;
 
 public interface ITokenService
 {
-    Task<AuthReadDTO> GenerateTokenAsync(User user);    
+    AuthReadDTO GenerateTokenAsync(User user);    
 }

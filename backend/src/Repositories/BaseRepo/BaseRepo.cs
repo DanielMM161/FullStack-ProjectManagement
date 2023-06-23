@@ -14,7 +14,7 @@ public class BaseRepo<T> : IBaseRepo<T>
         _context = context;
     }
 
-    public virtual async Task<T?> CreateOneAsync(T create)
+    public virtual async Task<T> CreateOneAsync(T create)
     {
         await _context.AddAsync(create);
         await _context.SaveChangesAsync();        
@@ -47,7 +47,7 @@ public class BaseRepo<T> : IBaseRepo<T>
         return await _context.Set<T>().FindAsync(id);
     }
 
-    public async Task<T> UpdateOneAsync(T update)
+    public virtual async Task<T> UpdateOneAsync(T update)
     {        
         _context.Update<T>(update);
         await _context.SaveChangesAsync();

@@ -6,7 +6,7 @@ public interface IBaseRepo<T>
     Task<T?> GetByIdAsync(int id);
     Task<T> UpdateOneAsync(T update);
     Task<bool> DeleteOneAsync(T entity);
-    Task<T?> CreateOneAsync (T create);
+    Task<T> CreateOneAsync (T create);
 }
 
 public class QueryOptions

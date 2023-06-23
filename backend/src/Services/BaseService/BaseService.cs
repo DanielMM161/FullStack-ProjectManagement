@@ -59,7 +59,7 @@ public class BaseService<T, TReadDto, TCreateDto, TUpdateDto>
         return _mapper.Map<T, TReadDto>(entity);
     }
 
-    public async virtual Task<TReadDto> UpdateOneAsync(int id, TUpdateDto update)
+    public virtual async Task<TReadDto> UpdateOneAsync(int id, TUpdateDto update)
     {
         var entity = await _repo.GetByIdAsync(id);
         if(entity is null)

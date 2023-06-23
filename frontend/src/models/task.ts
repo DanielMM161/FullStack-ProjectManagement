@@ -21,7 +21,8 @@ export interface Task {
   title: string;
   description: string;
   priorityTask: Priority;
-  subTasks?: SubTask[];
+  subTasks: SubTask[];
+  comments: Comment[];
   users: User[];
   createdBy: User;
   dueDate: Date;
@@ -33,6 +34,7 @@ export const initialTaskValue: Task = {
   description: '',
   priorityTask: Priority.low,
   subTasks: [],
+  comments: [],
   users: [],
   createdBy: emptyUser,
   dueDate: new Date(),

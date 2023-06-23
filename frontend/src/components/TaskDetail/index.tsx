@@ -74,11 +74,13 @@ function TaskDetail({ members, taskId }: TaskDetailProps) {
 
   async function fetchTask() {
     setIsLoading(true);
+    
     const result = await httpService.getById<Task>("tasks", taskId);
     if (result) {        
       setTask(result);
       setTaskDescription(result.description);
     }
+
     setIsLoading(false);
   }
 

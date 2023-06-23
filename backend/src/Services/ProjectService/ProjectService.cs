@@ -26,7 +26,7 @@ public class ProjectService : BaseService<Project, ProjectReadDTO, ProjectCreate
         _claimsService = claimsService;
     }
 
-    public override async Task<ProjectReadDTO?> GetByIdAsync(int id)
+    public override async Task<ProjectReadDTO> GetByIdAsync(int id)
     {
         var project = await _repo.GetByIdAsync(id);
         if (project is null)

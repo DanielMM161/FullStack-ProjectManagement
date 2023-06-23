@@ -11,10 +11,18 @@ import Layout from '../../styled/LoginRegisterLayout';
 import { RegisterRequest } from '../../services/request/user';
 
 function Register() {
+
+  /** Hook to trigger the functions into the slices */
   const dispatch = useAppDispatch();
+
+  /** Hook to navigate others pages */
   const navigate = useNavigate();
+
+  /** Global Profile State */
   const profileState = useAppSelector((state) => state.profile);
   const { profile } = profileState;
+
+  /** State to manage the info in the form */
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');

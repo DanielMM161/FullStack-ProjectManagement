@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+
 import { Box, Typography, TextField, Button } from '@mui/material';
+
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
 import loginSVG from '../../assets/login.svg';
 import login2SVG from '../../assets/login-2.svg';
@@ -9,11 +11,18 @@ import { GoogleLogin } from '@react-oauth/google';
 import { login, loginGoogle } from '../../redux/slice/ProfileSlice';
 
 function Login() {
+
+  /** Hook to trigger the functions into the slices */
   const dispatch = useAppDispatch();
+
+  /** Hook to navigate others pages */
   const navigate = useNavigate();
+
+  /** Global Profile State */
   const profileState = useAppSelector((state) => state.profile);
   const { profile } = profileState;
-  
+
+  /** State to manage the login form */
   const [email, setEmail] = useState('userdemo@example.com');
   const [password, setPassword] = useState('userDemo456*');
   const [errors, setErrors] = useState<{ [key: string]: string }>({});

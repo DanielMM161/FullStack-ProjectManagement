@@ -1,26 +1,27 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+
 import { Avatar, List, Typography } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+
 import ListButtonItem from '../ListButtonItem/ListButtonItem';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
-import StyledSideBar from './styled';
-import FolderIcon from '@mui/icons-material/Folder';
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import { logout } from '../../redux/slice/ProfileSlice';
-import ExpandCircleDownIcon from '@mui/icons-material/ExpandCircleDown';
-import { useEffect, useState } from 'react';
 import { toggleSideBar } from '../../redux/slice/ActionsSlice';
+import StyledSideBar from './styled';
 
-interface ItemListOption {
+interface NavigationOptions {
   title: string;
   icon: JSX.Element;
   navigateTo: string;
 }
 
-const itemListOptions: ItemListOption[] = [
+const navigationOptions: NavigationOptions[] = [
   {
     title: 'Dashboard',
     icon: <DashboardIcon />,
@@ -39,16 +40,27 @@ const itemListOptions: ItemListOption[] = [
 ]
 
 function SideBar() {
+
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const profileState = useAppSelector((state) => state.profile);  
   const actionsState = useAppSelector((state) => state.actions);
   const { showSideBar } = actionsState;
   const { profile } = profileState;
-  const [activeItem, setActiveItem] = useState(itemListOptions[0]);
+  const [navigationItem, setNavigationItem] = useState(navigationOptions[0]);
 
-  function handleItemClick(item: ItemListOption) {
-    setActiveItem(item)
+  useEffect(() => {
+    getLastUserMovemente()
+  }, [])
+
+  function getLastUserMovemente() {
+    const movement = localStorage.getItem('navigation');
+    if (movement) setNavigationItem(JSON.parse(movement))
+  }
+
+  function handleItemClick(item: NavigationOptions) {
+    localStorage.setItem('navigation', JSON.stringify(item));
+    setNavigationItem(item)
     navigate(item.navigateTo)
   }
 
@@ -79,10 +91,10 @@ function SideBar() {
         </div>
         
           <List>
-            {itemListOptions.map((item, index) => 
+            {navigationOptions.map((item, index) => 
                <ListButtonItem
                 key={index}
-                selected={activeItem.title == item.title}
+                selected={navigationItem.title == item.title}
                 title={item.title}
                 onClick={() => handleItemClick(item)}              
               >

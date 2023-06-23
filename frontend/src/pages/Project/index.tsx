@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import { Typography, AvatarGroup, Avatar, Dialog, Chip, IconButton } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
-import { useAppDispatch, useAppSelector } from '../../hooks/redux.hook';
+import { useAppSelector } from '../../hooks/redux.hook';
 import Layout from '../../components/Layout';
 import ButtonInput from '../../components/ButtonInput';
 import { ListProject } from '../../models/listProject';
@@ -14,7 +14,7 @@ import Transition from '../../transitions';
 import DialogInfoAction from '../../components/DialogContent/DialogInfoAction';
 import TaskDetail from '../../components/TaskDetail';
 import useDialog, { FORMS } from '../../hooks/useModal.hook';
-import { formatDate, isInstanceOf, showNotification } from '../../utils/common';
+import { formatDate } from '../../utils/common';
 import AssignUser from '../../components/AssignUser';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import EmptyElement from '../../components/EmptyElement';
@@ -47,6 +47,8 @@ function ProjectDetail() {
   const [ listSelectedId, setListSelectedId ] = useState(0);
   const [ taskSelectedId, setTaskSelectedId ] = useState(0);
   const [ showDeleteTask, setShowDeleteTask ] = useState(false);
+
+  /** Hook to manage the Dialog iteraction */
   const { typeForm, setTypeForm, toggleDialog, showDialog } = useDialog();
 
   useEffect(() => {

@@ -37,7 +37,7 @@ public class AuthService : IAuthService
             throw ServiceException.BadRequest("Wrong Password");
         }
 
-        return await _tokenService.GenerateTokenAsync(user);
+        return _tokenService.GenerateTokenAsync(user);
     }
 
     public async Task<UserReadDTO> Profile()

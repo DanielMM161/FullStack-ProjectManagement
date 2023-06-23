@@ -6,9 +6,11 @@ import { useAppDispatch, useAppSelector } from "../../hooks/redux.hook";
 import { updateProfile } from "../../redux/slice/ProfileSlice";
 
 function Profile() {
+
     const dispatch = useAppDispatch();
     const userProfile = useAppSelector(state => state.profile)
     const { profile } = userProfile
+    
     return (
         <Layout>
            <Typography variant="h3" gutterBottom>

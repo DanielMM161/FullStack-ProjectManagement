@@ -4,6 +4,7 @@ using backend.src.Models;
 
 public class CommentReadDTO : BaseDTO<Comment>
 {
-    public string Message { get; set; } = null!;
+    public string Message { get; set; } = null!;    
     public string UserName { get; set; } = null!;
+    public byte[] PictureProfile { get; set; } = null!;
 }

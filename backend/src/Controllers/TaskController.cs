@@ -22,34 +22,34 @@ public class TaskController : BaseController<TaskList, TaskReadDTO, TaskCreateDT
         _subTaskService = subTaskService;        
     }
 
-    [HttpPatch("{taskId:int}/assign-user")]
+    [HttpPut("{taskId:int}/assign-user")]
     public async Task<bool> AssignUser(int taskId, AssignTaskRequest request)
     {
         return await _service.AssignUserTaskAsync(taskId, request.UserId);
     }
 
-    [HttpPatch("{taskId:int}/remove-user")]
+    [HttpPut("{taskId:int}/remove-user")]
     public async Task<bool> RemoveUser(int taskId, AssignTaskRequest request)
     {
         return await _service.RemoveUserTaskAsync(taskId, request.UserId);
     }
 
-    [HttpPost("{taskId:int}/comment")]
-    public async Task<bool> AddComment(int taskId, CommentCreateDTO request)
+    [HttpPost("comment")]
+    public async Task<CommentReadDTO> AddComment(CommentCreateDTO request)
     {
-        return await _service.AddComment(taskId, request);
+        return await _service.AddComment(request);
     }
 
-    [HttpPut("{taskId:int}/comment/{commentId:int}")]
-    public async Task<bool> UpdateComment(int taskId, int commentId, CommentUpdateDTO request)
+    [HttpPut("comment/{commentId:int}")]
+    public async Task<bool> UpdateComment(int commentId, CommentUpdateDTO request)
     {
-        return await _service.UpdateComment(taskId, commentId, request);
+        return await _service.UpdateComment(commentId, request);
     }
 
-    [HttpDelete("{taskId:int}/comment/{commentId:int}")]
-    public async Task<bool> DeleteComment(int taskId, int commentId)
+    [HttpDelete("comment/{commentId:int}")]
+    public async Task<bool> DeleteComment(int commentId)
     {
-        return await _service.DeleteComment(taskId, commentId);
+        return await _service.DeleteComment(commentId);
     }
 
     [HttpPost("{taskParentId:int}/subtask")]
@@ -58,8 +58,8 @@ public class TaskController : BaseController<TaskList, TaskReadDTO, TaskCreateDT
         return Ok(await _subTaskService.CreateSubTask(taskParentId, request));
     }
 
-    [HttpPatch("{taskParentId:int}/subtask/{subtaskId:int}")]
-    public async Task<IActionResult> PatchSubTask(int taskParentId, int subtaskId, SubTaskUpdateDTO request )
+    [HttpPut("{taskParentId:int}/subtask/{subtaskId:int}")]
+    public async Task<IActionResult> UpdateSubTask(int taskParentId, int subtaskId, SubTaskUpdateDTO request )
     {       
         return Ok(await _subTaskService.UpdateSubTask(taskParentId, subtaskId, request));
     }

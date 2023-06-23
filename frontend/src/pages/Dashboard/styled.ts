@@ -40,5 +40,8 @@ export const EmptyList = styled('div')({
 });
 
 export const MyDialog = styled(Dialog)(({ theme }) => ({
-  maxWidth: 'none'
+  maxWidth: 'none',
+  '& [role="dialog"]': {
+    maxWidth: 'none'
+  }
 }));

@@ -16,7 +16,7 @@ public class TokenService : ITokenService
         _config = config;        
     }
 
-    public async Task<AuthReadDTO> GenerateTokenAsync(User user)
+    public AuthReadDTO GenerateTokenAsync(User user)
     {
         // Payload
         var claims = new List<Claim>

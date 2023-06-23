@@ -1,15 +1,11 @@
 import { Paper, styled } from '@mui/material';
 
 export const EmptyLayout = styled('div')({
-  height: '100%',
-  width: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  marginTop: '3rem'
 });
 
 export const ImageContainer = styled(Paper)(({ theme }) => ({
-  width: '70%',
+ // width: '70%',
   borderRadius: '15px',
   display: 'flex',
   flexDirection: 'column',
@@ -18,7 +14,10 @@ export const ImageContainer = styled(Paper)(({ theme }) => ({
   position: 'relative',
   textAlign: 'center',
   background: 'white',
-  padding: '2rem',
+  paddingLeft: '2rem',
+  paddingRight: '2rem',
+  paddingBottom: '0.5rem',
+  paddingTop: '0.5rem',
   [`@media screen and (max-width: ${theme.breakpoints.values.md}px)`]: {
     width: '100%',
     height: '80%',

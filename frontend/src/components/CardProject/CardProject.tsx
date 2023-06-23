@@ -1,5 +1,6 @@
 import { Avatar, Typography, MenuItem, AvatarGroup, Chip } from '@mui/material';
 import AssignmentOutlinedIcon from '@mui/icons-material/AssignmentOutlined';
+
 import { Project } from '../../models/project';
 import MenuOptions from '../MenuOptions';
 import CardLayout from './styled';
@@ -11,7 +12,13 @@ interface CardProjectProps {
   onClick: (projectId: number) => void;
 }
 
-function CardProject({ project, editProject, deleteProject, onClick }: CardProjectProps) {
+function CardProject({ 
+  project, 
+  editProject, 
+  deleteProject, 
+  onClick 
+}: CardProjectProps) {
+
   const { id, name, description, users } = project;
 
   function handleEdit() {

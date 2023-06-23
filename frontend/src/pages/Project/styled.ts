@@ -42,7 +42,7 @@ export const ListOptions = styled('div')(({ theme }) => ({
   width: '100%',
   display: 'flex',
   justifyContent: 'space-between',
-  marginTop: '4rem',
+  marginTop: '1.5rem',  
   maxHeight: '40px',
   '& .filter-tasks': {
     display: 'flex',
